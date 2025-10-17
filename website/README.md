@@ -27,3 +27,9 @@ Include comments when necessary
 
 Use a .env for any sensitive credentials
 
+## Deployment
+
+cd /root/website
+npm run build
+sudo cp -r dist/* /var/www/cop4331project.dev/
+sudo chown -R www-data:www-data /var/www/cop4331project.dev
