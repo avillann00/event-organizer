@@ -1,0 +1,39 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Deploy to server
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.SSH_SERVER }}
+        username: ${{ secrets.SSH_USER }}
+        password: ${{ secrets.SSH_PASSWORD }}
+        script: |
+          cd /root
+          
+          # Pull latest changes from main branch
+          git fetch origin
+          git reset --hard origin/main
+          
+          # Build the website
+          cd website
+          npm run build
+          
+          # Update file permissions for nginx
+          chown -R www-data:www-data /root/website/dist/
+          chmod -R 755 /root/website/dist/
+          
+          # Test nginx configuration
+          nginx -t
+          
+          # Reload nginx to serve updated website
+          systemctl reload nginx
+          
+          echo "Deployment completed successfully!"

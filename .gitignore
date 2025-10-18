@@ -25,6 +25,7 @@ dist-ssr
 
 .*
 !.gitignore
+!.github
 
 *.iml
 .gradle
@@ -35,3 +36,6 @@ dist-ssr
 /build
 /captures
 .externalNativeBuild
+snap/
+package.json
+package-lock.json
