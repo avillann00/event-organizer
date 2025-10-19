@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 import '../components/auth_textfields.dart';
 
 class RegisterPage extends StatelessWidget {
-  const RegisterPage({super.key});
+  RegisterPage({super.key});
 
-   @override
+  final nameController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final passwordAgainController = TextEditingController();
+
+  @override
   Widget build(BuildContext context){
     return Scaffold(
       backgroundColor: Colors.grey[300],
@@ -30,13 +35,43 @@ class RegisterPage extends StatelessWidget {
 
               SizedBox(height: 25),
           
-          // user name textfield
-          AuthTextFields(),
-          // password textfield
+              AuthTextFields(
+                controller: nameController,
+                hintText: 'Full Name',
+                obscureText: false,
+              ),
+
+              SizedBox(height: 10),
+              AuthTextFields(
+                controller: emailController,
+                hintText: 'Email',
+                obscureText: false,
+              ),
+
+              SizedBox(height: 10),
+              // password textfield
+              AuthTextFields(
+                controller: passwordController,
+                hintText: 'Password',
+                obscureText: true,
+              ),
+
+              SizedBox(height: 10),
+              // password textfield
+              AuthTextFields(
+                controller: passwordAgainController,
+                hintText: 'Confirm Password',
+                obscureText: true,
+              ),
           
-          // password again
-          
-          // sign up
+              SizedBox(height: 25),
+              // Placing signup button here
+
+              SizedBox(height: 10),
+              Text(
+                'Sign In instead',
+                style: TextStyle(color: Colors.blue),
+              )
           ]),
         ),
       )
