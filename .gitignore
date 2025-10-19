@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-*.env
-.env 
-*.env.local
-.env.local
-=======
 # Logs
 logs
 *.log
@@ -31,6 +25,7 @@ dist-ssr
 
 .*
 !.gitignore
+!.github
 
 *.iml
 .gradle
@@ -41,4 +36,6 @@ dist-ssr
 /build
 /captures
 .externalNativeBuild
->>>>>>> deploy
+snap/
+package.json
+package-lock.json
