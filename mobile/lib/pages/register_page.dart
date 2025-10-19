@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../components/auth_textfields.dart';
+import '../components/auth_button.dart';
 
 class RegisterPage extends StatelessWidget {
   RegisterPage({super.key});
@@ -66,8 +67,10 @@ class RegisterPage extends StatelessWidget {
           
               SizedBox(height: 25),
               // Placing signup button here
+              AuthButton(),
 
               SizedBox(height: 10),
+
               Text(
                 'Sign In instead',
                 style: TextStyle(color: Colors.blue),
