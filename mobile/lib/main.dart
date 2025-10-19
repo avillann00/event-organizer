@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/pages/register_page.dart';
+import 'package:mobile/pages/user_homepage.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,6 +14,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: RegisterPage(),
+      routes: {
+        '/userHomePage': (context) => UserHomePage(),
+      }
     );
   }
 }

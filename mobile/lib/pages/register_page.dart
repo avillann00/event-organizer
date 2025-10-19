@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'user_homepage.dart';
+import '../components/auth_textfields.dart';
 
 class RegisterPage extends StatelessWidget {
   const RegisterPage({super.key});
@@ -7,64 +7,39 @@ class RegisterPage extends StatelessWidget {
    @override
   Widget build(BuildContext context){
     return Scaffold(
-      backgroundColor: Colors.blue[100],
-      appBar: AppBar(
-        title: Center(
-          child: Text(
-            "Event Organizer",
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        leading: Icon(
-          Icons.menu,
-          color: Colors.white,
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {}, 
-            icon: Icon(
-              Icons.logout,
-              color: Colors.white,
-            ),
-          )
-        ],
-        backgroundColor: Colors.blueAccent,
-      ),
-      body: Center(
-        child: Container(
-          height: 300,
-          width: 300,
-          decoration: BoxDecoration(
-            color: Colors.blueAccent,
-            borderRadius: BorderRadius.circular(20),
-          ),
-          padding: EdgeInsets.all(25),
-            child: Column(
-              children: [
-                Text(
-                  "Event Organizer",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                  ),
+      backgroundColor: Colors.grey[300],
+      body: SafeArea(
+        child: Center(
+          child: Column(
+            children: [
+              SizedBox(height: 50),
+              Icon(
+                Icons.lock,
+                size: 100,
+              ),
+
+              SizedBox(height: 50),
+
+              Text(
+                "Welcome to the Event Organizer App",
+                style: TextStyle(
+                  color: Colors.grey[700],
+                  fontSize: 18,
                 ),
-                ElevatedButton(
-                  // navigating to the user's home page after registering
-                  onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => UserHomePage(),
-                      ),
-                    );
-                  },
-                  child: Text("Go To Home Page"),
-                ),
-              ],
-            ),
+              ),
+
+              SizedBox(height: 25),
+          
+          // user name textfield
+          AuthTextFields(),
+          // password textfield
+          
+          // password again
+          
+          // sign up
+          ]),
         ),
-      ),
+      )
     );
   }
 }

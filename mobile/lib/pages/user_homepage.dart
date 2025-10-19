@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'register_page.dart';
 
 class UserHomePage extends StatelessWidget {
   const UserHomePage({super.key});
@@ -7,6 +6,10 @@ class UserHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context){
     return Scaffold(
+      appBar: AppBar(
+        title: Text("User homePage"),
+        backgroundColor: Colors.blueAccent,
+      ),
       body: Center(
         child: Container(
           height: 300,
@@ -29,9 +32,7 @@ class UserHomePage extends StatelessWidget {
               ElevatedButton(
                     // navigating to the user's home page after registering
                     onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterPage(),
-                        ),
-                      );
+                        Navigator.pushNamed(context, 'userHomePage');
                     },
                     child: Text(
                         "Go To Authentication",
