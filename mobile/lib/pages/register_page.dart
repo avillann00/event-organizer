@@ -80,6 +80,7 @@ class RegisterPage extends StatelessWidget {
                 SizedBox(height: 60),
                 AuthButton(
                   onTap: signUpUser,
+                  label: 'Sign Up'
                 ),
 
                 SizedBox(height: 25),
@@ -101,11 +102,16 @@ class RegisterPage extends StatelessWidget {
 
                     const SizedBox(width: 4),
 
-                    Text(
-                      'Sign In instead',
-                      style: TextStyle(
-                        color: Colors.blue,
-                        fontSize: 16,
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.pushNamed(context, '/login');
+                      },
+                      child: Text(
+                        'Sign In instead',
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontSize: 16,
+                        ),
                       ),
                     ),
                   ],

@@ -1,31 +1,12 @@
 # Mobile Version
 
-Best Practice
-Repo/Branch Management
-Do not push directly to main
+### Framework 
 
-Create a feature branch for each task
-git checkout -b feature/<branch-name>
-Commit Messages
-Use a clear format similar to this one
+This mobile app is made using the framework flutter which utilizes the dart programming language
 
-[<type>] Scope: short description
+### Testing
 
-ex:
-
-[feature] API: Added New Endpoint
-[fix] Users: Fixed Email Verification
-Pull Requests
-Open a pull request to main for every change
-
-Include a clear title and description
-Request a review or ask in Discord
-Code Quality
-Test code extensively
-
-Write clear, readable code with meaningful variable names
-
-Include comments when necessary
-
-Use a .env for any sensitive credentials
-
+To run locally:
+- Download flutter and all of its dependencies [flutter](https://flutter.dev/?utm_source=google&utm_medium=cpc&utm_campaign=brand_sem&utm_content=na_us&gclsrc=aw.ds&gad_source=1&gad_campaignid=12961050228&gbraid=0AAAAAC-INI__bt690cr-eL-habsUwwGDd&gclid=CjwKCAjwu9fHBhAWEiwAzGRC_1iv-C5RK2x8ppBMVPaIxRFWQbz-9-YvQvDf5J9QtqwFt6FmcH-8-xoCa2gQAvD_BwE) 
+- Go to the 'mobile/' directory `cd mobile` 
+- Run `flutter run` 
