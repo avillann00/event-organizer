@@ -1,51 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class UserHomePage extends StatelessWidget {
+class UserHomePage extends StatefulWidget {
   const UserHomePage({super.key});
 
   @override
-  Widget build(BuildContext context){
+  State<UserHomePage> createState() => _UserHomePageState();
+}
+
+class _UserHomePageState extends State<UserHomePage> {
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("User homePage"),
+        title: Text("Event Organizer"),
         backgroundColor: Colors.blueAccent,
       ),
-      body: Center(
-        child: Container(
-          height: 300,
-          width: 300,
-          decoration: BoxDecoration(
-            color: Colors.blueAccent,
-            borderRadius: BorderRadius.circular(20),
-          ),
-          padding: EdgeInsets.all(25),
-          child: Column(
-            children: [
-              Text(
-                "This is the user's hompage",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 28,
-                )
-                ),
-              ElevatedButton(
-                    // navigating to the user's home page after registering
-                    onPressed: () {
-                        Navigator.pushNamed(context, 'userHomePage');
-                    },
-                    child: Text(
-                        "Go To Authentication",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 28,
-                        )
-                      ),
-                ),
-            ],
-          ),
-        ),
-        
+      body: GoogleMap(initialCameraPosition: CameraPosition(
+        target: LatLng(28.6024, -81.2001),
+        zoom: 15,
+        )
       ),
     );
   }
