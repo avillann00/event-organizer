@@ -80,7 +80,7 @@ class RegisterPage extends StatelessWidget {
                 SizedBox(height: 60),
                 AuthButton(
                   onTap: signUpUser,
-                  label: 'Sign Up'
+                  label: 'Sign Up',
                 ),
 
                 SizedBox(height: 25),
