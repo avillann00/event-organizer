@@ -11,8 +11,9 @@ class RegisterPage extends StatelessWidget {
   final passwordAgainController = TextEditingController();
 
   // filling this method out when register api is complete
-  void signUpUser(){
-
+  // added temporary redirect to the userhomepage
+  void signUpUser(BuildContext context){
+    Navigator.pushNamed(context, '/userHomePage');
   }
 
   @override
@@ -79,7 +80,7 @@ class RegisterPage extends StatelessWidget {
             
                 SizedBox(height: 60),
                 AuthButton(
-                  onTap: signUpUser,
+                  onTap: () => signUpUser(context),
                   label: 'Sign Up',
                 ),
 
