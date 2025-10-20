@@ -1,0 +1,33 @@
+import 'package:flutter/material.dart';
+
+class AuthButton extends StatelessWidget {
+
+  final Function()? onTap; 
+
+  const AuthButton({super.key, required this.onTap,});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(15), // adds height to the button
+        margin: const EdgeInsets.symmetric(horizontal: 70),
+        decoration: BoxDecoration(
+          color: Colors.blue,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Center(
+          child: Text(
+            "Sign Up",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            )
+          )
+        ),
+      ),
+    );
+  }
+}
