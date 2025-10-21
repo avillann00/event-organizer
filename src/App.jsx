@@ -19,6 +19,9 @@ export default function App() {
             <div className="input box">
               <input type="text" placeholder="Confirm Password" required />
             </div>
+            <div className="button">
+              <button type="submit">Register</button>
+            </div>
           </form>
         </div>
       </div>
