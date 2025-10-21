@@ -3,6 +3,8 @@ import '../components/auth_textfields.dart';
 import '../components/auth_button.dart';
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
