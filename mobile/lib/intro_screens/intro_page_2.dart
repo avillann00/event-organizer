@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 class IntroPage2 extends StatelessWidget {
   @override
@@ -6,7 +7,9 @@ class IntroPage2 extends StatelessWidget {
     return Container(
       color: Colors.purple[100],
       child: Center(
-        child: Text('Page 2'),
+        child: Lottie.asset(
+          'assets/phone_location_tracking.json'
+        )
       )
     );
   }
