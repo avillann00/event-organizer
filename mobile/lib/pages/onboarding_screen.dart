@@ -33,8 +33,8 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
               });
             },
             children: [
-              IntroPage1(),
               IntroPage2(),
+              IntroPage1(),
               IntroPage3(),
             ]
           ),
