@@ -1,5 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:geolocator/geolocator.dart';
+
+Future<bool> _requestPermission() async{
+  LocationPermission permission = await Geolocator.checkPermission();
+  if(permission == LocationPermission.denied){
+    permission = await Geolocator.requestPermission();
+  }
+  return permission == LocationPermission.whileInUse || permission == LocationPermission.always;
+}
+
+Future<Position?> getCurrentPosition() async{
+  final hasPermission = await _requestPermission();
+  if(!hasPermission){
+    return null;
+  }
+
+  final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  if(!serviceEnabled){
+    return null;
+  }
+
+  return await Geolocator.getCurrentPosition(
+    desiredAccuracy: LocationAccuracy.high,
+  );
+}
 
 class UserHomePage extends StatefulWidget {
   const UserHomePage({super.key});
@@ -9,6 +34,19 @@ class UserHomePage extends StatefulWidget {
 }
 
 class _UserHomePageState extends State<UserHomePage> {
+  Position? _position;
+
+  @override
+  void initState(){
+    super.initState();
+    _fetchLocation();
+  }
+
+  void _fetchLocation() async{
+    final pos = await getCurrentPosition();
+    setState(() => _position = pos);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,13 +77,16 @@ class _UserHomePageState extends State<UserHomePage> {
         )
       ),
 
-      
-
-      body: GoogleMap(initialCameraPosition: CameraPosition(
-        target: LatLng(28.6024, -81.2001),
-        zoom: 15,
-        )
-      ),
+      body: _position == null
+        ? Center(child: CircularProgressIndicator())
+        : GoogleMap(
+            initialCameraPosition: CameraPosition(
+              target: LatLng(_position!.latitude, _position!.longitude),
+            zoom: 15,
+            ),
+            myLocationEnabled: true,
+            myLocationButtonEnabled: true
+          ),
     );
   }
 }
