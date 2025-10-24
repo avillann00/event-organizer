@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import './map_page.dart';
+import './profile_page.dart';
+import '../components/nav_button.dart';
 
 class UserHomePage extends StatefulWidget {
   const UserHomePage({super.key});
@@ -9,42 +11,60 @@ class UserHomePage extends StatefulWidget {
 }
 
 class _UserHomePageState extends State<UserHomePage> {
+  int _selectedIndex = 0;
+
+  final List<Widget> _pages = [
+    const MapPage(),
+    ProfilePage(),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Event Organizer"),
-        backgroundColor: Colors.blueAccent,
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(70),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-            child: SearchBar(
-              controller: SearchController(),
-              leading: const Icon(Icons.search),
-              hintText: 'Search',
-              backgroundColor: WidgetStateProperty.all(const Color.fromARGB(255, 187, 224, 254)),
-              shadowColor: WidgetStateProperty.all(Colors.black),
-              elevation: WidgetStateProperty.all(4.0),
-              shape: WidgetStateProperty.all(
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0)
+      body: Stack(
+        children: [
+          IndexedStack(
+            index: _selectedIndex,
+            children: _pages,
+          ),
+
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 20, 
+            child: Center(
+              child: Material(
+                elevation: 8,
+                borderRadius: BorderRadius.circular(25),
+                color: Colors.white.withOpacity(0.95),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      NavButton(
+                        index: 0,
+                        icon: Icons.home,
+                        isSelected: _selectedIndex == 0,
+                        onTap: () => setState(() => _selectedIndex = 0),
+                      ),
+
+                      SizedBox(width: 50),
+
+                      NavButton(
+                        index: 1,
+                        icon: Icons.person,
+                        isSelected: _selectedIndex == 1,
+                        onTap: () => setState(() => _selectedIndex = 1),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              padding: WidgetStateProperty.all(
-                EdgeInsets.symmetric(horizontal: 16.0),
               ),
             ),
           ),
-        )
-      ),
-
-      
-
-      body: GoogleMap(initialCameraPosition: CameraPosition(
-        target: LatLng(28.6024, -81.2001),
-        zoom: 15,
-        )
+        ],
       ),
     );
   }
