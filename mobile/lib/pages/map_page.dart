@@ -33,6 +33,8 @@ class MapPage extends StatefulWidget{
 
 class _MapPageState extends State<MapPage>{
   Position? _position;
+  bool _isMapReady = false;
+  GoogleMapController? _mapController;
 
   @override
   void initState(){
@@ -42,17 +44,30 @@ class _MapPageState extends State<MapPage>{
 
   void _fetchLocation() async{
     final pos = await getCurrentPosition();
-    setState(() => _position = pos);
+    if (mounted){
+      setState(() => _position = pos);
+    }
+  }
+
+  void _onMapCreated(GoogleMapController controller){
+    _mapController = controller;
+
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (mounted) {
+        setState(() => _isMapReady = true);
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context){
     return Scaffold(
-      body: (_position == null
+      body: _position == null
           ? const Center(child: CircularProgressIndicator())
           : Stack(
               children: [
                 GoogleMap(
+                  onMapCreated: _onMapCreated,
                   initialCameraPosition: CameraPosition(
                     target: LatLng(_position!.latitude, _position!.longitude),
                     zoom: 15,
@@ -101,9 +116,33 @@ class _MapPageState extends State<MapPage>{
                     ],
                   ),
                 ),
+                if (!_isMapReady)
+                  Container(
+                    color: Colors.white,
+                    child: const Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.map, size: 80, color: Colors.blue),
+                          SizedBox(height: 20),
+                          CircularProgressIndicator(),
+                          SizedBox(height: 16),
+                          Text(
+                            'Loading map...',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
               ],
-            )
-          ),
+            ),
     );
+  }
+
+  @override
+  void dispose() {
+    _mapController?.dispose();
+    super.dispose();
   }
 }
