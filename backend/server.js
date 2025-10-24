@@ -5,9 +5,7 @@ const cors = require('cors');
 require('dotenv').config();
 const MongoClient = require('mongodb').MongoClient;
 const url = process.env.MONGODB_URI;
-
-const client = new MongoClient(url);
-client.connect();
+const mongoose = require('mongoose');
 
 const app = express();
 app.use(cors());
@@ -29,16 +27,24 @@ app.use((req, res, next) =>
 
 // Import route modules
 const userRoutes = require('./routes/users');
-const eventRoutes = require('./routes/events');
-const rsvpRoutes = require('./routes/rsvps');
-const notificationRoutes = require('./routes/notifications');
-const reviewRoutes = require('./routes/reviews');
+// const eventRoutes = require('./routes/events');
+// const rsvpRoutes = require('./routes/rsvps');
+// const notificationRoutes = require('./routes/notifications');
+// const reviewRoutes = require('./routes/reviews');
 
 // Use route modules
 app.use('/api/users', userRoutes);
-app.use('/api/events', eventRoutes);
-app.use('/api/rsvps', rsvpRoutes);
-app.use('/api/notifications', notificationRoutes);
-app.use('/api/reviews', reviewRoutes);
+// app.use('/api/events', eventRoutes);
+// app.use('/api/rsvps', rsvpRoutes);
+// app.use('/api/notifications', notificationRoutes);
+// app.use('/api/reviews', reviewRoutes);
 
-app.listen(5000); // start Node + Express server on port 5000
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => {
+  console.log('connected to db');
+  app.listen(5000, () => console.log('server started on port 5000'))
+})
+.catch(error => console.error('connection error: ', error))
