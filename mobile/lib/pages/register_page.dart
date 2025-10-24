@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../components/auth_textfields.dart';
 import '../components/auth_button.dart';
+import 'package:mobile/pages/onboarding_screen.dart';
 
 class RegisterPage extends StatelessWidget {
   RegisterPage({super.key});
@@ -116,7 +117,22 @@ class RegisterPage extends StatelessWidget {
                       ),
                     ),
                   ],
-                )
+                ),
+                const SizedBox(width: 4),
+                    // temporary routing back to onbaording
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context, 
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return OnBoardingScreen();
+                        },
+                      ),
+                    );
+                  },
+                  child: Text('back to onboarding')
+                ),
             ]),
           ),
         ),
