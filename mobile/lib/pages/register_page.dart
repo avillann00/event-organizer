@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import '../components/auth_textfields.dart';
 import '../components/auth_button.dart';
 import 'package:mobile/pages/onboarding_screen.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'dart:async';
 
 class RegisterPage extends StatelessWidget {
   RegisterPage({super.key});
@@ -11,10 +14,35 @@ class RegisterPage extends StatelessWidget {
   final passwordController = TextEditingController();
   final passwordAgainController = TextEditingController();
 
-  // filling this method out when register api is complete
-  // added temporary redirect to the userhomepage
-  void signUpUser(BuildContext context){
-    Navigator.pushNamed(context, '/userHomePage');
+  Future<void> signUpUser(BuildContext context) async{
+    if(nameController.text == '' || emailController.text == '' || passwordController.text == '' || passwordAgainController.text == ''){
+      print('missing fields');
+      return;
+    }
+
+    if(passwordController.text != passwordAgainController.text){
+      print('passwords do not match');
+      return;
+    }
+
+    final response = await http.post(
+      Uri.parse('http://127.0.0.1:5000/api/users/register/user'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'name': nameController.text,
+        'email': emailController.text,
+        'password': passwordController.text,
+        'confirmPassword': passwordAgainController.text
+      })
+    );
+    
+    if(response.statusCode == 200 || response.statusCode == 201){
+      print('user registered: ${response.body}');
+      Navigator.pushNamed(context, '/userHomePage');
+    }
+    else{
+      print('registration failed: ${response.body}');
+    }
   }
 
   @override

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import '../components/auth_textfields.dart';
 import '../components/auth_button.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'dart:async';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -13,8 +16,28 @@ class _LoginPageState extends State<LoginPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
-  void loginUser(){
+  Future<void> loginUser(BuildContext context) async{
+    if(emailController.text == '' || passwordController.text == ''){
+      print('missing fields');
+      return;
+    }
 
+    final response = await http.post(
+      Uri.parse('http://127.0.0.1:5000/api/users/login/user'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'email': emailController.text,
+        'password': passwordController.text
+      })
+    );
+
+    if(response.statusCode == 200 || response.statusCode == 201){
+      print('login successful: ${response.body}');
+      Navigator.pushNamed(context, '/userHomePage');
+    }
+    else{
+      print('login error: ${response.body}');
+    }
   }
 
   @override
@@ -62,7 +85,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
 
               AuthButton(
-                onTap: loginUser,
+                onTap: () => loginUser(context),
                 label: 'Login'
               ),
 
