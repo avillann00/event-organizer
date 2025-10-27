@@ -3,14 +3,27 @@
 const express = require('express');
 const router = express.Router();
 //For checking hashed passwords
-const bcrypt = require('bcrypt'); 
+const bcrypt = require('bcryptjs'); 
 //For generating tokens
 const jwt = require('jsonwebtoken'); 
-//So we can query users
-const User = require('../models/ModelUser');
 //To use values from .env
 require('dotenv').config(); 
 
+//Use native MongoDB driver locally in this router
+const { MongoClient } = require('mongodb');
+const client = new MongoClient(process.env.MONGODB_URI); 
+let _db;
+async function getDb() {
+  if (_db) return _db;
+  try {
+    await client.connect();
+    _db = client.db('EventOrganizer'); // or pull the DB name from your URI
+    return _db;
+  } catch (err) {
+    console.error('Mongo connect failed:', err);
+    throw new Error('Database unavailable');
+  }
+}
 
 
 router.post('/', async (req, res) => {
@@ -25,8 +38,10 @@ router.post('/', async (req, res) => {
       });
     }
 
-    //Find user from email
-    const user = await User.findOne({ email });
+    //Find user from email (native driver)
+    const db = await getDb();
+    const user = await db.collection('users').findOne({ email });
+
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -75,4 +90,4 @@ router.post('/', async (req, res) => {
   }
 });
 
-module.exports = router;
+module.exports = router; 
