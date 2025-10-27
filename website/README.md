@@ -1,37 +1,16 @@
-# Website Version
+# React + Vite
 
-Best Practice
-Repo/Branch Management
-Do not push directly to main
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Create a feature branch for each task
-git checkout -b feature/<branch-name>
-Commit Messages
-Use a clear format similar to this one
+Currently, two official plugins are available:
 
-[<type>] Scope: short description
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-ex:
+## React Compiler
 
-[feature] API: Added New Endpoint
-[fix] Users: Fixed Email Verification
-Pull Requests
-Open a pull request to main for every change
+The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
 
-Include a clear title and description
-Request a review or ask in Discord
-Code Quality
-Test code extensively
+## Expanding the ESLint configuration
 
-Write clear, readable code with meaningful variable names
-
-Include comments when necessary
-
-Use a .env for any sensitive credentials
-
-## Deployment
-
-cd /root/website
-npm run build
-sudo cp -r dist/* /var/www/cop4331project.dev/
-sudo chown -R www-data:www-data /var/www/cop4331project.dev
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
