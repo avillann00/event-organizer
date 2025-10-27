@@ -16,17 +16,23 @@ class RegisterPage extends StatelessWidget {
 
   Future<void> signUpUser(BuildContext context) async{
     if(nameController.text == '' || emailController.text == '' || passwordController.text == '' || passwordAgainController.text == ''){
-      print('missing fields');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Please fill in all fields"))
+      );
+      debugPrint('missing fields');
       return;
     }
 
     if(passwordController.text != passwordAgainController.text){
-      print('passwords do not match');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Passwords do not match, please try again"))
+      );
+      debugPrint('passwords do not match');
       return;
     }
 
     final response = await http.post(
-      Uri.parse('http://127.0.0.1:5000/api/users/register/user'),
+      Uri.parse('http://64.23.213.176:5000/api/users/register/user'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'name': nameController.text,
@@ -35,13 +41,18 @@ class RegisterPage extends StatelessWidget {
         'confirmPassword': passwordAgainController.text
       })
     );
+
+    if (!context.mounted) return;
     
     if(response.statusCode == 200 || response.statusCode == 201){
-      print('user registered: ${response.body}');
+      debugPrint('user registered: ${response.body}');
       Navigator.pushNamed(context, '/userHomePage');
     }
     else{
-      print('registration failed: ${response.body}');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Registration failed"))
+      );
+      debugPrint('registration failed: ${response.body}');
     }
   }
 

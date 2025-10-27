@@ -36,7 +36,7 @@ class _UserHomePageState extends State<UserHomePage> {
               child: Material(
                 elevation: 8,
                 borderRadius: BorderRadius.circular(25),
-                color: Colors.white.withOpacity(0.95),
+                color: Colors.white.withValues(alpha: 0.95),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                   child: Row(

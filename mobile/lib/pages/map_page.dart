@@ -87,7 +87,7 @@ class _MapPageState extends State<MapPage>{
                           leading: const Icon(Icons.search),
                           hintText: 'Search',
                           backgroundColor: WidgetStateProperty.all(
-                            Colors.white.withOpacity(0.9),
+                            Colors.white.withValues(alpha: 0.9),
                           ),
                           shadowColor: WidgetStateProperty.all(Colors.black),
                           elevation: WidgetStateProperty.all(4.0),
@@ -103,7 +103,7 @@ class _MapPageState extends State<MapPage>{
                       ),
                       const SizedBox(width: 10),
                       Material(
-                        color: Colors.white.withOpacity(0.9),
+                        color: Colors.white.withValues(alpha: 0.9),
                         shape: const CircleBorder(),
                         elevation: 4,
                         child: IconButton(

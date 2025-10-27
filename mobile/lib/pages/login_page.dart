@@ -9,7 +9,7 @@ class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
   @override
-  _LoginPageState createState() => _LoginPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
@@ -18,7 +18,10 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> loginUser(BuildContext context) async{
     if(emailController.text == '' || passwordController.text == ''){
-      print('missing fields');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Please fill in all fields"))
+      );
+      debugPrint('missing fields');
       return;
     }
 
@@ -30,13 +33,18 @@ class _LoginPageState extends State<LoginPage> {
         'password': passwordController.text
       })
     );
+    
+    if (!context.mounted) return;
 
     if(response.statusCode == 200 || response.statusCode == 201){
-      print('login successful: ${response.body}');
+      debugPrint('login successful: ${response.body}');
       Navigator.pushNamed(context, '/userHomePage');
     }
     else{
-      print('login error: ${response.body}');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("There was an error logging in"))
+      );
+      debugPrint('login error: ${response.body}');
     }
   }
 
