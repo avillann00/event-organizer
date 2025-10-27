@@ -7,7 +7,7 @@ const bcrypt = require('bcrypt');
 //For generating tokens
 const jwt = require('jsonwebtoken'); 
 //So we can query users
-const User = require('../modelUser');
+const User = require('../models/ModelUser');
 //To use values from .env
 require('dotenv').config(); 
 
