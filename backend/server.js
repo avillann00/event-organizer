@@ -1,13 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const mongoose = require('mongoose');
 
 require('dotenv').config();
-const MongoClient = require('mongodb').MongoClient;
-const url = process.env.MONGODB_URI;
-
-const client = new MongoClient(url);
-client.connect();
 
 const app = express();
 app.use(cors());
@@ -44,4 +40,12 @@ app.use('/api/users', userRoutes);
 //app.use('/api/reviews', reviewRoutes);
 app.use('/api/login', loginRoutes);
 
-app.listen(5000); // start Node + Express server on port 5000
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => {
+  console.log('connected to db');
+  app.listen(5000, () => console.log('server started on port 5000'))
+})
+.catch(error => console.error('connection error: ', error))

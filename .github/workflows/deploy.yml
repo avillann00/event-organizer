@@ -22,8 +22,13 @@ jobs:
           git fetch origin
           git reset --hard origin/main
           
+          # Restart backend with PM2
+          cd backend
+          npm install
+          pm2 restart backend
+          
           # Build the website
-          cd website
+          cd ../website
           npm run build
           
           # Update file permissions for nginx
