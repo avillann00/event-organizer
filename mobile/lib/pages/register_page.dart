@@ -59,7 +59,7 @@ class _RegisterPageState extends State<RegisterPage> {
             color: Colors.blue,
           ),
 
-          const SizedBox(height: 50),
+          const SizedBox(height: 40),
 
           Text(
             "Welcome to the Event Organizer App",
@@ -128,8 +128,16 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               );
             },
-            child: Text('back to onboarding')
+            child: Text(
+              'back to onboarding',
+              style: TextStyle(
+                color: Colors.blue,
+                fontSize: 16,
+              )
+            )
           ),
+
+          const SizedBox(height: 30),
         ]
       )
     );

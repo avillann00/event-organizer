@@ -110,9 +110,6 @@ class _OrganizerRegistrationFormState extends State<OrganizerRegistrationForm>{
               onTap: () => signUpUser(context),
               label: 'Sign Up',
             ),
-
-            SizedBox(height: 25),
-
           ]
         )
       )

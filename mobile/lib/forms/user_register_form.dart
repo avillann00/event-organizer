@@ -117,8 +117,6 @@ class _UserRegistrationFormState extends State<UserRegistrationForm>{
               onTap: () => signUpUser(context),
               label: 'Sign Up',
             ),
-
-            SizedBox(height: 25),
         ]),
       ),
     );

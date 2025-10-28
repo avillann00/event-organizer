@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import '../components/filter_bar.dart';
 
 Future<bool> _requestPermission() async{
   LocationPermission permission = await Geolocator.checkPermission();
@@ -109,8 +110,19 @@ class _MapPageState extends State<MapPage>{
                         child: IconButton(
                           icon: const Icon(Icons.filter_list, color: Colors.black87),
                           onPressed: (){
-
-                          },
+                            showModalBottomSheet(
+                              context: context,
+                              backgroundColor: Colors.white,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(top: Radius.circular(20))
+                              ),
+                              builder: (context) => FilterBar(
+                                onApply: (radius, category){
+                                  // filtering logic
+                                }
+                              )
+                            );
+                          }
                         ),
                       ),
                     ],
