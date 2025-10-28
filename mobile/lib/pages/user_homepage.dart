@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import './map_page.dart';
 import './profile_page.dart';
+import './event_page.dart';
 import '../components/nav_button.dart';
 
 class UserHomePage extends StatefulWidget {
@@ -13,20 +14,26 @@ class UserHomePage extends StatefulWidget {
 class _UserHomePageState extends State<UserHomePage> {
   int _selectedIndex = 0;
 
-  final List<Widget> _pages = [
-    const MapPage(),
-    ProfilePage(),
-  ];
+  // switch statement instead of final List <Widget> 
+  Widget _getPage() {
+    switch (_selectedIndex) {
+      case 0:
+        return const MapPage();
+      case 1:
+        return const ProfilePage();
+      case 2:
+        return const EventPage();
+      default:
+        return const MapPage();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
-          IndexedStack(
-            index: _selectedIndex,
-            children: _pages,
-          ),
+          _getPage(),
 
           Positioned(
             left: 0,
@@ -50,13 +57,25 @@ class _UserHomePageState extends State<UserHomePage> {
                         onTap: () => setState(() => _selectedIndex = 0),
                       ),
 
-                      SizedBox(width: 50),
+                      SizedBox(width: 20),
 
                       NavButton(
                         index: 1,
                         icon: Icons.person,
                         isSelected: _selectedIndex == 1,
                         onTap: () => setState(() => _selectedIndex = 1),
+                      ),
+
+                      SizedBox(width: 20),
+
+                      NavButton(
+                        index: 2,
+                        icon: Icons.menu,
+                        isSelected: _selectedIndex == 2,
+                        onTap: () {
+                          debugPrint('📅 Menu tapped');
+                          setState(() => _selectedIndex = 2);
+                        },
                       ),
                     ],
                   ),
