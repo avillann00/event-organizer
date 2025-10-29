@@ -28,13 +28,11 @@ app.use((req, res, next) =>
 const userRoutes = require('./routes/users');
 const eventRoutes = require('./routes/events');
 const rsvpRoutes = require('./routes/rsvps');
-const loginRoutes = require('./routes/login'); 
 
 // Use route modules
 app.use('/api/users', userRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/rsvps', rsvpRoutes);
-app.use('/api/login', loginRoutes);
 
 mongoose.connect(url, {
   useNewUrlParser: true,
