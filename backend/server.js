@@ -2,9 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
-require('dotenv').config();
 const MongoClient = require('mongodb').MongoClient;
-const url = process.env.MONGODB_URI;
+const url = "mongodb://127.0.0.1:27017/EventOrganizer";
 const mongoose = require('mongoose');
 
 const app = express();
@@ -27,17 +26,15 @@ app.use((req, res, next) =>
 
 // Import route modules
 const userRoutes = require('./routes/users');
-// const eventRoutes = require('./routes/events');
-// const rsvpRoutes = require('./routes/rsvps');
-// const notificationRoutes = require('./routes/notifications');
-// const reviewRoutes = require('./routes/reviews');
+const eventRoutes = require('./routes/events');
+const rsvpRoutes = require('./routes/rsvps');
+const loginRoutes = require('./routes/login'); 
 
 // Use route modules
 app.use('/api/users', userRoutes);
-// app.use('/api/events', eventRoutes);
-// app.use('/api/rsvps', rsvpRoutes);
-// app.use('/api/notifications', notificationRoutes);
-// app.use('/api/reviews', reviewRoutes);
+app.use('/api/events', eventRoutes);
+app.use('/api/rsvps', rsvpRoutes);
+app.use('/api/login', loginRoutes);
 
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
