@@ -176,7 +176,7 @@ router.post('/register/organizer', async (req, res) => {
 
 //USER LOGIN
 
-outer.post('/login', async (req, res) => {
+router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
