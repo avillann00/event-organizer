@@ -4,7 +4,7 @@ const cors = require('cors');
 
 require('dotenv').config();
 const MongoClient = require('mongodb').MongoClient;
-const url = process.env.MONGODB_URI;
+const url = "mongodb://127.0.0.1:27017/EventOrganizer";
 const mongoose = require('mongoose');
 
 const app = express();
