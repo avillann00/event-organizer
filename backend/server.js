@@ -36,7 +36,7 @@ app.use('/api/events', eventRoutes);
 app.use('/api/rsvps', rsvpRoutes);
 app.use('/api/login', loginRoutes);
 
-mongoose.connect(process.env.MONGODB_URI, {
+mongoose.connect(url, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
