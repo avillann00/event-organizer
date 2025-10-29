@@ -176,28 +176,11 @@ router.post('/register/organizer', async (req, res) => {
 
 //USER LOGIN
 
-//Use native MongoDB driver locally in this router
-const { MongoClient } = require('mongodb');
-const client = new MongoClient(process.env.MONGODB_URI); 
-let _db;
-async function getDb() {
-  if (_db) return _db;
-  try {
-    await client.connect();
-    _db = client.db('EventOrganizer'); // or pull the DB name from your URI
-    return _db;
-  } catch (err) {
-    console.error('Mongo connect failed:', err);
-    throw new Error('Database unavailable');
-  }
-}
-
-
-router.post('/', async (req, res) => {
+router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    //Validate input
+    // Basic validation
     if (!email || !password) {
       return res.status(400).json({
         success: false,
@@ -205,34 +188,28 @@ router.post('/', async (req, res) => {
       });
     }
 
-    //Find user from email (native driver)
-    const db = await getDb();
-    const user = await db.collection('users').findOne({ email });
-
+    // Find user
+    const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: 'Email not found'
-      });
-    }
-
-    //Compare entered password with stored hash
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
       return res.status(401).json({
         success: false,
-        message: 'Invalid credentials'
+        message: 'Invalid email or password'
       });
     }
 
-    //Generate JWT token
-    const token = jwt.sign(
-      { id: user._id, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: '1h' }
-    );
+    // Check password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid email or password'
+      });
+    }
 
-    //Send success response
+    // Generate token
+    const token = generateToken(user._id);
+
+    // Send response
     res.status(200).json({
       success: true,
       message: 'Login successful',
@@ -241,22 +218,20 @@ router.post('/', async (req, res) => {
           id: user._id,
           name: user.name,
           email: user.email,
-          role: user.role,
-          organization: user.organization || null
+          role: user.role
         },
         token
       }
     });
+
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({
       success: false,
-      message: 'Server error during login',
+      message: 'Login failed',
       error: error.message
     });
   }
 });
-
-
 
 module.exports = router;
