@@ -1,6 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const env = require('dotenv');
+env.config();
 
 const MongoClient = require('mongodb').MongoClient;
 const url = "mongodb://127.0.0.1:27017/EventOrganizer";
