@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import '../components/filter_bar.dart';
+import '../models/event.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 Future<bool> _requestPermission() async{
   LocationPermission permission = await Geolocator.checkPermission();
@@ -37,6 +40,9 @@ class _MapPageState extends State<MapPage>{
   bool _isMapReady = false;
   GoogleMapController? _mapController;
 
+  final Set<Marker> _markers = {};
+  final List<Event> _events = [];
+
   @override
   void initState(){
     super.initState();
@@ -47,6 +53,7 @@ class _MapPageState extends State<MapPage>{
     final pos = await getCurrentPosition();
     if (mounted){
       setState(() => _position = pos);
+      fetchEvents(10.0, 'All');
     }
   }
 
@@ -58,6 +65,43 @@ class _MapPageState extends State<MapPage>{
         setState(() => _isMapReady = true);
       }
     });
+  }
+
+  void _loadMarkers(){
+    for(var event in _events){
+      _markers.add(
+        Marker(
+          markerId: MarkerId(event.id),
+          position: LatLng(event.location['latitude'] ?? 0.0, event.location['longitude'] ?? 0.0),
+          infoWindow: InfoWindow(
+            title: event.title,
+            snippet: event.description,
+            onTap: (){
+              Navigator.pushNamed(context, '/eventDetails', arguments: event);
+            }
+          ),
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange)
+        )
+      );
+    }
+  }
+
+  Future<void> fetchEvents(double radius, String category) async{
+    final response = await http.get(Uri.parse('http://127.0.0.1:5000/api/events?radius=$radius&category=$category'));
+
+    if(response.statusCode == 200){
+      final List data = jsonDecode(response.body);
+      setState((){
+        _events.clear();
+        _events.addAll(data.map((e) => Event.fromJson(e)).toList());
+
+        _markers.clear();
+        _loadMarkers();
+      });
+    }
+    else{
+      print('failed to get events: ${response.statusCode}');
+    }
   }
 
   @override
@@ -75,6 +119,7 @@ class _MapPageState extends State<MapPage>{
                   ),
                   myLocationEnabled: true,
                   myLocationButtonEnabled: true,
+                  markers: _markers,
                 ),
                 Positioned(
                   top: 60,
@@ -87,17 +132,17 @@ class _MapPageState extends State<MapPage>{
                           controller: SearchController(),
                           leading: const Icon(Icons.search),
                           hintText: 'Search',
-                          backgroundColor: WidgetStateProperty.all(
-                            Colors.white.withValues(alpha: 0.9),
+                          backgroundColor: MaterialStateProperty.all(
+                            Colors.white.withOpacity(0.9),
                           ),
-                          shadowColor: WidgetStateProperty.all(Colors.black),
-                          elevation: WidgetStateProperty.all(4.0),
-                          shape: WidgetStateProperty.all(
+                          shadowColor: MaterialStateProperty.all(Colors.black),
+                          elevation: MaterialStateProperty.all(4.0),
+                          shape: MaterialStateProperty.all(
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20.0),
                             ),
                           ),
-                          padding: WidgetStateProperty.all(
+                          padding: MaterialStateProperty.all(
                             const EdgeInsets.symmetric(horizontal: 16.0),
                           ),
                         ),
@@ -118,7 +163,7 @@ class _MapPageState extends State<MapPage>{
                               ),
                               builder: (context) => FilterBar(
                                 onApply: (radius, category){
-                                  // filtering logic
+                                  fetchEvents(double.parse(radius ?? '0'), category ?? '');
                                 }
                               )
                             );

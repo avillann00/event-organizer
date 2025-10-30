@@ -38,7 +38,7 @@ class _FilterBarState extends State<FilterBar>{
             ),
             dropdownColor: Colors.white,
             value: selectedRadius,
-            items: ['1 km', '5 km', '10 km', '25 km']
+            items: ['1', '5', '10', '25']
                 .map((radius) => DropdownMenuItem(
                       value: radius,
                       child: Text(radius),
@@ -56,7 +56,7 @@ class _FilterBarState extends State<FilterBar>{
             ),
             dropdownColor: Colors.white,
             value: selectedCategory,
-            items: ['Food', 'Music', 'Sports', 'Tech']
+            items: ['Food', 'Music', 'Sports', 'Tech', 'All']
                 .map((category) => DropdownMenuItem(
                       value: category,
                       child: Text(category),

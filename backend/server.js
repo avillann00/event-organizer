@@ -32,7 +32,6 @@ const userRoutes = require('./routes/users');
 // const rsvpRoutes = require('./routes/rsvps');
 // const notificationRoutes = require('./routes/notifications');
 // const reviewRoutes = require('./routes/reviews');
-// const loginRoutes = require('./routes/login'); 
 
 // Use route modules
 app.use('/api/users', userRoutes);
@@ -40,7 +39,6 @@ app.use('/api/users', userRoutes);
 // app.use('/api/rsvps', rsvpRoutes);
 // app.use('/api/notifications', notificationRoutes);
 // app.use('/api/reviews', reviewRoutes);
-// app.use('/api/login', loginRoutes);
 
 mongoose.connect(url, {
   useNewUrlParser: true,

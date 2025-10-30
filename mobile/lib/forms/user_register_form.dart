@@ -48,7 +48,7 @@ class _UserRegistrationFormState extends State<UserRegistrationForm>{
     }
 
     final response = await http.post(
-      Uri.parse('http://10.0.2.2:5000/api/users/register/user'),
+      Uri.parse('http://127.0.0.1:5000/api/users/register/user'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'name': nameController.text,

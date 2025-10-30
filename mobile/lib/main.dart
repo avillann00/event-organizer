@@ -3,6 +3,8 @@ import 'package:mobile/pages/register_page.dart';
 import 'package:mobile/pages/user_homepage.dart';
 import 'package:mobile/pages/onboarding_screen.dart';
 import 'pages/login_page.dart';
+import 'pages/event_details.dart';
+import 'models/event.dart';
 
 void main() {
   runApp(const MyApp());
@@ -22,6 +24,15 @@ class MyApp extends StatelessWidget {
         '/userHomePage': (context) => UserHomePage(),
         '/login': (context) => LoginPage(),
         '/register': (context) => RegisterPage(),
+      },
+      onGenerateRoute: (settings){
+        if(settings.name == '/eventDetails'){
+          final event = settings.arguments as Event;
+          return MaterialPageRoute(
+            builder: (context) => EventDetailsPage(event: event)
+          );
+        }
+        return null;
       }
     );
   }
