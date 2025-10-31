@@ -22,7 +22,7 @@ class _UserHomePageState extends State<UserHomePage> {
       case 1:
         return const ProfilePage();
       case 2:
-        return const EventPage();
+        return EventPage();
       default:
         return const MapPage();
     }
@@ -73,7 +73,6 @@ class _UserHomePageState extends State<UserHomePage> {
                         icon: Icons.menu,
                         isSelected: _selectedIndex == 2,
                         onTap: () {
-                          debugPrint('📅 Menu tapped');
                           setState(() => _selectedIndex = 2);
                         },
                       ),
