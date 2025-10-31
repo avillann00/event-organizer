@@ -14,8 +14,19 @@ class _EventPageState extends State<EventPage> {
     debugPrint('🎯 EventPage building');
     return Scaffold(
       backgroundColor: Colors.amber,
-      body: const SafeArea(
-        child: Text('This is the Event Page'),
+      body: Column(
+        children: [
+          SizedBox(height: 40),
+
+          Text('This is the Event Page'),
+
+          ElevatedButton(
+            child: Text('Create event'),
+            onPressed: (){
+              Navigator.pushNamed(context, '/createEvent');
+            }
+          ),
+        ]
       ),
     );
   }

@@ -5,6 +5,7 @@ import 'package:mobile/pages/onboarding_screen.dart';
 import 'pages/login_page.dart';
 import 'pages/event_details.dart';
 import 'models/event.dart';
+import 'pages/create_event_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
         '/userHomePage': (context) => UserHomePage(),
         '/login': (context) => LoginPage(),
         '/register': (context) => RegisterPage(),
+        '/createEvent': (context) => CreateEventPage(),
       },
       onGenerateRoute: (settings){
         if(settings.name == '/eventDetails'){

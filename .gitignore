@@ -36,7 +36,5 @@ dist-ssr
 /captures
 .externalNativeBuild
 snap/
-package.json
-package-lock.json
 
 .env
