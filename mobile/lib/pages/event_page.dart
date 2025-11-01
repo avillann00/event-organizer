@@ -3,48 +3,15 @@ import '../models/event.dart';
 import 'package:intl/intl.dart';
 
 class EventPage extends StatefulWidget {
+  final List<Event> events;
+
+  const EventPage({required this.events, super.key});
+
   @override
   State<EventPage> createState() => _EventPageState();
 }
 
 class _EventPageState extends State<EventPage> {
-  final List<Event> events = [
-    Event(
-      id: '1',
-      title: 'HAPCO Jazz Clinic Ocoee',
-      description: 'Jazz clinic for middle & high school students with UF and UCF jazz studies professors',
-      keywords: ['Music'],
-      startTime: DateTime(2025, 1, 24, 9, 30),
-      endTime: DateTime(2025, 1, 24, 15, 30),
-      location: {'address': '1925 Ocoee Crown Pt Pkwy'},
-      address: '1925 Ocoee Crown Point Parkway, Orlando, FL',
-      organizerId: 'org123',
-      capacity: 100,
-      ticketPrice: 0.0,
-      media: ['https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F979051893%2F38818007190%2F1%2Foriginal.20250309-144721?w=940&auto=format%2Ccompress&q=75&sharp=10&s=5aacae6bc350f96bb1cd6bef9a3917f8'],
-      rsvpCount: 45,
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-    ),
-    Event(
-      id: '2',
-      title: 'Network Nite',
-      description: 'Dive into tech with other professionals'!,
-      keywords: ['Tech', 'Food'],
-      startTime: DateTime(2025, 11, 15, 18, 0),
-      endTime: DateTime(2025, 11, 15, 21, 0),
-      location: {'address': '2100 North Greenville Ave.'},
-      address: '2100 North Greenville Ave, Orlando, FL',
-      organizerId: 'org456',
-      capacity: 50,
-      ticketPrice: 0.0,
-      media: ['https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F457826739%2F209499566848%2F1%2Foriginal.jpg?w=940&auto=format%2Ccompress&q=75&sharp=10&rect=0%2C0%2C2160%2C1080&s=a8544aa170b290127e4afaa6d6c1b7e8'],
-      rsvpCount: 20,
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-    ),
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,10 +23,11 @@ class _EventPageState extends State<EventPage> {
             end: Alignment.bottomCenter,
           ),
         ),
-          child: ListView.builder(
-            itemCount: events.length,
+        child: widget.events.isEmpty 
+          ? const Center(child: Text('No events available yet', style: TextStyle(color: Colors.white, fontSize: 16))) : ListView.builder(
+            itemCount: widget.events.length,
             itemBuilder: (context, index) {
-              final event = events[index];
+              final event = widget.events[index];
               
               return GestureDetector(
                   onTap: (){
@@ -88,12 +56,19 @@ class _EventPageState extends State<EventPage> {
                                 topLeft: Radius.circular(16),
                                 topRight: Radius.circular(16),
                               ),
-                              child: Image.network(
-                                event.media[0],
-                                height: 150,
-                                width: double.infinity,
-                                fit: BoxFit.cover,
-                              ),
+                              child: event.media.isNotEmpty 
+                                ? Image.network(
+                                    event.media[0],
+                                    height: 150,
+                                    width: double.infinity,
+                                    fit: BoxFit.cover,
+                                  ) 
+                                : Container(
+                                    height: 150,
+                                    width: double.infinity,
+                                    color: Colors.grey.shade300,
+                                    child: const Icon(Icons.image_not_supported, size: 50, color: Colors.grey),
+                                  ),
                             ),
                         Padding(
                           padding: EdgeInsets.all(16),

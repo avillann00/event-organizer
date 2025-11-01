@@ -3,6 +3,7 @@ import './map_page.dart';
 import './profile_page.dart';
 import './event_page.dart';
 import '../components/nav_button.dart';
+import '../models/event.dart';
 
 class UserHomePage extends StatefulWidget {
   const UserHomePage({super.key});
@@ -13,18 +14,31 @@ class UserHomePage extends StatefulWidget {
 
 class _UserHomePageState extends State<UserHomePage> {
   int _selectedIndex = 0;
+  List<Event> _events = [];
+
+  void _updateEvents(List<Event> newEvents){
+    setState((){
+      _events = newEvents;
+    });
+  }
 
   // switch statement instead of final List <Widget> 
   Widget _getPage() {
     switch (_selectedIndex) {
       case 0:
-        return const MapPage();
+        return MapPage(
+          events: _events,
+          onEventsUpdated: _updateEvents
+        );
       case 1:
         return const ProfilePage();
       case 2:
-        return EventPage();
+        return EventPage(events: _events);
       default:
-        return const MapPage();
+        return MapPage(
+          events: _events,
+          onEventsUpdated: _updateEvents
+        );
     }
   }
 

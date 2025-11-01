@@ -29,7 +29,10 @@ Future<Position?> getCurrentPosition() async{
 }
 
 class MapPage extends StatefulWidget{
-  const MapPage({super.key});
+  final Function(List<Event>) onEventsUpdated;
+  final List<Event> events;
+
+  const MapPage({required this.events, required this.onEventsUpdated, super.key});
 
   @override
   State<MapPage> createState() => _MapPageState();
@@ -42,6 +45,7 @@ class _MapPageState extends State<MapPage>{
 
   final Set<Marker> _markers = {};
   final List<Event> _events = [];
+
 
   @override
   void initState(){
@@ -98,8 +102,16 @@ class _MapPageState extends State<MapPage>{
         _markers.clear();
         _loadMarkers();
       });
+
+      widget.onEventsUpdated(_events);
     }
     else{
+      setState((){
+        _events.clear();
+        _markers.clear();
+      });
+      widget.onEventsUpdated(_events);
+
       print('failed to get events: ${response.statusCode}');
     }
   }
