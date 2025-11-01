@@ -1,24 +1,59 @@
 import 'package:flutter/material.dart';
 import '../components/auth_textfields.dart';
 import '../components/auth_button.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'dart:async';
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
   @override
-  _LoginPageState createState() => _LoginPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
-  void loginUser(){
+  Future<void> loginUser(BuildContext context) async{
+    if(emailController.text == '' || passwordController.text == ''){
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Please fill in all fields"))
+      );
+      debugPrint('missing fields');
+      return;
+    }
 
+    final response = await http.post(
+      Uri.parse('http://localhost:5000/api/users/login'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'email': emailController.text,
+        'password': passwordController.text
+      })
+    );
+    
+    if (!context.mounted) return;
+
+    if(response.statusCode == 200 || response.statusCode == 201){
+      debugPrint('login successful: ${response.body}');
+      Navigator.pushNamed(context, '/userHomePage');
+    }
+    else{
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("There was an error logging in"))
+      );
+      debugPrint('login error: ${response.body}');
+    }
   }
 
   @override
   Widget build(BuildContext context){
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: Text('Login')
       ),
       body: Padding(
@@ -27,11 +62,15 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              SizedBox(height: 40),
+
               Icon(
                 Icons.account_circle,
                 size: 100,
                 color: Colors.blue,
               ),
+
+              SizedBox(height: 10),
 
               AuthTextFields(
                 controller: emailController,
@@ -39,6 +78,8 @@ class _LoginPageState extends State<LoginPage> {
                 obscureText: false,
                 icon: Icons.email,
               ),
+
+              SizedBox(height: 10),
 
               AuthTextFields(
                 controller: passwordController,
@@ -48,11 +89,11 @@ class _LoginPageState extends State<LoginPage> {
               ),
 
               SizedBox(
-                height: 20
+                height: 60
               ),
 
               AuthButton(
-                onTap: loginUser,
+                onTap: () => loginUser(context),
                 label: 'Login'
               ),
 

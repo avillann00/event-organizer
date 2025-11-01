@@ -28,13 +28,17 @@ app.use((req, res, next) =>
 
 // Import route modules
 const userRoutes = require('./routes/users');
-const eventRoutes = require('./routes/events');
-const rsvpRoutes = require('./routes/rsvps');
+// const eventRoutes = require('./routes/events');
+// const rsvpRoutes = require('./routes/rsvps');
+// const notificationRoutes = require('./routes/notifications');
+// const reviewRoutes = require('./routes/reviews');
 
 // Use route modules
 app.use('/api/users', userRoutes);
-app.use('/api/events', eventRoutes);
-app.use('/api/rsvps', rsvpRoutes);
+// app.use('/api/events', eventRoutes);
+// app.use('/api/rsvps', rsvpRoutes);
+// app.use('/api/notifications', notificationRoutes);
+// app.use('/api/reviews', reviewRoutes);
 
 mongoose.connect(url, {
   useNewUrlParser: true,
