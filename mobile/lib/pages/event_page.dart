@@ -61,127 +61,132 @@ class _EventPageState extends State<EventPage> {
             itemBuilder: (context, index) {
               final event = events[index];
               
-              return Container(
-                margin: EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black26,
-                      blurRadius: 8,
-                      offset: Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // styling for the event's image
-                        ClipRRect(
-                          borderRadius: BorderRadius.only(
-                            // this adds borders to the top corners only
-                            topLeft: Radius.circular(16),
-                            topRight: Radius.circular(16),
-                          ),
-                          child: Image.network(
-                            event.media[0],
-                            height: 150,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                          ),
+              return GestureDetector(
+                  onTap: (){
+                    Navigator.pushNamed(context, '/eventDetails', arguments: event);
+                  },
+                  child: Container(
+                    margin: EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 8,
+                          offset: Offset(0, 4),
                         ),
-                    Padding(
-                      padding: EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // referencing https://api.flutter.dev/flutter/package-intl_intl/DateFormat-class.html to use intl package
-                          Text(
-                            '${DateFormat('EEEE, d MMMM').format(event.startTime)} | ${DateFormat('h:mm a').format(event.startTime)}',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey.shade500,
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // styling for the event's image
+                            ClipRRect(
+                              borderRadius: BorderRadius.only(
+                                // this adds borders to the top corners only
+                                topLeft: Radius.circular(16),
+                                topRight: Radius.circular(16),
+                              ),
+                              child: Image.network(
+                                event.media[0],
+                                height: 150,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                              ),
                             ),
-                          ),
-                          SizedBox(height: 8),
-
-                          Text(
-                            event.title,
-                            style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                          ),
-                          SizedBox(height: 8),
-
-                          // Location
-                          Row(
+                        Padding(
+                          padding: EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Icon(Icons.location_on, size: 16, color: Colors.grey.shade400),
-                              SizedBox(width: 4),
+                              // referencing https://api.flutter.dev/flutter/package-intl_intl/DateFormat-class.html to use intl package
                               Text(
-                                event.address,
+                                '${DateFormat('EEEE, d MMMM').format(event.startTime)} | ${DateFormat('h:mm a').format(event.startTime)}',
                                 style: TextStyle(
-                                  fontSize: 12,
+                                  fontSize: 14,
                                   color: Colors.grey.shade500,
                                 ),
                               ),
-                            ],
-                          ),
-                          SizedBox(height: 16),
+                              SizedBox(height: 8),
 
-                          Row(
-                            children: [
-                              // Keywords
-                              Expanded(
-                                child: Wrap(
-                                  spacing: 8,
-                                  children: event.keywords.map((keyword) {
-                                    return Container(
-                                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                      decoration: BoxDecoration(
-                                        color: Colors.grey.shade100,
-                                        borderRadius: BorderRadius.circular(16),
-                                      ),
-                                      child: Text(
-                                        '#$keyword',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.grey.shade600,
-                                        ),
-                                      ),
-                                    );
-                                  }).toList(),
+                              Text(
+                                event.title,
+                                style: TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
                                 ),
                               ),
-                              // Price
-                              Container(
-                                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                                decoration: BoxDecoration(
-                                  color: Colors.blue,
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: Text(
-                                  // if the price is 0 just mark it as free
-                                  event.ticketPrice > 0 
-                                      ? '\$${event.ticketPrice.toStringAsFixed(0)}' 
-                                      : 'Free',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
+                              SizedBox(height: 8),
+
+                              // Location
+                              Row(
+                                children: [
+                                  Icon(Icons.location_on, size: 16, color: Colors.grey.shade400),
+                                  SizedBox(width: 4),
+                                  Text(
+                                    event.address,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey.shade500,
+                                    ),
                                   ),
-                                ),
+                                ],
+                              ),
+                              SizedBox(height: 16),
+
+                              Row(
+                                children: [
+                                  // Keywords
+                                  Expanded(
+                                    child: Wrap(
+                                      spacing: 8,
+                                      children: event.keywords.map((keyword) {
+                                        return Container(
+                                          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey.shade100,
+                                            borderRadius: BorderRadius.circular(16),
+                                          ),
+                                          child: Text(
+                                            '#$keyword',
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.grey.shade600,
+                                            ),
+                                          ),
+                                        );
+                                      }).toList(),
+                                    ),
+                                  ),
+                                  // Price
+                                  Container(
+                                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                    decoration: BoxDecoration(
+                                      color: Colors.blue,
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: Text(
+                                      // if the price is 0 just mark it as free
+                                      event.ticketPrice > 0 
+                                          ? '\$${event.ticketPrice.toStringAsFixed(0)}' 
+                                          : 'Free',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
               );
             },
         ),
