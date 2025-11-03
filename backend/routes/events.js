@@ -6,6 +6,11 @@ const Event = require('../models/ModelEvent');
 const RSVP = require('../models/ModelRSVP');
 require('dotenv').config();
 
+// GET /api/events/test
+router.get('/test', (req, res) => {
+  res.json({ message: 'Events route works' });
+});
+
 // DELETE event endpoint
 router.delete('/:id', async (req, res) => {
   try {
