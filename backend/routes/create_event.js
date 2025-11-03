@@ -5,7 +5,7 @@ const router = express.Router();
 //require jsonwebtoken for token verification
 const jwt = require('jsonwebtoken');
 //So we can query events
-const User = require('../models/ModelEvent');
+const Event = require('../models/ModelEvent');
 //To use values from .env
 require('dotenv').config();
 
