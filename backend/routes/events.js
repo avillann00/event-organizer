@@ -15,36 +15,39 @@ router.get('/test', (req, res) => {
 
 router.post('/', async (req, res) => {
     try {
-        const { token, title, description, date } = req.body;
-        //Validate input
-        if (!token || !title || !description || !date) {
+        const { token, title, description, startTime, endTime, address, capacity, ticketPrice } = req.body;
+        
+        if (!token || !title || !startTime || !endTime) {
             return res.status(400).json({
                 success: false,
-                message: 'Token, title, description, and date are required to post events'
+                message: 'Token, title, startTime, and endTime are required'
             });
         }
-        //Verify token
+        
+        // verify token
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        //Make sure event doesn`t already exist
-        const existingEvent = await Event.findOne({ title, date });
+        // Check if event already exists
+        const existingEvent = await Event.findOne({ title, startTime });
         if (existingEvent) {
             return res.status(409).json({
                 success: false,
-                message: 'An event with the same title and date already exists'
+                message: 'An event with the same title and start time already exists'
             });
         }
 
-        //Create new event
         const newEvent = new Event({
             title,
             description,
-            date,
-            createdBy: decoded.userId
+            startTime,
+            endTime,
+            address,
+            organizerId: decoded.userId,
+            capacity,
+            ticketPrice
         });
         await newEvent.save();
 
-        //Send success response
         res.status(201).json({
             success: true,
             message: 'Event created successfully',
@@ -56,10 +59,10 @@ router.post('/', async (req, res) => {
         console.error('Error creating event:', error);
         res.status(500).json({
             success: false,
-            message: 'Server error while creating event'
+            message: 'Server error while creating event',
+            error: error.message
         });
     }
-
 });
 
 module.exports = router;
