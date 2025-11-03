@@ -84,4 +84,22 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+
+
+//GET ALL EVENTS
+router.get('/', async (req, res) => {
+  try{
+    const events = await Event.find({}); //find all the events and store in array of mongoose documents
+    return res.status(200).json(events); 
+  } 
+  catch(error){
+    return res.status(500).json({error: 'Failed to get events' });
+  }
+});
+// Returns: a JSON array of event objects from MongoDB.
+// Each item has fields like id, title, description, startTime, endTime, address, createdAt, updatedAt, etc.
+
+
+
+
 module.exports = router;
