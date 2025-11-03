@@ -40,7 +40,7 @@ router.post('/', async (req, res) => {
             title,
             description,
             date,
-            createdBy: decoded.id
+            createdBy: decoded.userId
         });
         await newEvent.save();
 
