@@ -1,3 +1,20 @@
+*.env
+.env 
+*.env.local
+.env.local
+
+# Dependencies
+**node_modules/
+
+# --- Build outputs ---
+dist/
+build/
+.vite/
+.vite-temp/
+coverage/
+*.log
+
+# --- Package manager cache ---
 # Logs
 logs
 *.log
@@ -5,38 +22,60 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
-lerna-debug.log*
+package-lock.json.backup
 
-node_modules
-dist
-dist-ssr
-*.local
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+# --- Flutter / Android / iOS build artifacts ---
+**/build/
+**/.gradle/
+**/.cxx/
+**/local.properties
+**/GeneratedPluginRegistrant.java
+**/android/app/debug/
+**/android/app/profile/
+**/android/app/release/
+# --- Flutter-specific ---
+**/.dart_tool/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/.flutter-plugins-dependencies.*
+**/.metadata
+**/.packages
+**/pubspec.lock
+**/build/
+**/flutter_build/
+**/ios/Flutter/Flutter.framework/
+**/ios/Flutter/Flutter.podspec
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/ephemeral/
+**/ios/ServiceDefinitions.json
+**/ios/Flutter/
+**/macos/Flutter/
+**/ios/Flutter/Generated.xcconfig
+**/macos/Flutter/GeneratedPluginRegistrant.*
 
-!.gitignore
-!.github
 
-*.iml
-.gradle
-/local.properties
-/.idea/workspace.xml
-/.idea/libraries
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-snap/
-package.json
-package-lock.json
+# --- Gradle wrapper and caches ---
+.gradle/
+gradle/
+gradlew
+gradlew.bat
+gradle-wrapper.jar
 
-.env
+# --- iOS ---
+**/ios/Pods/
+**/ios/.symlinks/
+**/ios/Flutter/Flutter.framework/
+**/ios/Flutter/Flutter.podspec
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/ephemeral/
+**/ios/Runner.xcworkspace/
+
+# Flutter / Android build artifacts
+**/build/
+**/.gradle/
+**/.cxx/
+**/local.properties
+**/android/app/debug/
+**/android/app/profile/
+**/android/app/release/
