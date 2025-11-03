@@ -34,14 +34,6 @@ router.delete('/:id', async (req, res) => {
       });
     }
 
-    // Check if user is admin or organizer
-    if (decoded.role !== 'admin' && decoded.role !== 'organizer') {
-      return res.status(403).json({
-        success: false,
-        message: 'Access denied. Admin or organizer role required'
-      });
-    }
-
     // Validate event ID
     const eventId = req.params.id;
     if (!mongoose.Types.ObjectId.isValid(eventId)) {
@@ -61,7 +53,7 @@ router.delete('/:id', async (req, res) => {
     }
 
     // If user is organizer (not admin), check if they own the event
-    if (decoded.role === 'organizer' && event.organizerId.toString() !== decoded.id) {
+    if (decoded.role === 'organizer' && event.organizerId.toString() !== decoded.userId) {
       return res.status(403).json({
         success: false,
         message: 'Access denied. You can only delete your own events'
