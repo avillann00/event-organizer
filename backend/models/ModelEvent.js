@@ -41,11 +41,15 @@ const eventSchema = new mongoose.Schema({
     type: [String],
     default: []
   },
-  rsvpCount: {
+  rsvpMax: {
+    type: Number,
+    required: true
+},
+rsvpCount: {
     type: Number,
     default: 0
-  }
-}, {
+},
+ {
   timestamps: true
 });
 
