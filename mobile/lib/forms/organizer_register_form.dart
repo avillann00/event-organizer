@@ -5,6 +5,7 @@ import 'package:mobile/pages/onboarding_screen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OrganizerRegistrationForm extends StatefulWidget{
   const OrganizerRegistrationForm({Key? key}) : super(key: key);
@@ -51,6 +52,18 @@ class _OrganizerRegistrationFormState extends State<OrganizerRegistrationForm>{
     
     if(response.statusCode == 200 || response.statusCode == 201){
       debugPrint('user registered: ${response.body}');
+
+      final responseData = jsonDecode(response.body);
+      final userData = responseData['data']['user'];
+
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('isLoggedIn', true);
+      await prefs.setString('userId', userData['id']);
+      await prefs.setString('userName', userData['name']);
+      await prefs.setString('userEmail', userData['email']);
+      await prefs.setString('userRole', userData['role']);
+      await prefs.setString('token', responseData['data']['token']);
+
       Navigator.pushNamed(context, '/userHomePage');
     }
     else{

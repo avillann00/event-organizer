@@ -4,6 +4,7 @@ import '../components/auth_button.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -38,6 +39,18 @@ class _LoginPageState extends State<LoginPage> {
 
     if(response.statusCode == 200 || response.statusCode == 201){
       debugPrint('login successful: ${response.body}');
+
+      final responseData = jsonDecode(response.body);
+      final userData = responseData['data']['user'];
+
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('isLoggedIn', true);
+      await prefs.setString('userId', userData['id']);
+      await prefs.setString('userName', userData['name']);
+      await prefs.setString('userEmail', userData['email']);
+      await prefs.setString('userRole', userData['role']);
+      await prefs.setString('token', responseData['data']['token']);
+
       Navigator.pushNamed(context, '/userHomePage');
     }
     else{

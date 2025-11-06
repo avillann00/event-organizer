@@ -115,8 +115,10 @@ class _CreateEventPageState extends State<CreateEventPage>{
   @override
   Widget build(BuildContext context){
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Create Event')
+        title: Text('Create Event'),
+        backgroundColor: Colors.white
       ),
       body: SingleChildScrollView(
         child: Padding(
