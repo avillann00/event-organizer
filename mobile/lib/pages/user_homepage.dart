@@ -4,6 +4,8 @@ import './profile_page.dart';
 import './event_page.dart';
 import '../components/nav_button.dart';
 import '../models/event.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import './create_event_page.dart';
 
 class UserHomePage extends StatefulWidget {
   const UserHomePage({super.key});
@@ -22,6 +24,26 @@ class _UserHomePageState extends State<UserHomePage> {
     });
   }
 
+  String? name;
+  String? email;
+  String? role;
+
+  @override
+  void initState(){
+    super.initState();
+    loadUserData();
+  }
+
+  Future<void> loadUserData() async{
+    final prefs = await SharedPreferences.getInstance();
+
+    setState((){
+      name = prefs.getString('userName');
+      email = prefs.getString('userEmail');
+      role = prefs.getString('userRole');
+    });
+  }
+
   // switch statement instead of final List <Widget> 
   Widget _getPage() {
     switch (_selectedIndex) {
@@ -33,7 +55,7 @@ class _UserHomePageState extends State<UserHomePage> {
       case 1:
         return const ProfilePage();
       case 2:
-        return EventPage(events: _events);
+        return role == 'user' ? EventPage(events: _events) : CreateEventPage();
       default:
         return MapPage(
           events: _events,
@@ -44,6 +66,12 @@ class _UserHomePageState extends State<UserHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    if(role == null){
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator())
+      );
+    }
+
     return Scaffold(
       body: Stack(
         children: [
@@ -84,7 +112,7 @@ class _UserHomePageState extends State<UserHomePage> {
 
                       NavButton(
                         index: 2,
-                        icon: Icons.menu,
+                        icon: role == 'user' ? Icons.menu : Icons.create,
                         isSelected: _selectedIndex == 2,
                         onTap: () {
                           setState(() => _selectedIndex = 2);
