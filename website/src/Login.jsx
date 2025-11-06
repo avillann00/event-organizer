@@ -16,6 +16,7 @@ export default function Login(){
   
   return (
     <>
+      <div className="auth-page-background"></div>
       <button className="back-button" onClick={() => navigate('/')}>
         ← Back
       </button>

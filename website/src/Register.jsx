@@ -49,6 +49,7 @@ export default function Register() {
 
   return (
     <>
+      <div className="auth-page-background"></div>
       <button className="back-button" onClick={() => navigate('/')}>
         ← Back
       </button>
