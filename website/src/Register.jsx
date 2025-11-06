@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './styles.css';
 
 export default function Register() {
+  const navigate = useNavigate();
   const [isOrgMode, setIsOrgMode] = useState(false);
   const [userFormData, setUserFormData] = useState({
     name: '',
@@ -47,6 +49,10 @@ export default function Register() {
 
   return (
     <>
+      <button className="back-button" onClick={() => navigate('/')}>
+        ← Back
+      </button>
+      
       <div className={`container ${isOrgMode ? 'right-panel-active' : ''}`} id="container">
         {/* Organization Registration Form */}
         <div className="form-container register-container">
