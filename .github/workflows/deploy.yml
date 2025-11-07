@@ -29,6 +29,7 @@ jobs:
           
           # Build the website
           cd ../website
+          npm install
           npm run build
           
           # Update file permissions for nginx
