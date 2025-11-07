@@ -56,11 +56,20 @@ package-lock.json.backup
 
 
 # --- Gradle wrapper and caches ---
+*.iml
 .gradle/
 gradle/
 gradlew
 gradlew.bat
 gradle-wrapper.jar
+/local.properties
+/.idea/workspace.xml
+/.idea/libraries
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+snap/
 
 # --- iOS ---
 **/ios/Pods/
