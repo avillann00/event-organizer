@@ -15,7 +15,7 @@ router.get('/test', (req, res) => {
 
 router.post('/', async (req, res) => {
     try {
-        const { token, title, description, startTime, endTime, address, capacity, ticketPrice } = req.body;
+        const { token, title, description, startTime, endTime, address, capacity, ticketPrice, keywords, media } = req.body;
         
         if (!token || !title || !startTime || !endTime) {
             return res.status(400).json({
@@ -44,7 +44,9 @@ router.post('/', async (req, res) => {
             address,
             organizerId: decoded.userId,
             capacity,
-            ticketPrice
+            ticketPrice,
+            keywords,
+            media
         });
         await newEvent.save();
 
