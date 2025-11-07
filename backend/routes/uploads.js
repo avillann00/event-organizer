@@ -11,7 +11,7 @@ const router = express.Router();
 // request object, file object, and callback
 const storage = multer.diskStorage({
   destination: (req, file, callback) => {
-    const dir = 'uploads'
+    const dir = path.join(__dirname, '../uploads');
 
     // if it doesn't exist, create fs for us
     if (!fs.existsSync(dir)){
