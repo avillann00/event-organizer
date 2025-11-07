@@ -4,6 +4,9 @@ import 'dart:convert';
 import 'dart:async';
 import 'package:geocoding/geocoding.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+
 
 class CreateEventPage extends StatefulWidget{
   const CreateEventPage({super.key});
@@ -16,6 +19,8 @@ class _CreateEventPageState extends State<CreateEventPage>{
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
+  final TextEditingController capacityController = TextEditingController();
+  final TextEditingController ticketPriceController = TextEditingController();
 
   final List<String> categories = ['Music', 'Sports', 'Food', 'Tech'];
   List<String> selectedCategories = [];
@@ -25,6 +30,9 @@ class _CreateEventPageState extends State<CreateEventPage>{
 
   double? latitude;
   double? longitude;
+
+  File? selectedImage;
+  String? uploadedImageUrl;
 
   bool isLoading = false;
 
@@ -57,6 +65,16 @@ class _CreateEventPageState extends State<CreateEventPage>{
         else{
           endTime = picked;
         }
+      });
+    }
+  }
+
+  Future<void> pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        selectedImage = File(pickedFile.path);
       });
     }
   }
@@ -116,6 +134,9 @@ class _CreateEventPageState extends State<CreateEventPage>{
         'keywords': selectedCategories,
         'startTime': startDateTime.toIso8601String(),
         'endTime': endDateTime.toIso8601String(),
+        'capacity': int.tryParse(capacityController.text),
+        'ticketPrice': double.tryParse(ticketPriceController.text),
+        'media': selectedImage != null ? [uploadedImageUrl] : [],
       })
     );
 
@@ -185,6 +206,27 @@ class _CreateEventPageState extends State<CreateEventPage>{
                 ),
               ),
 
+              const SizedBox(height: 20),
+
+              TextField(
+                controller: capacityController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: 'Capacity',
+                  border: const OutlineInputBorder(),
+                )
+              ),
+
+              const SizedBox(height: 20),
+              TextField(
+                controller: ticketPriceController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: 'Ticket Price',
+                  border: OutlineInputBorder(),
+                )
+              ),
+
               const SizedBox(height: 10),
 
               if(latitude != null && longitude != null)
@@ -216,6 +258,17 @@ class _CreateEventPageState extends State<CreateEventPage>{
               ),
               
               const SizedBox(height: 20),
+
+              ElevatedButton.icon(
+                  onPressed: pickImage,
+                  icon: const Icon(Icons.image),
+                  label: const Text('Upload Image'),
+                ),
+                if (selectedImage != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: Image.file(selectedImage!, height: 100),
+                  ),
 
               Align(
                 alignment: Alignment.centerLeft,
