@@ -91,7 +91,7 @@ class _MapPageState extends State<MapPage>{
   }
 
   Future<void> fetchEvents(double radius, String category) async{
-    final response = await http.get(Uri.parse('http://127.0.0.1:5000/api/events?radius=$radius&category=$category'));
+    final response = await http.get(Uri.parse('https://cop4331project.dev/api/events/?radius=$radius&category=$category'));
 
     if(response.statusCode == 200){
       final List data = jsonDecode(response.body);

@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
 import 'package:geocoding/geocoding.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CreateEventPage extends StatefulWidget{
   const CreateEventPage({super.key});
@@ -81,18 +82,40 @@ class _CreateEventPageState extends State<CreateEventPage>{
       await getCoordinates(addressController.text);
     }
 
+    // we need to get the token before request and add it to the body
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    // converting the input times to Date objects to match backend event model
+    final now = DateTime.now();
+    final startDateTime = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      startTime!.hour,
+      startTime!.minute,
+    );
+    final endDateTime = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      endTime!.hour,
+      endTime!.minute,
+    );
+
     final response = await http.post(
-      Uri.parse('http://127.0.0.1:5000/api/events'),
+      Uri.parse('https://cop4331project.dev/api/events/'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
+        'token': token,
         'title': titleController.text,
         'description': descriptionController.text,
         'address': addressController.text,
         'latitude': latitude,
         'longitude': longitude,
         'keywords': selectedCategories,
-        'startTime': startTime?.format(context),
-        'endTime': endTime?.format(context)
+        'startTime': startDateTime.toIso8601String(),
+        'endTime': endDateTime.toIso8601String(),
       })
     );
 
@@ -105,7 +128,8 @@ class _CreateEventPageState extends State<CreateEventPage>{
       Navigator.pushNamed(context, '/userHomePage');
     }
     else{
-      print('error creating event');
+      print('Status code: ${response.statusCode}');
+      print('Response body: ${response.body}');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Failed to create event')),
       );

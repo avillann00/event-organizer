@@ -38,7 +38,7 @@ class _OrganizerRegistrationFormState extends State<OrganizerRegistrationForm>{
     }
 
     final response = await http.post(
-      Uri.parse('http://localhost:5000/api/users/register/organizer'),
+      Uri.parse('https://cop4331project.dev/api/users/register/organizer'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'organizationName': organizationNameController.text,
