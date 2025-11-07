@@ -15,7 +15,7 @@ export default function Login(){
   }
   
   return (
-    <>
+    <div className="auth-page">
       <div className="auth-page-background"></div>
       <button className="back-button" onClick={() => navigate('/')}>
         ← Back
@@ -48,6 +48,6 @@ export default function Login(){
           </form>
         </div>
       </div>
-    </>
+    </div>
   )
 }
