@@ -1,7 +1,10 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import './styles.css';
 
 export default function Register() {
+  const navigate = useNavigate();
   const [isOrgMode, setIsOrgMode] = useState(false);
   const [userFormData, setUserFormData] = useState({
     name: '',
@@ -10,12 +13,13 @@ export default function Register() {
     confirmPassword: ''
   });
   const [orgFormData, setOrgFormData] = useState({
-    name: '',
+    organizationName: '',
     email: '',
     password: '',
     confirmPassword: ''
   });
   const [errors, setErrors] = useState({ user: '', org: '' });
+  const [loading, setLoading] = useState({ user: false, org: false });
 
   const handleUserInputChange = (e) => {
     setUserFormData({ ...userFormData, [e.target.name]: e.target.value });
@@ -25,28 +29,111 @@ export default function Register() {
     setOrgFormData({ ...orgFormData, [e.target.name]: e.target.value });
   };
 
-  const handleUserSubmit = () => {
+  const handleUserSubmit = async () => {
+    // Clear previous errors
+    setErrors({ ...errors, user: '' });
+    
+    // Client-side validation
+    if (!userFormData.name || !userFormData.email || !userFormData.password || !userFormData.confirmPassword) {
+      setErrors({ ...errors, user: 'All fields are required' });
+      return;
+    }
+
     if (userFormData.password !== userFormData.confirmPassword) {
       setErrors({ ...errors, user: 'Passwords do not match' });
       return;
     }
-    setErrors({ ...errors, user: '' });
-    console.log('User Registration:', userFormData);
-    // Add your registration logic here
+
+    if (userFormData.password.length < 6) {
+      setErrors({ ...errors, user: 'Password must be at least 6 characters' });
+      return;
+    }
+
+    setLoading({ ...loading, user: true });
+
+    try {
+      const response = await axios.post('https://cop4331project.dev/api/users/register/user', {
+        name: userFormData.name,
+        email: userFormData.email,
+        password: userFormData.password,
+        confirmPassword: userFormData.confirmPassword
+      });
+
+      // Check if status is 200 or 201 (success)
+      if (response.status === 200 || response.status === 201) {
+        console.log('User Registration Success:', response.data);
+        alert('Registration successful! Redirecting to login...');
+        navigate('/login');
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+      // Handle error response from backend
+      if (error.response && error.response.data) {
+        setErrors({ ...errors, user: error.response.data.message || 'Registration failed' });
+      } else {
+        setErrors({ ...errors, user: 'Network error. Please try again.' });
+      }
+    } finally {
+      setLoading({ ...loading, user: false });
+    }
   };
 
-  const handleOrgSubmit = () => {
+  const handleOrgSubmit = async () => {
+    // Clear previous errors
+    setErrors({ ...errors, org: '' });
+    
+    // Client-side validation
+    if (!orgFormData.organizationName || !orgFormData.email || !orgFormData.password || !orgFormData.confirmPassword) {
+      setErrors({ ...errors, org: 'All fields are required' });
+      return;
+    }
+
     if (orgFormData.password !== orgFormData.confirmPassword) {
       setErrors({ ...errors, org: 'Passwords do not match' });
       return;
     }
-    setErrors({ ...errors, org: '' });
-    console.log('Organization Registration:', orgFormData);
-    // Add your registration logic here
+
+    if (orgFormData.password.length < 6) {
+      setErrors({ ...errors, org: 'Password must be at least 6 characters' });
+      return;
+    }
+
+    setLoading({ ...loading, org: true });
+
+    try {
+      const response = await axios.post('https://cop4331project.dev/api/users/register/organizer', {
+        organizationName: orgFormData.organizationName,
+        email: orgFormData.email,
+        password: orgFormData.password,
+        confirmPassword: orgFormData.confirmPassword
+      });
+
+      // Check if status is 200 or 201 (success)
+      if (response.status === 200 || response.status === 201) {
+        console.log('Organization Registration Success:', response.data);
+        alert('Registration successful! Redirecting to login...');
+        navigate('/login');
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+      // Handle error response from backend
+      if (error.response && error.response.data) {
+        setErrors({ ...errors, org: error.response.data.message || 'Registration failed' });
+      } else {
+        setErrors({ ...errors, org: 'Network error. Please try again.' });
+      }
+    } finally {
+      setLoading({ ...loading, org: false });
+    }
   };
 
   return (
     <>
+      <div className="auth-page-background"></div>
+      <button className="back-button" onClick={() => navigate('/')}>
+        ← Back
+      </button>
+      
       <div className={`container ${isOrgMode ? 'right-panel-active' : ''}`} id="container">
         {/* Organization Registration Form */}
         <div className="form-container register-container">
@@ -55,10 +142,10 @@ export default function Register() {
             <h1>Organization Registration</h1>
             <br />
             <input
-              name="name"
+              name="organizationName"
               type="text"
               placeholder="Organization Name"
-              value={orgFormData.name}
+              value={orgFormData.organizationName}
               onChange={handleOrgInputChange}
             />
             <input
@@ -83,8 +170,8 @@ export default function Register() {
               onChange={handleOrgInputChange}
             />
             <br />
-            <button type="button" onClick={handleOrgSubmit}>
-              Register
+            <button type="button" onClick={handleOrgSubmit} disabled={loading.org}>
+              {loading.org ? 'Registering...' : 'Register'}
             </button>
             {errors.org && <p className="error-text">{errors.org}</p>}
           </form>
@@ -125,8 +212,8 @@ export default function Register() {
               onChange={handleUserInputChange}
             />
             <br />
-            <button type="button" onClick={handleUserSubmit}>
-              Register
+            <button type="button" onClick={handleUserSubmit} disabled={loading.user}>
+              {loading.user ? 'Registering...' : 'Register'}
             </button>
             {errors.user && <p className="error-text">{errors.user}</p>}
           </form>
