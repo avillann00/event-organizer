@@ -10,6 +10,7 @@ const mongoose = require('mongoose');
 
 const app = express();
 app.use(cors());
+app.use('/uploads', express.static('uploads'));
 app.use(bodyParser.json());
 
 app.use((req, res, next) => 
@@ -32,6 +33,7 @@ const userRoutes = require('./routes/users');
 // const rsvpRoutes = require('./routes/rsvps');
 // const notificationRoutes = require('./routes/notifications');
 // const reviewRoutes = require('./routes/reviews');
+const uploadRoutes = require('./routes/uploads');
 
 // Use route modules
 app.use('/api/users', userRoutes);
@@ -39,6 +41,7 @@ app.use('/api/users', userRoutes);
 // app.use('/api/rsvps', rsvpRoutes);
 // app.use('/api/notifications', notificationRoutes);
 // app.use('/api/reviews', reviewRoutes);
+app.use('/api/upload', uploadRoutes);
 
 mongoose.connect(url, {
   useNewUrlParser: true,
