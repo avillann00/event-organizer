@@ -69,7 +69,7 @@ nav {
   z-index: 1;
   text-align: left;
   margin-left: 8rem; /* text left */
-  margin-top: 8rem; /* vertical spacing */
+  margin-top: 6rem; /* vertical spacing */
   max-width: 600px;
 }
 
@@ -78,17 +78,18 @@ nav {
     font-weight: bold;
     font-size: 3.5rem;
     color: #2E2E2E;
-    margin-bottom: 1rem;
+    margin-bottom: 2.5rem;
 }
 
 .home-text-section p {
   font-size: 1.5rem;
   color: #6a6a6a;
-  margin-top: 1rem;
+  margin-top: 5rem;
 }
 
 .button-group {
   margin-top: 1.5rem;
+  margin-top: 2rem;
 }
 
 .home-text-section button {

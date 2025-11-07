@@ -11,7 +11,7 @@ const Home = () => {
     <div className="home-container">
       <div className="home-banner-container">
         <img
-          src="/BannerBackground2.svg"
+          src="/BannerBackground13.svg"
           alt="background splash art"
           className="home-banner-background"
         />
@@ -30,8 +30,7 @@ const Home = () => {
               <button onClick={() => navigate("/register")}>Register</button>
             </div>
           </div>
-
-          {/* Animation beside text */}
+          
           <div className="home-animation">
             <Lottie animationData={calendarAnimation} loop={true} />
           </div>
