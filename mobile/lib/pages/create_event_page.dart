@@ -79,10 +79,31 @@ class _CreateEventPageState extends State<CreateEventPage>{
     }
   }
 
+  Future<String?> uploadImage(File imageFile) async {
+    final uri = Uri.parse('https://cop4331project.dev/api/upload');
+    final request = http.MultipartRequest('POST', uri);
+    request.files.add(await http.MultipartFile.fromPath('image', imageFile.path));
+
+    final response = await request.send();
+
+    if (response.statusCode == 200){
+      final resBody = await response.stream.bytesToString();
+      final jsonResponse = jsonDecode(resBody);
+       return jsonResponse['url'];
+    } else {
+      print('Upload failed: ${response.statusCode}');
+      return null;
+    }
+  }
+
   Future<void> createEvent(BuildContext context) async{
     setState((){
       isLoading = true;
     });
+
+    if(selectedImage != null){
+      uploadedImageUrl = await uploadImage(selectedImage!);
+    }
 
     if(titleController.text == '' || descriptionController.text == '' || addressController.text == ''){
       ScaffoldMessenger.of(context).showSnackBar(
@@ -122,7 +143,7 @@ class _CreateEventPageState extends State<CreateEventPage>{
     );
 
     final response = await http.post(
-      Uri.parse('https://cop4331project.dev/api/events/'),
+      Uri.parse('https://cop4331project.dev/api/events'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'token': token,
@@ -134,9 +155,9 @@ class _CreateEventPageState extends State<CreateEventPage>{
         'keywords': selectedCategories,
         'startTime': startDateTime.toIso8601String(),
         'endTime': endDateTime.toIso8601String(),
-        'capacity': int.tryParse(capacityController.text),
-        'ticketPrice': double.tryParse(ticketPriceController.text),
-        'media': selectedImage != null ? [uploadedImageUrl] : [],
+        'capacity': int.tryParse(capacityController.text) ?? 0.0,
+        'ticketPrice': double.tryParse(ticketPriceController.text) ?? 0.0,
+        'media': uploadedImageUrl != null ? [uploadedImageUrl] : [],
       })
     );
 
@@ -267,7 +288,14 @@ class _CreateEventPageState extends State<CreateEventPage>{
                 if (selectedImage != null)
                   Padding(
                     padding: const EdgeInsets.only(top: 10),
-                    child: Image.file(selectedImage!, height: 100),
+                    child: Text(
+                      'Selected: ${selectedImage!.path.split('/').last}',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
                   ),
 
               Align(
