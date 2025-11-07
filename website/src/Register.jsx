@@ -128,7 +128,7 @@ export default function Register() {
   };
 
   return (
-    <>
+    <div className="auth-page">
       <div className="auth-page-background"></div>
       <button className="back-button" onClick={() => navigate('/')}>
         ← Back
@@ -241,6 +241,6 @@ export default function Register() {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
