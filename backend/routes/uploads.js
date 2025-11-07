@@ -37,10 +37,10 @@ router.post('/', upload.single('image'), (req, res) => {
         });
     }
 
-    const imageUrl = `https://cop4331project.dev/uploads/${req.file.filename}`;
+    const fileUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
     res.json({
         success: true,
-        url: imageUrl
+        url: fileUrl
     });
     
 });
