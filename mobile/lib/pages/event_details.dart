@@ -80,7 +80,7 @@ class EventDetailsPage extends StatelessWidget {
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          event.address,
+                          event.address ?? 'No address provided',
                           style: const TextStyle(fontSize: 15),
                         ),
                       ),
@@ -95,7 +95,7 @@ class EventDetailsPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    event.description,
+                    event.description ?? 'No description available.',
                     style: const TextStyle(fontSize: 15, height: 1.4),
                   ),
 
@@ -108,11 +108,13 @@ class EventDetailsPage extends StatelessWidget {
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
                         children: [
-                          _detailRow(Icons.people, "Capacity", "${event.capacity} people"),
+                           _detailRow(Icons.people, "Capacity",
+                              event.capacity != null ? "${event.capacity} people" : "Not specified"),
                           const Divider(),
-                          _detailRow(Icons.confirmation_number, "Tickets", 
-                            event.ticketPrice == 0 ? "Free" : "\$${event.ticketPrice.toStringAsFixed(2)}"),
-                          const Divider(),
+                          _detailRow(Icons.confirmation_number, "Tickets",
+                              event.ticketPrice == null || event.ticketPrice == 0
+                                  ? "Free"
+                                  : "\$${event.ticketPrice!.toStringAsFixed(2)}"),
                           _detailRow(Icons.person, "Organizer", event.organizerId),
                           const Divider(),
                           _detailRow(Icons.check_circle, "RSVPs", "${event.rsvpCount} attending"),

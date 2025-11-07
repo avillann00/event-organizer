@@ -2,15 +2,15 @@ class Event {
   // event field declarations
   final String id;
   final String title;
-  final String description;
+  final String? description;
   final List<String> keywords;
   final DateTime startTime;
   final DateTime endTime;
   final Map<String, dynamic> location;  // or create a Location class
-  final String address;
+  final String? address;
   final String organizerId;
-  final int capacity;
-  final double ticketPrice;
+  final int? capacity;
+  final double? ticketPrice;
   final List<String> media;
   final int rsvpCount;
   final DateTime createdAt;
@@ -20,40 +20,46 @@ class Event {
   Event({
     required this.id,
     required this.title,
-    required this.description,
+    this.description,
     required this.keywords,
     required this.startTime,
     required this.endTime,
     required this.location,
-    required this.address,
+    this.address,
     required this.organizerId,
-    required this.capacity,
-    required this.ticketPrice,
+    this.capacity,
+    this.ticketPrice,
     required this.media,
     required this.rsvpCount,
     required this.createdAt,
     required this.updatedAt,
   });
 
-  factory Event.fromJson(Map<String, dynamic> json){
-    return Event(
-      id: json['_id'] as String,
-      title: json['title'] as String,
-      description: json['description'] as String,
-      keywords: List<String>.from(json['keywords'] ?? []), 
-      startTime: DateTime.parse(json['startTime']),
-      endTime: DateTime.parse(json['endTime']),
-      location: json['location'] as Map<String, dynamic>,
-      address: json['address'] as String,
-      organizerId: json['organizerId'] as String,
-      capacity: json['capacity'] as int,
-      ticketPrice: (json['ticketPrice'] as num).toDouble(),
-      media: List<String>.from(json['media'] ?? []),
-      rsvpCount: json['rsvpCount'] as int,
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
-    );
-  }
+  factory Event.fromJson(Map<String, dynamic> json) {
+  return Event(
+    id: json['_id']?.toString() ?? '',
+    title: json['title']?.toString() ?? 'Untitled Event',
+    description: json['description']?.toString(),
+    keywords: List<String>.from(json['keywords'] ?? []),
+    startTime: DateTime.tryParse(json['startTime'] ?? '') ?? DateTime.now(),
+    endTime: DateTime.tryParse(json['endTime'] ?? '') ?? DateTime.now(),
+    location: (json['location'] != null && json['location'] is Map)
+        ? Map<String, dynamic>.from(json['location'])
+        : {},
+    address: json['address']?.toString(),
+    organizerId: json['organizerId']?.toString() ?? '',
+    capacity: json['capacity'] is int
+        ? json['capacity']
+        : int.tryParse(json['capacity']?.toString() ?? ''),
+    ticketPrice: json['ticketPrice'] != null
+        ? (json['ticketPrice'] as num).toDouble()
+        : 0.0, // defaults to free
+    media: List<String>.from(json['media'] ?? []),
+    rsvpCount: json['rsvpCount'] ?? 0,
+    createdAt: DateTime.tryParse(json['createdAt'] ?? '') ?? DateTime.now(),
+    updatedAt: DateTime.tryParse(json['updatedAt'] ?? '') ?? DateTime.now(),
+  );
+}
 
     Map<String, dynamic> toJson() {
     return {

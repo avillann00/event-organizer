@@ -101,7 +101,8 @@ class _EventPageState extends State<EventPage> {
                                   Icon(Icons.location_on, size: 16, color: Colors.grey.shade400),
                                   SizedBox(width: 4),
                                   Text(
-                                    event.address,
+                                    event.address ??
+                                            'No address provided',
                                     style: TextStyle(
                                       fontSize: 12,
                                       color: Colors.grey.shade500,
@@ -144,9 +145,10 @@ class _EventPageState extends State<EventPage> {
                                     ),
                                     child: Text(
                                       // if the price is 0 just mark it as free
-                                      event.ticketPrice > 0 
-                                          ? '\$${event.ticketPrice.toStringAsFixed(0)}' 
-                                          : 'Free',
+                                      (event.ticketPrice == null ||
+                                                event.ticketPrice == 0)
+                                            ? 'Free'
+                                            : '\$${event.ticketPrice!.toStringAsFixed(0)}',
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 14,
