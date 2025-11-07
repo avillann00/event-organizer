@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const env = require('dotenv');
@@ -10,7 +11,6 @@ const mongoose = require('mongoose');
 
 const app = express();
 app.use(cors());
-app.use('/uploads', express.static('uploads'));
 app.use(bodyParser.json());
 
 app.use((req, res, next) => 
@@ -42,6 +42,17 @@ app.use('/api/events', eventRoutes);
 // app.use('/api/notifications', notificationRoutes);
 // app.use('/api/reviews', reviewRoutes);
 app.use('/api/upload', uploadRoutes);
+
+// Serve frontend build files
+app.use(express.static(path.join(__dirname, '../website/dist')));
+
+app.get('*', (req, res, next) => {
+  // Skip if it's an API route
+  if (req.path.startsWith('/api')) {
+    return next();
+  }
+  res.sendFile(path.join(__dirname, '../website/dist/index.html'));
+});
 
 mongoose.connect(url, {
   useNewUrlParser: true,
