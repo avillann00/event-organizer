@@ -2,8 +2,20 @@ import { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import '../styles/EventsListPage.css';
 
+interface Event {
+  _id: string;
+  title: string;
+  description: string;
+  startTime: string;
+  address: string;
+  media: string;
+  ticketPrice: number;
+  rsvpCount: number;
+  capacity: number;
+}
+
 export default function EventsListPage() {
-  const [events, setEvents] = useState<any[]>([]);
+  const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
