@@ -1,0 +1,106 @@
+/* Match global look */
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+  background-color: #f6f6f6;
+  font-family: "Reem Kufi", sans-serif !important;
+}
+
+/* Container similar spacing to landing page sections */
+.create-event-container {
+  max-width: 700px;
+  margin: 120px auto 3rem auto; /* space below navbar */
+  padding: 2rem;
+  background-color: white;
+  border-radius: 20px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Form layout */
+.create-event-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Labels styling */
+.create-event-form label {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #2E2E2E;
+  display: flex;
+  flex-direction: column;
+  font-family: "Montserrat", sans-serif;
+}
+
+/* Inputs */
+input,
+textarea,
+.react-datepicker-wrapper input,
+.rti--container {
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  background-color: #fafafa;
+  transition: border 0.2s ease;
+  font-family: "Montserrat", sans-serif;
+}
+
+input:focus,
+textarea:focus {
+  border-color: #4a6cf7;
+  outline: none;
+  background-color: white;
+}
+
+/* Submit button – match LandingPage button style */
+.submit-btn {
+  border-radius: 20px;
+  border: 2px solid black;
+  background-color: gold;
+  color: black;
+  font-family: "Montserrat", sans-serif;
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 12px 45px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: transform 80ms ease-in, background-color 0.3s ease;
+  cursor: pointer;
+  width: fit-content;
+  margin-top: 1rem;
+  margin: 1rem auto 0 auto;   
+  display: block;
+}
+
+.submit-btn:hover {
+  background-color: darkgoldenrod;
+}
+
+.submit-btn:active {
+  transform: scale(0.98);
+}
+
+/* Title */
+.create-event-title {
+  font-family: "Montserrat", sans-serif;
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: #2E2E2E;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+/* Mobile styling */
+@media (max-width: 768px) {
+  .create-event-container {
+    margin: 100px 1rem 2rem 1rem;
+    padding: 1.5rem;
+  }
+
+  .submit-btn {
+    width: 100%;
+    text-align: center;
+  }
+}

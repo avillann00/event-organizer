@@ -2,9 +2,9 @@ import { useNavigate } from 'react-router-dom';
 import { BsCart2 } from "react-icons/bs";
 import { HiOutlineBars3 } from "react-icons/hi2";
 import React, { useState } from 'react';
-import './styles/LandingPage.css';
-import Logo from './assets/EventOrganizerLogo.svg'
-import Home from './components/Home.jsx'
+import '../styles/LandingPage.css';
+import Logo from '../assets/EventOrganizerLogo.svg'
+import Home from '../components/Home.jsx'
 
 import { 
   Box,
