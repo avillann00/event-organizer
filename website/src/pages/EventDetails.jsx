@@ -1,12 +1,17 @@
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import '../styles/EventDetails.css'
+import RSVPModal from '../components/RSVPModal';
+
 
 export default function EventDetails() {
   const location = useLocation()
   const passedEvent = location.state?.event
   const [event, setEvent] = useState(passedEvent || null)
   const navigate = useNavigate()
+  const [showRSVPModal, setShowRSVPModal] = useState(false)
+
+  
 
   useEffect(() => {
     if(!event){
@@ -23,6 +28,12 @@ export default function EventDetails() {
     const e = new Date(end)
     const opts = { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }
     return `${s.toLocaleString('en-US', opts)} — ${e.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`
+  }
+
+  const handleRSVPConfirm = () => {
+    // passing the API call here later
+    console.log('RSVP confirmed!', event._id)
+    setShowRSVPModal(false)
   }
 
   return (
@@ -74,7 +85,20 @@ export default function EventDetails() {
             </div>
           </section>
         )}
+
+        <button className="submit-btn" onClick={() => setShowRSVPModal(true)}>
+        RSVP to this Event!
+        </button>
       </main>
+       {showRSVPModal && (
+        <RSVPModal 
+          event={event}
+          onClose={() => setShowRSVPModal(false)}
+          onConfirm={handleRSVPConfirm}
+        />
+      )}
+      
+      
     </div>
   )
 }
