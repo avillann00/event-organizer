@@ -1,20 +1,24 @@
 import { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import '../styles/EventsListPage.css';
+import { useNavigate } from 'react-router-dom'
 
 interface Event {
   _id: string;
   title: string;
   description: string;
   startTime: string;
+  endTime: string;
   address: string;
-  media: string;
+  media: string[];
   ticketPrice: number;
   rsvpCount: number;
   capacity: number;
 }
 
 export default function EventsListPage() {
+  const navigate = useNavigate()
+
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -57,7 +61,11 @@ export default function EventsListPage() {
                 <div className="emptyState">No events available</div>
               ) : (
                 events.map((event) => (
-                  <div key={event._id} className="eventCard">
+                  <div 
+                    key={event._id}
+                    className="eventCard"
+                    onClick={() => navigate(`/events/${event._id}`, { state: { event } })}
+                  >
                     <div className="imageContainer">
                       <img 
                         src={event.media?.[0] || 'https://cop4331project.dev/uploads/1762488665303.png'} 
