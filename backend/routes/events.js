@@ -67,9 +67,6 @@ router.post('/', async (req, res) => {
     }
 });
 
-module.exports = router;
-
-
 // DELETE event endpoint
 router.delete('/:id', async (req, res) => {
   try {
