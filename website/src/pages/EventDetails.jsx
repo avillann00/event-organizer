@@ -32,8 +32,8 @@ export default function EventDetails() {
         <h1 className="event-title">{event.title}</h1>
       </header>
 
-      {event.media ? (
-        <img src={event.media} alt="Event" className="event-hero" />
+      {event.mediaUrl  ? (
+        <img src={event.mediaUrl } alt="Event" className="event-hero" />
       ) : (
         <div className="event-placeholder">
           <span className="placeholder-icon">📅</span>
