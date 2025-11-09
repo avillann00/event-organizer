@@ -10,7 +10,7 @@ interface Event {
   startTime: string;
   endTime: string;
   address: string;
-  media: string;
+  media: string[];
   ticketPrice: number;
   rsvpCount: number;
   capacity: number;
