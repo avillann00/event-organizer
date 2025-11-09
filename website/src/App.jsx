@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import Login from './Login'
-import Register from './Register'
-import Landing from './Landing'
+import Login from './pages/Login'
+import Register from './pages/Register'
+import Landing from './pages/Landing'
+import CreateEvent from './pages/CreateEvent'
 import EventsListPage from './pages/EventsListPage'
 
 export default function App() {
@@ -13,6 +14,7 @@ export default function App() {
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />
         <Route path='/events' element={<EventsListPage />} />
+        <Route path='/create-event' element={<CreateEvent />} />
       </Routes>
     </BrowserRouter>
   )
