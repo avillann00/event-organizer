@@ -4,6 +4,7 @@ import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
+import Select from 'react-select'
 
 export default function CreateEvent(){
   const navigate = useNavigate()
@@ -15,10 +16,43 @@ export default function CreateEvent(){
   const [ticketPrice, setTicketPrice] = useState('')
   const [startTime, setStartTime] = useState(null)
   const [endTime, setEndTime] = useState(null)
-  const [media, setMedia] = useState(null)
   const [keyWords, setKeyWords] = useState([])
   const [latitude, setLatitude] = useState('')
   const [longitude, setLongitude] = useState('')
+  const [media, setMedia] = useState(null)
+  const [mediaUrl, setMediaUrl] = useState('')
+
+  const keyWordOptions = [
+    { value: 'music', label: 'Music' },
+    { value: 'sports', label: 'Sports' },
+    { value: 'food', label: 'Food' },
+    { value: 'tech', label: 'Tech' }
+  ]
+
+  const uploadImage = async () => {
+    if(!media){
+      return
+    }
+    console.log('media: ', media)
+
+    const formData = new FormData()
+    formData.append('image', media)
+
+    try{
+      const response = await axios.post('https://cop4331project.dev/api/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }       
+      })
+
+      if(response.status == 200 || response.status == 201){
+        setMediaUrl(response.data.url)
+        return response.data.url
+      }
+    }
+    catch(error){
+      console.error('error uploading image: ', error)
+      alert('Error uploading image')
+    }
+  }
 
   const getCoordinates = async (address) => {
     const encoded = encodeURIComponent(address);
@@ -29,6 +63,9 @@ export default function CreateEvent(){
       alert('Location not found')
       throw new Error('location not found')
     }
+
+    setLatitude(res.data[0].lat)
+    setLongitude(res.data[0].lon)
 
     return{
       lat: parseFloat(res.data[0].lat),
@@ -45,9 +82,12 @@ export default function CreateEvent(){
     }
 
     try{
-      const coords = await getCoordinates(address);
-      setLatitude(coords.lat)
-      setLongitude(coords.lng)
+      const coords = await getCoordinates(address)
+
+      let imageUrl = mediaUrl
+      if(media && !mediaUrl){
+        imageUrl = await uploadImage()
+      }
 
       const eventData = {
         title,
@@ -59,7 +99,8 @@ export default function CreateEvent(){
         endTime: endTime.toISOString(),
         latitude: coords.lat,
         longitude: coords.lng,
-        keywords: keyWords,
+        keywords: keyWords.map(k => k.value),
+        mediaUrl: imageUrl
       }
 
       const response = await axios.post('https://cop4331project.dev/api/events', eventData)
@@ -158,6 +199,19 @@ export default function CreateEvent(){
               dateFormat='Pp'
               placeholderText='Select end date & time'
             />
+          </label>
+          
+          <label>
+          Key Words
+          <Select
+            isMulti
+            name='keyWords'
+            options={keyWordOptions}
+            value={keyWords}
+            onChange={setKeyWords}
+            classNamePrefix='select'
+            placeholder='Select key words...'
+          />
           </label>
 
           <label>
