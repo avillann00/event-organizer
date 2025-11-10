@@ -35,11 +35,21 @@ export default function EventDetails() {
     setShowRSVPModal(false)
   }
 
-    return (
-        <div className="event-details-page">
-          <header className="event-header">
-            <button className="back-btn" onClick={() => navigate(-1)}>← Back</button>
-          </header>
+  if(localStorage.getItem('loggedIn') !== 'true'){
+    return(
+      <div>
+        <h1>You must be logged in.</h1>
+        <button onClick={() => navigate('/login')}>Login</button>
+      </div>
+    )
+  }
+
+  return (
+    <div className="event-details-page">
+      <header className="event-header">
+        <button className="back-btn" onClick={() => navigate(-1)}>← Back</button>
+        <h1 className="event-title">{event.title}</h1>
+      </header>
 
         <div className="hero-section">
           {event.media?.[0] || event.mediaUrl ? (
