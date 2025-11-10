@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import "../styles/styles.css"
+import axios from 'axios'
 
 export default function Login(){
   const navigate = useNavigate();
@@ -8,10 +9,29 @@ export default function Login(){
   const [password, setPassword] = useState("")
   const [errors, setErrors] = useState("")
   
-  const handleLogin = () => {
-    //Need login functionality and error message for failure to login
-    //
-    //API Address: https://cop4331project.dev/api/users/login
+  const handleLogin = async () => {
+    try{
+      const response = await axios.post('https://cop4331project.dev/api/users/login', {
+        email: email,
+        password: password
+      })
+
+      if(response.status == 200){
+        const data = response.data.data
+        localStorage.setItem('userEmail', data.user.email)
+        localStorage.setItem('userId', data.user.id)
+        localStorage.setItem('userName', data.user.name)
+        localStorage.setItem('userRole', data.user.role)
+        localStorage.setItem('token', data.token)
+
+        alert('Logged in!')
+        navigate('/homepage')
+      }
+    }
+    catch(error){
+      console.error('error logging in: ', error)
+      alert('Error logging in')
+    }
   }
   
   return (

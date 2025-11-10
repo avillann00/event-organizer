@@ -6,7 +6,7 @@ import Landing from './pages/Landing'
 import CreateEvent from './pages/CreateEvent'
 import EventsListPage from './pages/EventsListPage'
 import EventDetails from './pages/EventDetails'
-import Homepage from './pages/homepage'
+import Homepage from './pages/Homepage'
 
 export default function App() {
   return(
