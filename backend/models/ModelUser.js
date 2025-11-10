@@ -1,4 +1,3 @@
-
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
@@ -24,10 +23,35 @@ const userSchema = new mongoose.Schema({
   },
   organization: {
     type: String
+  },
+  // ADD THESE NEW FIELDS:
+  isEmailVerified: {
+    type: Boolean,
+    default: false
+  },
+  emailVerificationToken: {
+    type: String
+  },
+  emailVerificationExpires: {
+    type: Date
+  },
+  resetPasswordToken: {
+    type: String
+  },
+  resetPasswordExpires: {
+    type: Date
+  },
+  pendingEmail: {
+    type: String
+  },
+  emailChangeToken: {
+    type: String
+  },
+  emailChangeTokenExpires: {
+    type: Date
   }
 }, {
   timestamps: true
 });
 
 module.exports = mongoose.model('User', userSchema);
-

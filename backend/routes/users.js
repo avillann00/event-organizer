@@ -17,7 +17,6 @@ const generateRandomToken = () => {
   return crypto.randomBytes(32).toString('hex');
 };
 
-// Cookie options for security
 const cookieOptions = {
   httpOnly: true,
   secure: true,
@@ -26,9 +25,9 @@ const cookieOptions = {
   path: '/',
 };
 
-// Simulated email sending functions (logs to console)
+// email sending functions (logs to console)
 const sendVerificationEmail = async (email, verificationToken) => {
-  const verificationLink = `${process.env.BASE_URL}/api/auth/verify-email?token=${verificationToken}`;
+  const verificationLink = `${process.env.BASE_URL}/api/users/verify-email?token=${verificationToken}`;
   
   console.log('════════════════════════════════════════');
   console.log('📧 EMAIL VERIFICATION REQUIRED');
@@ -42,7 +41,7 @@ const sendVerificationEmail = async (email, verificationToken) => {
 };
 
 const sendPasswordResetEmail = async (email, resetToken) => {
-  const resetLink = `${process.env.BASE_URL}/reset-password?token=${resetToken}`;
+  const resetLink = `${process.env.BASE_URL}/api/users/verify-reset-token?token=${resetToken}`;
   
   console.log('════════════════════════════════════════');
   console.log('📧 PASSWORD RESET REQUIRED');
@@ -55,7 +54,7 @@ const sendPasswordResetEmail = async (email, resetToken) => {
   return true;
 };
 
-// USER REGISTRATION - WITH EMAIL VERIFICATION FLOW
+// USER REGISTRATION 
 router.post('/register/user', async (req, res) => {
   try {
     const { name, email, password, confirmPassword } = req.body;
@@ -132,7 +131,7 @@ router.post('/register/user', async (req, res) => {
   }
 });
 
-// ORGANIZER REGISTRATION - WITH EMAIL VERIFICATION FLOW
+// ORGANIZER REGISTRATION 
 router.post('/register/organizer', async (req, res) => {
   try {
     const { organizationName, email, password, confirmPassword } = req.body;
@@ -537,5 +536,155 @@ router.post('/login', async (req, res) => {
     });
   }
 });
+
+// REQUEST EMAIL CHANGE
+router.post('/change-email', async (req, res) => {
+  try {
+    const { currentEmail, newEmail, password } = req.body;
+
+    if (!currentEmail || !newEmail || !password) {
+      return res.status(400).json({
+        success: false,
+        message: 'Current email, new email, and password are required'
+      });
+    }
+
+    if (currentEmail === newEmail) {
+      return res.status(400).json({
+        success: false,
+        message: 'New email must be different from current email'
+      });
+    }
+
+    // Find user by current email
+    const user = await User.findOne({ email: currentEmail });
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    // Verify password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid password'
+      });
+    }
+
+    // Check if new email is already taken
+    const existingUser = await User.findOne({ email: newEmail });
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: 'New email is already registered'
+      });
+    }
+
+    // Generate email change token
+    const emailChangeToken = generateRandomToken();
+    const emailChangeTokenExpires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+    // Save the pending email change
+    user.pendingEmail = newEmail;
+    user.emailChangeToken = emailChangeToken;
+    user.emailChangeTokenExpires = emailChangeTokenExpires;
+    await user.save();
+
+    // Send verification email to the NEW email address
+    const verificationLink = `${process.env.BASE_URL}/api/users/verify-email-change?token=${emailChangeToken}`;
+    
+    console.log('════════════════════════════════════════');
+    console.log('📧 EMAIL CHANGE VERIFICATION REQUIRED');
+    console.log('════════════════════════════════════════');
+    console.log('👤 Current User:', currentEmail);
+    console.log('📧 New Email:', newEmail);
+    console.log('🔗 Verification Link:', verificationLink);
+    console.log('💡 Copy and paste this link to verify your new email');
+    console.log('════════════════════════════════════════\n');
+
+    res.status(200).json({
+      success: true,
+      message: 'Email change requested! Check your console for verification link sent to your new email.',
+      data: {
+        newEmail: newEmail
+      }
+    });
+
+  } catch (error) {
+    console.error('Email change request error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Email change request failed',
+      error: error.message
+    });
+  }
+});
+
+// VERIFY EMAIL CHANGE
+router.get('/verify-email-change', async (req, res) => {
+  try {
+    const { token } = req.query;
+
+    if (!token) {
+      return res.status(400).json({
+        success: false,
+        message: 'Verification token is required'
+      });
+    }
+
+    const user = await User.findOne({
+      emailChangeToken: token,
+      emailChangeTokenExpires: { $gt: Date.now() }
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid or expired verification token'
+      });
+    }
+
+    // Update the email (this only happens after new email is verified)
+    const oldEmail = user.email;
+    user.email = user.pendingEmail;
+    user.pendingEmail = undefined;
+    user.emailChangeToken = undefined;
+    user.emailChangeTokenExpires = undefined;
+    user.isEmailVerified = true; // Auto-verify when they confirm the new email
+    
+    await user.save();
+
+    console.log('✅ EMAIL CHANGE COMPLETED SUCCESSFULLY');
+    console.log('👤 User ID:', user._id);
+    console.log('📧 Old Email:', oldEmail);
+    console.log('📧 New Email:', user.email);
+
+    res.status(200).json({
+      success: true,
+      message: 'Email changed successfully! You can now login with your new email.',
+      data: {
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          isEmailVerified: user.isEmailVerified
+        }
+      }
+    });
+
+  } catch (error) {
+    console.error('Email change verification error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Email change verification failed',
+      error: error.message
+    });
+  }
+});
+
 
 module.exports = router;
