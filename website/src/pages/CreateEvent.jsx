@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import Select from 'react-select'
+import BottomNav from '../components/BottomNav'
 
 export default function CreateEvent(){
   const navigate = useNavigate()
@@ -226,6 +227,7 @@ export default function CreateEvent(){
           <button type='submit' className='submit-btn'>Create Event</button>
         </form>
       </div>
+      <BottomNav />
     </div>
   )
 }

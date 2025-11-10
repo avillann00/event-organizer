@@ -23,6 +23,7 @@ export default function Login(){
         localStorage.setItem('userName', data.user.name)
         localStorage.setItem('userRole', data.user.role)
         localStorage.setItem('token', data.token)
+        localStorage.setItem('loggedIn', 'true')
 
         alert('Logged in!')
         navigate('/homepage')

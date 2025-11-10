@@ -7,6 +7,7 @@ import CreateEvent from './pages/CreateEvent'
 import EventsListPage from './pages/EventsListPage'
 import EventDetails from './pages/EventDetails'
 import Homepage from './pages/Homepage'
+import ProfilePage from './pages/ProfilePage'
 
 export default function App() {
   return(
@@ -19,6 +20,7 @@ export default function App() {
         <Route path='/create-event' element={<CreateEvent />} />
         <Route path='/events/:id' element={<EventDetails />} />
         <Route path='/homepage' element={<Homepage />} />
+        <Route path='/profile' element={<ProfilePage />} />
       </Routes>
     </BrowserRouter>
   )

@@ -5,12 +5,24 @@ import {
 } from '@vis.gl/react-google-maps';
 import { Home, User, Menu, MapPin } from 'lucide-react';
 import BottomNav from '../components/BottomNav'
+import { useNavigate } from 'react-router-dom'
 
 export default function App() {
+  const navigate = useNavigate()
+
   const [userLocation, setUserLocation] = useState({ lat: 28.6024, lng: -81.2001 });
   
   // Event data will go here
   const events = [];
+
+  if(localStorage.getItem('loggedIn') !== 'true'){
+    return(
+      <div>
+        <h1>You must be logged in.</h1>
+        <button onClick={() => navigate('/login')}>Login</button>
+      </div>
+    )
+  }
 
   return (
     <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
