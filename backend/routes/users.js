@@ -6,7 +6,7 @@ const User = require('../models/ModelUser');
 const router = express.Router();
 
 // Generate JWT Token
-const generateToken = (userId) => {
+/*const generateToken = (userId) => {
   return jwt.sign({ userId }, process.env.JWT_SECRET, {
     expiresIn: '30d',
   });
@@ -53,6 +53,7 @@ const sendPasswordResetEmail = async (email, resetToken) => {
   
   return true;
 };
+*/
 
 // USER REGISTRATION 
 router.post('/register/user', async (req, res) => {
