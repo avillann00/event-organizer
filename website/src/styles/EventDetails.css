@@ -1,19 +1,20 @@
 .event-details-page {
-  background: #f9fafb;
+  font-family: "Reem Kufi", sans-serif;
+  background-color: white;
+  color: #2E2E2E;
   min-height: 100vh;
-  color: #111827;
-  font-family: 'Inter', sans-serif;
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
 .event-header {
   background: #2563eb;
+  width: 100%;
   color: white;
   padding: 1rem 2rem;
   display: flex;
   align-items: center;
-  gap: 1rem;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
@@ -21,6 +22,7 @@
   background: none;
   border: none;
   color: white;
+  padding: 2rem;
   font-size: 1.1rem;
   cursor: pointer;
   transition: opacity 0.2s ease;
@@ -29,101 +31,94 @@
   opacity: 0.8;
 }
 
-.event-title {
-  font-size: 1.75rem;
-  font-weight: 600;
+.hero-section {
+  width: 100%;
+  max-width: 900px;
+  margin-top: 2rem;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #dbeafe;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
 }
-
 .event-hero {
   width: 100%;
-  height: 400px;
+  height: 100%;
   object-fit: cover;
-}
-
-.event-placeholder {
-  height: 400px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #dbeafe;
 }
 .placeholder-icon {
   font-size: 5rem;
   color: #2563eb;
 }
 
-.event-main {
-  max-width: 900px;
-  margin: 2rem auto;
-  padding: 0 1.5rem;
-}
-
-.meta-section {
-  margin-bottom: 2rem;
-}
-.meta-item {
-  display: flex;
-  align-items: flex-start;
-  font-size: 1.05rem;
-  color: #1f2937;
-  margin-bottom: 0.6rem;
-}
-.meta-icon {
-  margin-right: 0.6rem;
-  font-size: 1.2rem;
-}
-
-.description-section {
-  margin-top: 1.5rem;
-}
-.description-section h2 {
-  font-size: 1.3rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-}
-.description-section p {
-  line-height: 1.7;
-  font-size: 1.05rem;
-  color: #374151;
-}
-
-.details-card {
-  background: white;
-  border-radius: 14px;
-  padding: 1.5rem 2rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+.event-card {
+  background-color: #fff;
+  width: 100%;
+  max-width: 700px;
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 2.5rem;
+  text-align: center;
   margin-top: 2rem;
 }
 
-.detail-row {
+.event-card h1 {
+  font-family: "Montserrat", sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #111;
+}
+.event-meta {
+  color: #555;
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.4;
+}
+.event-meta svg {
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
+.details-section {
+  margin-bottom: 2rem;
+  text-align: left;
+}
+.details-section h2 {
+  font-family: "Montserrat", sans-serif;
+  font-size: 1.2rem;
+  margin-bottom: 0.6rem;
+}
+.details-section p {
+  color: #444;
+  line-height: 1.6;
+}
+
+.stats-inline {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  padding: 0.75rem 0;
-  font-size: 1rem;
+  background-color: #fafafa;
+  border-radius: 10px;
+  padding: 1rem 1.5rem;
+  border: 1px solid #e0e0e0;
+  margin: 2rem 0;
 }
-.detail-icon {
-  color: #2563eb;
-  font-size: 1.3rem;
-  margin-right: 0.5rem;
-}
-.detail-label {
+.stats-inline div {
   flex: 1;
-  font-weight: 500;
-  color: #111827;
+  text-align: center;
 }
-.detail-value {
-  color: #1f2937;
-  font-weight: 400;
+.stats-inline strong {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  color: #2E2E2E;
 }
 
 .tags-section {
   margin-top: 2rem;
-}
-.tags-section h2 {
-  font-size: 1.3rem;
-  font-weight: 600;
-  margin-bottom: 0.75rem;
+  text-align: left;
 }
 .tag-container {
   display: flex;
@@ -135,26 +130,24 @@
   color: #0369a1;
   padding: 0.4rem 0.9rem;
   border-radius: 9999px;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 500;
 }
 
-@media (max-width: 768px) {
-  .event-hero {
-    height: 250px;
-  }
-
-  .event-title {
-    font-size: 1.4rem;
-  }
-
-  .description-section p,
-  .meta-item {
-    font-size: 0.95rem;
-  }
-
-  .details-card {
-    padding: 1.2rem;
-  }
+/* Button */
+.submit-btn {
+  background-color: gold;
+  color: black;
+  border: 2px solid black;
+  border-radius: 25px;
+  padding: 12px 45px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: bold;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
-
+.submit-btn:hover {
+  background-color: darkgoldenrod;
+}
