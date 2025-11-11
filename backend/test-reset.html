@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Password Reset</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 500px; margin: 50px auto; padding: 20px; }
+        .container { border: 1px solid #ddd; padding: 20px; border-radius: 8px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input[type="password"] { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        button { background-color: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+        .token-info { background: #f8f9fa; padding: 10px; border-radius: 4px; margin-bottom: 20px; }
+        .success { color: green; background: #d4edda; padding: 10px; border-radius: 4px; }
+        .error { color: red; background: #f8d7da; padding: 10px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🔐 Test Password Reset</h2>
+        
+        <!-- Step 1: Show extracted token from URL -->
+        <div class="token-info">
+            <h4>📧 Token Extracted from URL:</h4>
+            <p id="token-value" style="word-break: break-all; background: white; padding: 10px; border: 1px dashed #ccc;">
+                Loading...
+            </p>
+            <p id="no-token-message" style="color: red; display: none;">
+                ❌ No token found in URL. Make sure you're using a reset link.
+            </p>
+        </div>
+
+        <!-- Step 2: Reset password form -->
+        <form id="reset-form">
+            <input type="hidden" id="token-input" name="token">
+            
+            <div class="form-group">
+                <label for="newPassword">New Password:</label>
+                <input type="password" id="newPassword" name="newPassword" required minlength="6">
+            </div>
+            
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password:</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" required minlength="6">
+            </div>
+            
+            <button type="submit">Reset Password</button>
+        </form>
+
+        <!-- Step 3: Show results -->
+        <div id="result" style="margin-top: 20px;"></div>
+    </div>
+
+    <script>
+        // Extract token from URL automatically
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
+        
+        if (token) {
+            document.getElementById('token-value').textContent = token;
+            document.getElementById('token-input').value = token;
+            document.getElementById('no-token-message').style.display = 'none';
+        } else {
+            document.getElementById('token-value').textContent = 'No token found';
+            document.getElementById('no-token-message').style.display = 'block';
+        }
+
+        // Handle form submission
+        document.getElementById('reset-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitButton = e.target.querySelector('button');
+            const originalText = submitButton.textContent;
+            submitButton.textContent = 'Resetting...';
+            submitButton.disabled = true;
+
+            const formData = {
+                token: document.getElementById('token-input').value,
+                newPassword: document.getElementById('newPassword').value,
+                confirmPassword: document.getElementById('confirmPassword').value
+            };
+
+            // Validate passwords match
+            if (formData.newPassword !== formData.confirmPassword) {
+                document.getElementById('result').innerHTML = `
+                    <div class="error">❌ Passwords do not match!</div>
+                `;
+                submitButton.textContent = originalText;
+                submitButton.disabled = false;
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:5000/api/users/complete-password-reset', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    document.getElementById('result').innerHTML = `
+                        <div class="success">
+                            ✅ ${result.message}
+                            <p><strong>You can now login with your new password!</strong></p>
+                        </div>
+                    `;
+                    // Clear form
+                    document.getElementById('reset-form').reset();
+                } else {
+                    document.getElementById('result').innerHTML = `
+                        <div class="error">
+                            ❌ ${result.message}
+                            ${result.error ? `<p><strong>Error:</strong> ${result.error}</p>` : ''}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('result').innerHTML = `
+                    <div class="error">
+                        ❌ Network Error: ${error.message}
+                        <p>Make sure your backend server is running on port 5000.</p>
+                    </div>
+                `;
+            } finally {
+                submitButton.textContent = originalText;
+                submitButton.disabled = false;
+            }
+        });
+
+        // Real-time password match validation
+        const newPasswordInput = document.getElementById('newPassword');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        
+        function validatePasswords() {
+            if (newPasswordInput.value && confirmPasswordInput.value) {
+                if (newPasswordInput.value !== confirmPasswordInput.value) {
+                    confirmPasswordInput.style.borderColor = 'red';
+                } else {
+                    confirmPasswordInput.style.borderColor = 'green';
+                }
+            }
+        }
+
+        newPasswordInput.addEventListener('input', validatePasswords);
+        confirmPasswordInput.addEventListener('input', validatePasswords);
+    </script>
+</body>
+</html>
