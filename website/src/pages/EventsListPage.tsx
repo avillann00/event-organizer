@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import '../styles/EventsListPage.css';
 import { useNavigate } from 'react-router-dom'
 import BottomNav from '../components/BottomNav'
+import NotLoggedInPage from '../components/NotLoggedInPage'
 
 interface Event {
   _id: string;
@@ -48,12 +49,7 @@ export default function EventsListPage() {
   };
 
   if(localStorage.getItem('loggedIn') !== 'true'){
-    return(
-      <div>
-        <h1>You must be logged in.</h1>
-        <button onClick={() => navigate('/login')}>Login</button>
-      </div>
-    )
+    return <NotLoggedInPage />
   }
 
   return (

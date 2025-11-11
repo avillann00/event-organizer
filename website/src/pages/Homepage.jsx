@@ -6,6 +6,7 @@ import {
 import { Home, User, Menu, MapPin } from 'lucide-react';
 import BottomNav from '../components/BottomNav'
 import { useNavigate } from 'react-router-dom'
+import NotLoggedInPage from '../components/NotLoggedInPage'
 
 export default function App() {
   const navigate = useNavigate()
@@ -16,12 +17,7 @@ export default function App() {
   const events = [];
 
   if(localStorage.getItem('loggedIn') !== 'true'){
-    return(
-      <div>
-        <h1>You must be logged in.</h1>
-        <button onClick={() => navigate('/login')}>Login</button>
-      </div>
-    )
+    return <NotLoggedInPage />
   }
 
   return (
