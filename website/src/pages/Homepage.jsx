@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   APIProvider,
   Map,
@@ -7,18 +7,40 @@ import { Home, User, Menu, MapPin } from 'lucide-react';
 import BottomNav from '../components/BottomNav'
 import { useNavigate } from 'react-router-dom'
 import NotLoggedInPage from '../components/NotLoggedInPage'
+import { useEvents } from '../context/EventContext'
+import axios from 'axios'
 
 export default function App() {
   const navigate = useNavigate()
 
   const [userLocation, setUserLocation] = useState({ lat: 28.6024, lng: -81.2001 });
   
-  // Event data will go here
-  const events = [];
+  const { events, setEvents } = useEvents()
 
   if(localStorage.getItem('loggedIn') !== 'true'){
     return <NotLoggedInPage />
   }
+
+  useEffect(() => {
+    const getEvents = async () => {
+      try{
+        const response = await axios.get('https://cop4331project.dev/api/events')    
+
+        if(response.status === 200){
+          console.log(response)
+          setEvents(response.data)
+        }
+      }
+      catch(error){   
+        console.error('error getting events: ', error)
+      }
+    }
+
+    
+    if(localStorage.getItem('loggedIn') !== 'true'){
+      getEvents()
+    }
+  }, [])
 
   return (
     <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>

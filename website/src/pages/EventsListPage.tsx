@@ -3,6 +3,7 @@ import '../styles/EventsListPage.css';
 import { useNavigate } from 'react-router-dom'
 import BottomNav from '../components/BottomNav'
 import NotLoggedInPage from '../components/NotLoggedInPage'
+import { useEvents } from '../context/EventContext'
 
 interface Event {
   _id: string;
@@ -20,15 +21,18 @@ interface Event {
 export default function EventsListPage() {
   const navigate = useNavigate()
 
-  const [events, setEvents] = useState<Event[]>([]);
+  // const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const { events } = useEvents()
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await fetch('https://cop4331project.dev/api/events');
-        const data = await response.json();
-        setEvents(data);
+        console.log('events: ', events)
+        // const response = await fetch('https://cop4331project.dev/api/events');
+        // const data = await response.json();
+        // setEvents(events);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching events:', error);
@@ -36,7 +40,9 @@ export default function EventsListPage() {
       }
     };
 
-    fetchEvents();
+    if(localStorage.getItem('loggedIn') !== 'true'){
+      fetchEvents();
+    }
   }, []);
 
   const formatTime = (dateString: string) => {
