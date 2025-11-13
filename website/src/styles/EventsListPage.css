@@ -193,3 +193,34 @@
     margin-top: 100px;
     grid-column: 1 / -1;
 }
+
+.searchContainer {
+  padding: 0 20px 30px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.searchWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 12px 20px;
+  font-size: 16px;
+  border: 2px solid #ddd;
+  border-radius: 25px;
+  outline: none;
+  transition: border-color 0.3s;
+  font-family: inherit;
+}
+
+.searchInput:focus {
+  border-color: #4CAF50;
+}
+
+.searchInput::placeholder {
+  color: #999;
+}

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import '../styles/EventsListPage.css';
 import { useNavigate } from 'react-router-dom'
+// @ts-ignore // adding this so it ignores the issue with BottomNav being an anytype since typescript is typesensitive unlike react
 import BottomNav from '../components/BottomNav'
 
 interface Event {
@@ -15,17 +16,16 @@ interface Event {
   rsvpCount: number;
   capacity: number;
 }
-
 export default function EventsListPage() {
   const navigate = useNavigate()
 
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
 
-  useEffect(() => {
-    const fetchEvents = async () => {
+  const fetchEvents = async () => {
       try {
-        const response = await fetch('https://cop4331project.dev/api/events');
+        const response = await fetch('http://localhost:5000/api/events');
         const data = await response.json();
         setEvents(data);
         setLoading(false);
@@ -34,6 +34,30 @@ export default function EventsListPage() {
         setLoading(false);
       }
     };
+
+  const handleSearch = async(query: string) => {
+    // if empty
+    if (!query.trim()) {
+      await fetchEvents();
+      return;
+    }
+    try{
+      const response = await fetch('http://localhost:5000/api/events/search', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ q: query})
+      });
+      const data = await response.json();
+      setEvents(data);
+    } catch (error){
+      console.error('Search failed:', error)
+    }
+  }
+
+  useEffect(() => {
+    
 
     fetchEvents();
   }, []);
@@ -64,6 +88,21 @@ export default function EventsListPage() {
         ) : (
           <>
             <h1 className="header">Upcoming Events</h1>
+            
+            <div className="searchContainer">
+              <div className="searchWrapper">
+                <input
+                  type="text"
+                  placeholder="Search events by title..."
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    handleSearch(e.target.value);
+                  }}
+                  className="searchInput"/>
+
+              </div>
+            </div>
             <div className="eventsGrid">
               {events.length === 0 ? (
                 <div className="emptyState">No events available</div>
