@@ -30,28 +30,17 @@ app.use((req, res, next) =>
 // Import route modules
 const userRoutes = require('./routes/users');
 const eventRoutes = require('./routes/events');
+const rsvpRoutes = require('./routes/rsvp_endpoints/create_rsvp');
+const uploadRoutes = require('./routes/uploads');
 // const rsvpRoutes = require('./routes/rsvps');
 // const notificationRoutes = require('./routes/notifications');
 // const reviewRoutes = require('./routes/reviews');
 // const loginRoutes = require('./routes/login'); 
 
 // Use route modules
-//app.use('/api/users', userRoutes);
-// app.use('/api/events', eventRoutes);
-// app.use('/api/rsvps', rsvpRoutes);
-// app.use('/api/notifications', notificationRoutes);
-// app.use('/api/reviews', reviewRoutes);
-// app.use('/api/login', loginRoutes);
-//const eventRoutes = require('./routes/events');
-// const rsvpRoutes = require('./routes/rsvps');
-// const notificationRoutes = require('./routes/notifications');
-// const reviewRoutes = require('./routes/reviews');
-const uploadRoutes = require('./routes/uploads');
-
-// Use route modules
 app.use('/api/users', userRoutes);
 app.use('/api/events', eventRoutes);
-// app.use('/api/rsvps', rsvpRoutes);
+app.use('/api/rsvp', rsvpRoutes);
 // app.use('/api/notifications', notificationRoutes);
 // app.use('/api/reviews', reviewRoutes);
 app.use('/api/upload', uploadRoutes);
