@@ -1,8 +1,14 @@
 import { useState, useEffect } from 'react';
 import '../styles/EventsListPage.css';
 import { useNavigate } from 'react-router-dom'
+// @ts-ignore
 import BottomNav from '../components/BottomNav'
+// @ts-ignore
+import NotLoggedInPage from '../components/NotLoggedInPage'
+// @ts-ignore
+import { useEvents } from '../context/EventContext'
 
+// @ts-ignore
 interface Event {
   _id: string;
   title: string;
@@ -19,15 +25,18 @@ interface Event {
 export default function EventsListPage() {
   const navigate = useNavigate()
 
-  const [events, setEvents] = useState<Event[]>([]);
+  // const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const { events } = useEvents()
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await fetch('https://cop4331project.dev/api/events');
-        const data = await response.json();
-        setEvents(data);
+        console.log('events: ', events)
+        // const response = await fetch('https://cop4331project.dev/api/events');
+        // const data = await response.json();
+        // setEvents(events);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching events:', error);
@@ -35,7 +44,9 @@ export default function EventsListPage() {
       }
     };
 
-    fetchEvents();
+    if(localStorage.getItem('loggedIn') === 'true'){
+      fetchEvents();
+    }
   }, []);
 
   const formatTime = (dateString: string) => {
@@ -48,12 +59,7 @@ export default function EventsListPage() {
   };
 
   if(localStorage.getItem('loggedIn') !== 'true'){
-    return(
-      <div>
-        <h1>You must be logged in.</h1>
-        <button onClick={() => navigate('/login')}>Login</button>
-      </div>
-    )
+    return <NotLoggedInPage />
   }
 
   return (
@@ -68,7 +74,7 @@ export default function EventsListPage() {
               {events.length === 0 ? (
                 <div className="emptyState">No events available</div>
               ) : (
-                events.map((event) => (
+                events.map((event: any) => (
                   <div 
                     key={event._id}
                     className="eventCard"
