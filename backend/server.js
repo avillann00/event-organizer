@@ -30,9 +30,9 @@ app.use((req, res, next) =>
 // Import route modules
 const userRoutes = require('./routes/users');
 const eventRoutes = require('./routes/events');
-//const rsvpRoutes = require('./routes/rsvp_endpoints/create_rsvp');
+const rsvpRoutes = require('./routes/rsvp_endpoints/create_rsvp');
 const uploadRoutes = require('./routes/uploads');
-const rsvpRoutes = require('./routes/rsvps');
+//const rsvpRoutes = require('./routes/rsvps');
 // const notificationRoutes = require('./routes/notifications');
 // const reviewRoutes = require('./routes/reviews');
 // const loginRoutes = require('./routes/login'); 
