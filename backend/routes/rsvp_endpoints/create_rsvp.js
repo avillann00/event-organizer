@@ -6,8 +6,8 @@ const jwt = require('jsonwebtoken');
 //require mongoose for DB interaction
 const mongoose = require('mongoose');
 //So we can query events and rsvps
-const Event = require('../models/ModelEvent');
-const Rsvp = require('../models/ModelRsvp');
+const Event = require('../../models/ModelEvent');
+const Rsvp = require('../../models/ModelRSVP');
 //To use values from .env
 require('dotenv').config();
 
@@ -98,3 +98,5 @@ router.post('/', async (req, res) => {
 });
 
 module.exports = router;
+
+
