@@ -92,6 +92,7 @@ export default function CreateEvent(){
       }
 
       const eventData = {
+        token: localStorage.getItem('token'),
         title,
         description,
         address,
@@ -102,7 +103,7 @@ export default function CreateEvent(){
         latitude: coords.lat,
         longitude: coords.lng,
         keywords: keyWords.map(k => k.value),
-        mediaUrl: imageUrl
+        media: imageUrl ? [imageUrl] : []
       }
 
       const response = await axios.post('https://cop4331project.dev/api/events', eventData)

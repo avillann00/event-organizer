@@ -15,7 +15,7 @@ router.get('/test', (req, res) => {
 
 router.post('/', async (req, res) => {
     try {
-        const { token, title, description, startTime, endTime, address, capacity, ticketPrice, keywords, media } = req.body;
+        const { token, title, description, startTime, endTime, address, latitude, longitude, capacity, ticketPrice, keywords, media } = req.body;
         
         if (!token || !title || !startTime || !endTime) {
             return res.status(400).json({
@@ -36,11 +36,17 @@ router.post('/', async (req, res) => {
             });
         }
 
+        // Build location object if latitude and longitude are provided
+        const location = (latitude !== undefined && longitude !== undefined) 
+            ? { latitude: parseFloat(latitude), longitude: parseFloat(longitude) }
+            : undefined;
+
         const newEvent = new Event({
             title,
             description,
             startTime,
             endTime,
+            location,
             address,
             organizerId: decoded.userId,
             capacity,
