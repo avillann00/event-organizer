@@ -32,7 +32,7 @@ const userRoutes = require('./routes/users');
 const eventRoutes = require('./routes/events');
 //const rsvpRoutes = require('./routes/rsvp_endpoints/create_rsvp');
 const uploadRoutes = require('./routes/uploads');
-// const rsvpRoutes = require('./routes/rsvps');
+const rsvpRoutes = require('./routes/rsvps');
 // const notificationRoutes = require('./routes/notifications');
 // const reviewRoutes = require('./routes/reviews');
 // const loginRoutes = require('./routes/login'); 
@@ -40,7 +40,7 @@ const uploadRoutes = require('./routes/uploads');
 // Use route modules
 app.use('/api/users', userRoutes);
 app.use('/api/events', eventRoutes);
-//app.use('/api/rsvp', rsvpRoutes);
+app.use('/api/rsvp', rsvpRoutes);
 // app.use('/api/notifications', notificationRoutes);
 // app.use('/api/reviews', reviewRoutes);
 app.use('/api/upload', uploadRoutes);
