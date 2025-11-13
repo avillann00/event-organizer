@@ -1,10 +1,14 @@
 import { useState, useEffect } from 'react';
 import '../styles/EventsListPage.css';
 import { useNavigate } from 'react-router-dom'
+// @ts-ignore
 import BottomNav from '../components/BottomNav'
+// @ts-ignore
 import NotLoggedInPage from '../components/NotLoggedInPage'
+// @ts-ignore
 import { useEvents } from '../context/EventContext'
 
+// @ts-ignore
 interface Event {
   _id: string;
   title: string;
@@ -40,7 +44,7 @@ export default function EventsListPage() {
       }
     };
 
-    if(localStorage.getItem('loggedIn') !== 'true'){
+    if(localStorage.getItem('loggedIn') === 'true'){
       fetchEvents();
     }
   }, []);
@@ -70,7 +74,7 @@ export default function EventsListPage() {
               {events.length === 0 ? (
                 <div className="emptyState">No events available</div>
               ) : (
-                events.map((event) => (
+                events.map((event: any) => (
                   <div 
                     key={event._id}
                     className="eventCard"
