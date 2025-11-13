@@ -218,7 +218,7 @@
 }
 
 .searchInput:focus {
-  border-color: #4CAF50;
+  border-color: gold;
 }
 
 .searchInput::placeholder {

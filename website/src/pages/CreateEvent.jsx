@@ -6,6 +6,7 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import Select from 'react-select'
 import BottomNav from '../components/BottomNav'
+import NotLoggedInPage from '../components/NotLoggedInPage'
 
 export default function CreateEvent(){
   const navigate = useNavigate()
@@ -118,6 +119,10 @@ export default function CreateEvent(){
     catch(error){
       console.error('error details:', error)
     }
+  }
+
+  if(localStorage.getItem('loggedIn') !== 'true'){
+    return <NotLoggedInPage />
   }
 
   return(

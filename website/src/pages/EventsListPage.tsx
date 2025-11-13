@@ -1,8 +1,12 @@
 import { useState, useEffect } from 'react';
 import '../styles/EventsListPage.css';
 import { useNavigate } from 'react-router-dom'
-// @ts-ignore // adding this so it ignores the issue with BottomNav being an anytype since typescript is typesensitive unlike react
+// @ts-ignore
 import BottomNav from '../components/BottomNav'
+// @ts-ignore
+import NotLoggedInPage from '../components/NotLoggedInPage'
+// @ts-ignore
+import { useEvents } from '../context/EventContext'
 
 interface Event {
   _id: string;
@@ -16,18 +20,27 @@ interface Event {
   rsvpCount: number;
   capacity: number;
 }
+
 export default function EventsListPage() {
   const navigate = useNavigate()
 
-  const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const fetchEvents = async () => {
+  const { events } = useEvents()
+
+  // Filter events based on search query
+  const filteredEvents = searchQuery.trim() 
+    ? events.filter((event: any) => 
+        event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        event.keywords?.some((k: string) => k.toLowerCase().includes(searchQuery.toLowerCase()))
+      )
+    : events;
+
+  useEffect(() => {
+    const fetchEvents = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/events');
-        const data = await response.json();
-        setEvents(data);
+        console.log('events: ', events)
         setLoading(false);
       } catch (error) {
         console.error('Error fetching events:', error);
@@ -35,31 +48,9 @@ export default function EventsListPage() {
       }
     };
 
-  const handleSearch = async(query: string) => {
-    // if empty
-    if (!query.trim()) {
-      await fetchEvents();
-      return;
+    if(localStorage.getItem('loggedIn') === 'true'){
+      fetchEvents();
     }
-    try{
-      const response = await fetch('http://localhost:5000/api/events/search', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ q: query})
-      });
-      const data = await response.json();
-      setEvents(data);
-    } catch (error){
-      console.error('Search failed:', error)
-    }
-  }
-
-  useEffect(() => {
-    
-
-    fetchEvents();
   }, []);
 
   const formatTime = (dateString: string) => {
@@ -72,12 +63,7 @@ export default function EventsListPage() {
   };
 
   if(localStorage.getItem('loggedIn') !== 'true'){
-    return(
-      <div>
-        <h1>You must be logged in.</h1>
-        <button onClick={() => navigate('/login')}>Login</button>
-      </div>
-    )
+    return <NotLoggedInPage />
   }
 
   return (
@@ -93,21 +79,19 @@ export default function EventsListPage() {
               <div className="searchWrapper">
                 <input
                   type="text"
-                  placeholder="Search events by title..."
+                  placeholder="Search events by title or keyword..."
                   value={searchQuery}
-                  onChange={(e) => {
-                    setSearchQuery(e.target.value);
-                    handleSearch(e.target.value);
-                  }}
-                  className="searchInput"/>
-
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="searchInput"
+                />
               </div>
             </div>
+
             <div className="eventsGrid">
-              {events.length === 0 ? (
+              {filteredEvents.length === 0 ? (
                 <div className="emptyState">No events available</div>
               ) : (
-                events.map((event) => (
+                filteredEvents.map((event: any) => (
                   <div 
                     key={event._id}
                     className="eventCard"
