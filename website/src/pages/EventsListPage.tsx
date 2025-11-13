@@ -8,7 +8,6 @@ import NotLoggedInPage from '../components/NotLoggedInPage'
 // @ts-ignore
 import { useEvents } from '../context/EventContext'
 
-// @ts-ignore
 interface Event {
   _id: string;
   title: string;
@@ -25,18 +24,23 @@ interface Event {
 export default function EventsListPage() {
   const navigate = useNavigate()
 
-  // const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const { events } = useEvents()
+
+  // Filter events based on search query
+  const filteredEvents = searchQuery.trim() 
+    ? events.filter((event: any) => 
+        event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        event.keywords?.some((k: string) => k.toLowerCase().includes(searchQuery.toLowerCase()))
+      )
+    : events;
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
         console.log('events: ', events)
-        // const response = await fetch('https://cop4331project.dev/api/events');
-        // const data = await response.json();
-        // setEvents(events);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching events:', error);
@@ -70,11 +74,24 @@ export default function EventsListPage() {
         ) : (
           <>
             <h1 className="header">Upcoming Events</h1>
+            
+            <div className="searchContainer">
+              <div className="searchWrapper">
+                <input
+                  type="text"
+                  placeholder="Search events by title or keyword..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="searchInput"
+                />
+              </div>
+            </div>
+
             <div className="eventsGrid">
-              {events.length === 0 ? (
+              {filteredEvents.length === 0 ? (
                 <div className="emptyState">No events available</div>
               ) : (
-                events.map((event: any) => (
+                filteredEvents.map((event: any) => (
                   <div 
                     key={event._id}
                     className="eventCard"

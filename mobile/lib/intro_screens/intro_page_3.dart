@@ -6,7 +6,7 @@ class IntroPage3 extends StatelessWidget {
   @override
   Widget build(BuildContext context){
     return Container(
-      color: Colors.blue[100],
+      color: const Color(0xFFEAF3EC),
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -16,7 +16,7 @@ class IntroPage3 extends StatelessWidget {
               "Connect and Join our Community",
               textAlign: TextAlign.center,
               style:TextStyle(
-                fontSize: 24,
+                fontSize: 28,
                 fontWeight: FontWeight.bold,
                 color: Colors.blue[900],
               )
@@ -28,7 +28,7 @@ class IntroPage3 extends StatelessWidget {
               'Attend events and make lasting connections with people who share your interests',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 18,
+                fontSize: 21,
                 color: Colors.blue[900],
                 fontWeight: FontWeight.bold
               ),

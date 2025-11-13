@@ -6,7 +6,7 @@ class IntroPage1 extends StatelessWidget {
   @override
   Widget build(BuildContext context){
     return Container(
-      color: Colors.pink[100],
+      color: Color(0xFFb3debf),
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -16,9 +16,9 @@ class IntroPage1 extends StatelessWidget {
               "RSVP to Events You'll Love",
               textAlign: TextAlign.center,
               style:TextStyle(
-                fontSize: 24,
+                fontSize: 28,
                 fontWeight: FontWeight.bold,
-                color: Colors.pink[900],
+                color: const Color.fromARGB(255, 11, 41, 85),
               )
             ),
             Lottie.asset(
@@ -28,8 +28,8 @@ class IntroPage1 extends StatelessWidget {
               'Explore upcoming events on our interactive map and secure your spot',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 18,
-                color: Colors.pink[900],
+                fontSize: 21,
+                color: const Color.fromARGB(255, 11, 41, 85),
                 fontWeight: FontWeight.bold
               ),
             ),
