@@ -6,7 +6,7 @@ class IntroPage2 extends StatelessWidget {
   @override
   Widget build(BuildContext context){
     return Container(
-      color: Colors.purple[100],
+      color: const Color(0xFFEAF3EC),
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -16,9 +16,9 @@ class IntroPage2 extends StatelessWidget {
               "See What's Happening Around UCF",
               textAlign: TextAlign.center,
               style:TextStyle(
-                fontSize: 24,
+                fontSize: 28,
                 fontWeight: FontWeight.bold,
-                color: Colors.purple[900],
+                color: Colors.blue[900],
               )
             ),
             Lottie.asset(
@@ -28,8 +28,8 @@ class IntroPage2 extends StatelessWidget {
               'Find meetups, events, and other experiences tailored to your interests',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 18,
-                color: Colors.purple[900],
+                fontSize: 21,
+                color: Colors.blue[900],
                 fontWeight: FontWeight.bold
               ),
             ),

@@ -1,6 +1,7 @@
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import '../styles/EventDetails.css'
+import NotLoggedInPage from '../components/NotLoggedInPage'
 import RSVPModal from '../components/RSVPModal'
 import { CiClock1 } from "react-icons/ci"
 import { SlLocationPin } from "react-icons/sl"
@@ -36,12 +37,7 @@ export default function EventDetails() {
   }
 
   if(localStorage.getItem('loggedIn') !== 'true'){
-    return(
-      <div>
-        <h1>You must be logged in.</h1>
-        <button onClick={() => navigate('/login')}>Login</button>
-      </div>
-    )
+    return <NotLoggedInPage />
   }
 
   return (

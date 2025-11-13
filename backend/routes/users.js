@@ -4,9 +4,9 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const User = require('../models/ModelUser');
 const router = express.Router();
+const nodemailer = require("nodemailer");
 
-// Generate JWT Token
-/*const generateToken = (userId) => {
+const generateToken = (userId) => {
   return jwt.sign({ userId }, process.env.JWT_SECRET, {
     expiresIn: '30d',
   });
@@ -25,35 +25,162 @@ const cookieOptions = {
   path: '/',
 };
 
-// email sending functions (logs to console)
+// Create nodemailer transporter
+const createTransporter = () => {
+  return nodemailer.createTransport({  
+    host: process.env.SMTP_HOST || "sandbox.smtp.mailtrap.io",
+    port: process.env.SMTP_PORT || 2525,
+    auth: {
+      user: process.env.MAILTRAP_USER || process.env.SMTP_USER,
+      pass: process.env.MAILTRAP_PASS || process.env.SMTP_PASS
+    }
+  });
+};
+
+// Email sending functions using nodemailer transporter
 const sendVerificationEmail = async (email, verificationToken) => {
-  const verificationLink = `${process.env.BASE_URL}/api/users/verify-email?token=${verificationToken}`;
-  
-  console.log('════════════════════════════════════════');
-  console.log('📧 EMAIL VERIFICATION REQUIRED');
-  console.log('════════════════════════════════════════');
-  console.log('👤 User Email:', email);
-  console.log('🔗 Verification Link:', verificationLink);
-  console.log('💡 Copy and paste this link in your browser to verify');
-  console.log('════════════════════════════════════════\n');
-  
-  return true;
+  try {
+    const transporter = createTransporter();
+    const verificationLink = `${process.env.BASE_URL}/api/users/verify-email?token=${verificationToken}`;
+    
+    const mailOptions = {
+      from: process.env.EMAIL_FROM || '"Event App" <noreply@yourapp.com>',
+      to: email,
+      subject: 'Verify Your Email Address',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #333;">Verify Your Email Address</h2>
+          <p>Thank you for registering! Please click the button below to verify your email address:</p>
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${verificationLink}" 
+               style="background-color: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">
+              Verify Email Address
+            </a>
+          </div>
+          <p>Or copy and paste this link in your browser:</p>
+          <p style="word-break: break-all; color: #007bff;">${verificationLink}</p>
+          <p>This link will expire in 24 hours.</p>
+          <hr style="margin: 30px 0;">
+          <p style="color: #666; font-size: 12px;">If you didn't create an account, please ignore this email.</p>
+        </div>
+      `,
+      text: `Verify your email address by clicking this link: ${verificationLink}\n\nThis link will expire in 24 hours.`
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log('✅ Verification email sent:', info.messageId);
+    
+    // Also log to console for development
+    console.log('════════════════════════════════════════');
+    console.log('📧 EMAIL VERIFICATION SENT');
+    console.log('════════════════════════════════════════');
+    console.log('👤 User Email:', email);
+    console.log('🔗 Verification Link:', verificationLink);
+    console.log('💡 Copy and paste this link in your browser to verify');
+    console.log('════════════════════════════════════════\n');
+    
+    return true;
+  } catch (error) {
+    console.error('❌ Failed to send verification email:', error);
+    throw new Error('Failed to send verification email');
+  }
 };
 
 const sendPasswordResetEmail = async (email, resetToken) => {
-  const resetLink = `${process.env.BASE_URL}/api/users/verify-reset-token?token=${resetToken}`;
-  
-  console.log('════════════════════════════════════════');
-  console.log('📧 PASSWORD RESET REQUIRED');
-  console.log('════════════════════════════════════════');
-  console.log('👤 User Email:', email);
-  console.log('🔗 Reset Link:', resetLink);
-  console.log('💡 Copy and paste this link to test password reset');
-  console.log('════════════════════════════════════════\n');
-  
-  return true;
+  try {
+    const transporter = createTransporter();
+    const resetLink = `${process.env.FRONTEND_URL || 'http://localhost:5000'}/api/users/verify-reset-token?token=${resetToken}`;
+    
+    const mailOptions = {
+      from: process.env.EMAIL_FROM || '"Event App" <noreply@yourapp.com>',
+      to: email,
+      subject: 'Reset Your Password',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #333;">Reset Your Password</h2>
+          <p>You requested to reset your password. Click the button below to create a new password:</p>
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${resetLink}" 
+               style="background-color: #dc3545; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">
+              Reset Password
+            </a>
+          </div>
+          <p>Or copy and paste this link in your browser:</p>
+          <p style="word-break: break-all; color: #007bff;">${resetLink}</p>
+          <p>This link will expire in 1 hour.</p>
+          <hr style="margin: 30px 0;">
+          <p style="color: #666; font-size: 12px;">If you didn't request a password reset, please ignore this email.</p>
+        </div>
+      `,
+      text: `Reset your password by clicking this link: ${resetLink}\n\nThis link will expire in 1 hour.`
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log('✅ Password reset email sent:', info.messageId);
+    
+    // Also log to console for development
+    console.log('════════════════════════════════════════');
+    console.log('📧 PASSWORD RESET EMAIL SENT');
+    console.log('════════════════════════════════════════');
+    console.log('👤 User Email:', email);
+    console.log('🔗 Reset Link:', resetLink);
+    console.log('💡 Copy and paste this link to test password reset');
+    console.log('════════════════════════════════════════\n');
+    
+    return true;
+  } catch (error) {
+    console.error('❌ Failed to send password reset email:', error);
+    throw new Error('Failed to send password reset email');
+  }
 };
-*/
+
+const sendEmailChangeVerification = async (newEmail, emailChangeToken) => {
+  try {
+    const transporter = createTransporter();
+    const verificationLink = `${process.env.BASE_URL}/api/users/verify-email-change?token=${emailChangeToken}`;
+    
+    const mailOptions = {
+      from: process.env.EMAIL_FROM || '"Event App" <noreply@yourapp.com>',
+      to: newEmail,
+      subject: 'Verify Your New Email Address',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #333;">Verify Your New Email Address</h2>
+          <p>You requested to change your email address. Please click the button below to verify your new email:</p>
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${verificationLink}" 
+               style="background-color: #28a745; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">
+              Verify New Email
+            </a>
+          </div>
+          <p>Or copy and paste this link in your browser:</p>
+          <p style="word-break: break-all; color: #007bff;">${verificationLink}</p>
+          <p>This link will expire in 1 hour.</p>
+          <hr style="margin: 30px 0;">
+          <p style="color: #666; font-size: 12px;">If you didn't request an email change, please ignore this email.</p>
+        </div>
+      `,
+      text: `Verify your new email address by clicking this link: ${verificationLink}\n\nThis link will expire in 1 hour.`
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log('✅ Email change verification sent:', info.messageId);
+    
+    // Also log to console for development
+    console.log('════════════════════════════════════════');
+    console.log('📧 EMAIL CHANGE VERIFICATION SENT');
+    console.log('════════════════════════════════════════');
+    console.log('📧 New Email:', newEmail);
+    console.log('🔗 Verification Link:', verificationLink);
+    console.log('💡 Copy and paste this link to verify your new email');
+    console.log('════════════════════════════════════════\n');
+    
+    return true;
+  } catch (error) {
+    console.error('❌ Failed to send email change verification:', error);
+    throw new Error('Failed to send email change verification email');
+  }
+};
 
 // USER REGISTRATION 
 router.post('/register/user', async (req, res) => {
@@ -105,12 +232,12 @@ router.post('/register/user', async (req, res) => {
       emailVerificationExpires
     });
 
-    // Send verification email (logs to console)
+    // Send verification email using nodemailer
     await sendVerificationEmail(email, emailVerificationToken);
 
     res.status(201).json({
       success: true,
-      message: 'Account created! Check your console for verification link.',
+      message: 'Account created! Check your email for verification link.',
       data: {
         user: {
           id: user._id,
@@ -124,6 +251,16 @@ router.post('/register/user', async (req, res) => {
 
   } catch (error) {
     console.error('User registration error:', error);
+    
+    // Check if it's an email sending error
+    if (error.message.includes('Failed to send')) {
+      return res.status(500).json({
+        success: false,
+        message: 'Account created but verification email failed to send. Please contact support.',
+        error: error.message
+      });
+    }
+    
     res.status(500).json({
       success: false,
       message: 'Registration failed',
@@ -183,12 +320,12 @@ router.post('/register/organizer', async (req, res) => {
       emailVerificationExpires
     });
 
-    // Send verification email (logs to console)
+    // Send verification email using nodemailer
     await sendVerificationEmail(email, emailVerificationToken);
 
     res.status(201).json({
       success: true,
-      message: 'Organizer account created! Check your console for verification link.',
+      message: 'Organizer account created! Check your email for verification link.',
       data: {
         user: {
           id: organizer._id,
@@ -203,6 +340,16 @@ router.post('/register/organizer', async (req, res) => {
 
   } catch (error) {
     console.error('Organizer registration error:', error);
+    
+    // Check if it's an email sending error
+    if (error.message.includes('Failed to send')) {
+      return res.status(500).json({
+        success: false,
+        message: 'Account created but verification email failed to send. Please contact support.',
+        error: error.message
+      });
+    }
+    
     res.status(500).json({
       success: false,
       message: 'Registration failed',
@@ -211,7 +358,7 @@ router.post('/register/organizer', async (req, res) => {
   }
 });
 
-// VERIFY EMAIL ENDPOINT
+// VERIFY EMAIL ENDPOINT (unchanged)
 router.get('/verify-email', async (req, res) => {
   try {
     const { token } = req.query;
@@ -272,58 +419,6 @@ router.get('/verify-email', async (req, res) => {
   }
 });
 
-// RESEND VERIFICATION EMAIL
-router.post('/resend-verification', async (req, res) => {
-  try {
-    const { email } = req.body;
-
-    if (!email) {
-      return res.status(400).json({
-        success: false,
-        message: 'Email is required'
-      });
-    }
-
-    const user = await User.findOne({ email });
-
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: 'User not found'
-      });
-    }
-
-    if (user.isEmailVerified) {
-      return res.status(400).json({
-        success: false,
-        message: 'Email is already verified'
-      });
-    }
-
-    const emailVerificationToken = generateRandomToken();
-    const emailVerificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000);
-
-    user.emailVerificationToken = emailVerificationToken;
-    user.emailVerificationExpires = emailVerificationExpires;
-    await user.save();
-
-    await sendVerificationEmail(email, emailVerificationToken);
-
-    res.status(200).json({
-      success: true,
-      message: 'Verification email sent! Check your console for the link.'
-    });
-
-  } catch (error) {
-    console.error('Resend verification error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to resend verification email',
-      error: error.message
-    });
-  }
-});
-
 // FORGOT PASSWORD
 router.post('/forgot-password', async (req, res) => {
   try {
@@ -339,6 +434,7 @@ router.post('/forgot-password', async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
+      // Don't reveal whether email exists or not
       return res.status(200).json({
         success: true,
         message: 'If an account with that email exists, a password reset link has been sent.'
@@ -352,15 +448,26 @@ router.post('/forgot-password', async (req, res) => {
     user.resetPasswordExpires = resetTokenExpires;
     await user.save();
 
+    // Send password reset email using nodemailer
     await sendPasswordResetEmail(email, resetToken);
 
     res.status(200).json({
       success: true,
-      message: 'Password reset link sent! Check your console for the link.'
+      message: 'Password reset link sent! Check your email for the link.'
     });
 
   } catch (error) {
     console.error('Forgot password error:', error);
+    
+    // Check if it's an email sending error
+    if (error.message.includes('Failed to send')) {
+      return res.status(500).json({
+        success: false,
+        message: 'Password reset request received but email failed to send. Please try again.',
+        error: error.message
+      });
+    }
+    
     res.status(500).json({
       success: false,
       message: 'Password reset request failed',
@@ -369,7 +476,7 @@ router.post('/forgot-password', async (req, res) => {
   }
 });
 
-// VERIFY RESET TOKEN
+// VERIFY RESET TOKEN (unchanged)
 router.get('/verify-reset-token', async (req, res) => {
   try {
     const { token } = req.query;
@@ -393,11 +500,16 @@ router.get('/verify-reset-token', async (req, res) => {
       });
     }
 
+     // Mark the reset link as verified
+    user.resetLinkVerified = true;
+    await user.save();
+
     res.status(200).json({
       success: true,
       message: 'Reset token is valid',
       data: {
-        email: user.email
+        email: user.email,
+        resertLinkVerified: user.resetLinkVerified
       }
     });
 
@@ -411,15 +523,15 @@ router.get('/verify-reset-token', async (req, res) => {
   }
 });
 
-// RESET PASSWORD
+// UPDATED: Reset password (only works if link was verified first)
 router.post('/reset-password', async (req, res) => {
   try {
-    const { token, newPassword, confirmPassword } = req.body;
+    const { email, newPassword, confirmPassword } = req.body;
 
-    if (!token || !newPassword || !confirmPassword) {
+    if (!email || !newPassword || !confirmPassword) {
       return res.status(400).json({
         success: false,
-        message: 'All fields are required'
+        message: 'Email, new password, and confirm password are required'
       });
     }
 
@@ -437,23 +549,26 @@ router.post('/reset-password', async (req, res) => {
       });
     }
 
+    // Find user with verified reset link
     const user = await User.findOne({
-      resetPasswordToken: token,
+      email: email,
+      resetLinkVerified: true,
       resetPasswordExpires: { $gt: Date.now() }
     });
 
     if (!user) {
       return res.status(400).json({
         success: false,
-        message: 'Invalid or expired reset token'
+        message: 'Reset link not verified or expired. Please request a new reset link.'
       });
     }
 
+    // Reset password and clear reset fields
     const hashedPassword = await bcrypt.hash(newPassword, 12);
-
     user.password = hashedPassword;
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
+    user.resetLinkVerified = undefined; // Clear the verification flag
     await user.save();
 
     console.log('✅ PASSWORD RESET SUCCESSFUL');
@@ -474,7 +589,7 @@ router.post('/reset-password', async (req, res) => {
   }
 });
 
-// USER LOGIN (requires email verification)
+// USER LOGIN
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -524,7 +639,8 @@ router.post('/login', async (req, res) => {
           email: user.email,
           role: user.role,
           isEmailVerified: user.isEmailVerified
-        }
+        },
+        token: authToken
       }
     });
 
@@ -594,21 +710,12 @@ router.post('/change-email', async (req, res) => {
     user.emailChangeTokenExpires = emailChangeTokenExpires;
     await user.save();
 
-    // Send verification email to the NEW email address
-    const verificationLink = `${process.env.BASE_URL}/api/users/verify-email-change?token=${emailChangeToken}`;
-    
-    console.log('════════════════════════════════════════');
-    console.log('📧 EMAIL CHANGE VERIFICATION REQUIRED');
-    console.log('════════════════════════════════════════');
-    console.log('👤 Current User:', currentEmail);
-    console.log('📧 New Email:', newEmail);
-    console.log('🔗 Verification Link:', verificationLink);
-    console.log('💡 Copy and paste this link to verify your new email');
-    console.log('════════════════════════════════════════\n');
+    // Send verification email to the NEW email address using nodemailer
+    await sendEmailChangeVerification(newEmail, emailChangeToken);
 
     res.status(200).json({
       success: true,
-      message: 'Email change requested! Check your console for verification link sent to your new email.',
+      message: 'Email change requested! Check your new email for verification link.',
       data: {
         newEmail: newEmail
       }
@@ -616,6 +723,16 @@ router.post('/change-email', async (req, res) => {
 
   } catch (error) {
     console.error('Email change request error:', error);
+    
+    // Check if it's an email sending error
+    if (error.message.includes('Failed to send')) {
+      return res.status(500).json({
+        success: false,
+        message: 'Email change request received but verification email failed to send. Please try again.',
+        error: error.message
+      });
+    }
+    
     res.status(500).json({
       success: false,
       message: 'Email change request failed',
@@ -624,7 +741,7 @@ router.post('/change-email', async (req, res) => {
   }
 });
 
-// VERIFY EMAIL CHANGE
+// VERIFY EMAIL CHANGE (unchanged)
 router.get('/verify-email-change', async (req, res) => {
   try {
     const { token } = req.query;
@@ -686,6 +803,5 @@ router.get('/verify-email-change', async (req, res) => {
     });
   }
 });
-
 
 module.exports = router;
