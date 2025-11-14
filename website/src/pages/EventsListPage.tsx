@@ -137,7 +137,7 @@ export default function EventsListPage() {
                               </div>
                               {event.capacity && (
                                 <div className="stat">
-                                  <span className="statValue">{event.capacity - event.rsvpCount}</span>
+                                  <span className="statValue">{event.capacity}</span>
                                   <span className="statLabel">spots left</span>
                                 </div>
                               )}
