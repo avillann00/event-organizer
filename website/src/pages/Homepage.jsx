@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import {
   APIProvider,
   Map,
+  Marker,
+  InfoWindow
 } from '@vis.gl/react-google-maps';
 import { Home, User, Menu, MapPin } from 'lucide-react';
 import BottomNav from '../components/BottomNav'
@@ -17,17 +19,40 @@ export default function App() {
   
   const { events, setEvents } = useEvents()
 
-  if(localStorage.getItem('loggedIn') !== 'true'){
-    return <NotLoggedInPage />
-  }
+  const [radius, setRadius] = useState('')
+  const [category, setCategory] = useState('')
+  const [search, setSearch] = useState('')
+
+  const [selected, setSelected] = useState()
+
+  const filteredEvents = search.trim() 
+    ? events.filter((event) => 
+        event.title.toLowerCase().includes(search.toLowerCase()) ||
+        event.keywords?.some((k) => k.toLowerCase().includes(search.toLowerCase()))
+      )
+    : events;
 
   useEffect(() => {
+    if(!navigator.geolocation){
+      alert('Could not get location with your current browser')
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setUserLocation({ lat: position.coords.latitude, lng: position.coords.longitude })
+      },
+      (error) => {
+        console.error('error getting user location: ', error)
+      }
+    )
+  }, [])
+
+  useEffect(() => { 
     const getEvents = async () => {
       try{
-        const response = await axios.get('https://cop4331project.dev/api/events')    
+        const response = await axios.get(`https://cop4331project.dev/api/events/?radius=${radius}&category=${category}`)
 
         if(response.status === 200){
-          console.log(response)
           setEvents(response.data)
         }
       }
@@ -35,16 +60,27 @@ export default function App() {
         console.error('error getting events: ', error)
       }
     }
-
     
     if(localStorage.getItem('loggedIn') !== 'true'){
       getEvents()
     }
   }, [])
 
+  if(localStorage.getItem('loggedIn') !== 'true'){
+    return <NotLoggedInPage />
+  }
+
+  const pins = filteredEvents?.map((event) => (
+    <Marker
+      key={event._id}
+      position={{lat: event.location?.latitude || userLocation.lat, lng: event.location?.longitude || userLocation.lng}}
+      onClick={() => setSelected(event)}
+    />
+  ))
+
   return (
     <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
-      <div style={{ height: "100vh", width: "100%", position: "relative" }}>
+      <div style={{ height: "100vh", width: "100%", position: "relative", zIndex: 1 }}>
         {/* Search bar and filter at top */}
         <div style={{
           position: "absolute",
@@ -67,6 +103,8 @@ export default function App() {
               boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
               outline: "none"
             }}
+            onChange={(e) => setSearch(e.target.value)}
+            value={search}
           />
           <button
             style={{
@@ -88,12 +126,38 @@ export default function App() {
         <Map 
           defaultZoom={15} 
           defaultCenter={userLocation}
-          mapId="DEMO_MAP_ID"
           gestureHandling="greedy"
           disableDefaultUI={true}
           clickableIcons={false}
+          mapId="8a66c35f8f7f5392"
         >
+          {pins}
         </Map>
+
+        {selected && (
+          <InfoWindow
+            position={{
+              lat: selected.location?.latitude ?? userLocation.lat,
+              lng: selected.location?.longitude ?? userLocation.lng
+            }}
+            onCloseClick={() => setSelected(null)}
+          >
+            <div
+              style={{ cursor: "pointer" }}
+              onClick={() =>
+                navigate(`/events/${selected._id}`, {
+                  state: { event: selected }
+                })
+              }
+            >
+              <h3 style={{ margin: 0 }}>{selected.title}</h3>
+              <p style={{ margin: 0 }}>{selected.description}</p>
+              <p style={{ color: "blue", textDecoration: "underline", marginTop: "4px" }}>
+                View Details →
+              </p>
+            </div>
+          </InfoWindow>
+        )}
 
         {/* Return to location button - bottom right */}
         <button
