@@ -110,7 +110,7 @@ export default function CreateEvent(){
 
       if(response.status === 200 || response.status === 201){
         alert('Event created successfully!')
-        navigate('/dashboard')
+        navigate('/homepage')
       }
       else{
         alert('Error creating event')

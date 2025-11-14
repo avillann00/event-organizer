@@ -26,7 +26,8 @@ export default function ProfilePage(){
         <span>{name}</span>
         <span>{email}</span>
       </div>
-
+      
+      {/*
       <button
         className='profile-events-btn'
         onClick={() => navigate('/profile')}
@@ -34,6 +35,7 @@ export default function ProfilePage(){
         <Calendar size={50} color='#1976D2' />
         <span>Your Events</span>
       </button>
+      */}
 
       <button
         className='logout-button'
