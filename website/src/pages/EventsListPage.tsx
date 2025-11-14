@@ -40,7 +40,7 @@ export default function EventsListPage() {
       try {
         const response = await fetch('https://cop4331project.dev/api/events/')
         const data = await response.json();
-        setEvents(data);
+        setEvents(data.data);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching events:', error);
