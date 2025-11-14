@@ -23,11 +23,9 @@ interface Event {
 
 export default function EventsListPage() {
   const navigate = useNavigate()
-
+  const { events, setEvents } = useEvents()
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-
-  const { events } = useEvents()
 
   // Filter events based on search query
   const filteredEvents = searchQuery.trim() 
@@ -40,7 +38,9 @@ export default function EventsListPage() {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        console.log('events: ', events)
+        const response = await fetch('https://cop4331project.dev/api/events/')
+        const data = await response.json();
+        setEvents(data);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching events:', error);

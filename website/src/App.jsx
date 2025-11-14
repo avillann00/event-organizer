@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { EventProvider } from './context/EventContext'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Landing from './pages/Landing'
@@ -12,18 +13,20 @@ import AboutPage from './pages/AboutPage'
 
 export default function App() {
   return(
-    <BrowserRouter>
-      <Routes>
-        <Route path='/' element={<Landing />} />
-        <Route path='/login' element={<Login />} />
-        <Route path='/register' element={<Register />} />
-        <Route path='/events' element={<EventsListPage />} />
-        <Route path='/create-event' element={<CreateEvent />} />
-        <Route path='/events/:id' element={<EventDetails />} />
-        <Route path='/homepage' element={<Homepage />} />
-        <Route path='/profile' element={<ProfilePage />} />
-        <Route path='/about' element={<AboutPage />} />
-      </Routes>
-    </BrowserRouter>
+    <EventProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path='/' element={<Landing />} />
+          <Route path='/login' element={<Login />} />
+          <Route path='/register' element={<Register />} />
+          <Route path='/events' element={<EventsListPage />} />
+          <Route path='/create-event' element={<CreateEvent />} />
+          <Route path='/events/:id' element={<EventDetails />} />
+          <Route path='/homepage' element={<Homepage />} />
+          <Route path='/profile' element={<ProfilePage />} />
+          <Route path='/about' element={<AboutPage />} />
+        </Routes>
+      </BrowserRouter>
+    </EventProvider>
   )
 }
