@@ -45,7 +45,7 @@ export default function RSVPModal({ event, onClose, onConfirm }: RSVPModalProps)
       const data = await response.json()
 
       if (data.success){
-        const updatedEvent = {...event, rsvpCount: event.rsvpCount + 1 }
+        const updatedEvent = {...event, rsvpCount: event.rsvpCount + 1, capacity: event.capacity - 1 }
         alert('RSVP successful!')
         onConfirm(updatedEvent)
         onClose()
