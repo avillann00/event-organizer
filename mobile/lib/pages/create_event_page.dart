@@ -278,7 +278,7 @@ class _CreateEventPageState extends State<CreateEventPage>{
                 ],
               ),
               
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
 
               ElevatedButton.icon(
                   onPressed: pickImage,
@@ -322,7 +322,7 @@ class _CreateEventPageState extends State<CreateEventPage>{
                 ),
               ),
 
-              const SizedBox(height: 30),
+              const SizedBox(height: 10),
 
               ElevatedButton(
                 child: isLoading ? const CircularProgressIndicator(color: Colors.white) : const Text('Create Event'),
