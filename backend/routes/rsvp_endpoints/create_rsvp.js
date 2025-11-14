@@ -13,16 +13,16 @@ require('dotenv').config();
 
 router.post('/', async (req, res) => {
   try {
-    const { eventId, status } = req.body;
-
+    const { token, eventId, status } = req.body;
+    
     // Validate input
-    if (!eventId) {
+    if (!token || !eventId) {
       return res.status(400).json({
         success: false,
-        message: 'eventId is required'
+        message: 'Token and eventId are required'
       });
     }
-
+    
     // Validate eventId format
     if (!mongoose.Types.ObjectId.isValid(eventId)) {
       return res.status(400).json({
@@ -30,17 +30,8 @@ router.post('/', async (req, res) => {
         message: 'Invalid event ID format'
       });
     }
-
-    // changing this to match how token is set up in user.js
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res.status(401).json({
-        success: false,
-        message: 'Authorization token required'
-      });
-    }
-
-    const token = authHeader.substring(7);
+    
+    // Verify token
     let decoded;
     try {
       decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -50,7 +41,7 @@ router.post('/', async (req, res) => {
         message: 'Invalid or expired token'
       });
     }
-
+    
     // Check if event exists
     const event = await Event.findById(eventId);
     if (!event) {
@@ -59,7 +50,7 @@ router.post('/', async (req, res) => {
         message: 'Event not found'
       });
     }
-
+    
     // Check if RSVP already exists for this user and event
     const existingRsvp = await Rsvp.findOne({ eventId, userId: decoded.userId });
     if (existingRsvp) {
@@ -68,17 +59,16 @@ router.post('/', async (req, res) => {
         message: 'You have already RSVP\'d to this event'
       });
     }
-
+    
     // Create new RSVP
     const newRsvp = new Rsvp({
       eventId,
       userId: decoded.userId,
       status: status || 'pending'
-      // Let MongoDB handle createdAt and updatedAt timestamps
     });
-
+    
     await newRsvp.save();
-
+    
     // Send success response
     res.status(201).json({
       success: true,
@@ -87,7 +77,6 @@ router.post('/', async (req, res) => {
         rsvp: newRsvp
       }
     });
-
   } catch (error) {
     console.error('Error creating RSVP:', error);
     res.status(500).json({
