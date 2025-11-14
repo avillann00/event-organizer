@@ -12,6 +12,15 @@ import NotLoggedInPage from '../components/NotLoggedInPage'
 import { useEvents } from '../context/EventContext'
 import axios from 'axios'
 
+const options = [
+  'sports',
+  'food',
+  'tech',
+  'art',
+  'games',
+  'outdoors'
+]
+
 export default function App() {
   const navigate = useNavigate()
 
@@ -19,11 +28,12 @@ export default function App() {
   
   const { events, setEvents } = useEvents()
 
-  const [radius, setRadius] = useState('')
-  const [category, setCategory] = useState('')
+  // const [radius, setRadius] = useState('')
+  const [categories, setCategories] = useState([])
   const [search, setSearch] = useState('')
 
   const [selected, setSelected] = useState()
+  const [isFilterOpen, setIsFilterOpen] = useState(false)
 
   const filteredEvents = search?.trim() 
     ? events?.filter((event) => 
@@ -50,7 +60,13 @@ export default function App() {
   useEffect(() => { 
     const getEvents = async () => {
       try{
-        const response = await axios.get(`https://cop4331project.dev/api/events/`)
+        let response
+        if(categories.length > 0){
+          response = await axios.get(`https://cop4331project.dev/api/events/?keywords=${categories}`)
+        } 
+        else{
+          response = await axios.get(`https://cop4331project.dev/api/events/`)
+        }
 
         console.log('response: ', response)
         if(response.status === 200){
@@ -65,7 +81,7 @@ export default function App() {
     if(localStorage.getItem('loggedIn') === 'true'){
       getEvents()
     }
-  }, [])
+  }, [categories])
 
   if(localStorage.getItem('loggedIn') !== 'true'){
     return <NotLoggedInPage />
@@ -118,10 +134,72 @@ export default function App() {
               cursor: "pointer",
               fontWeight: "500"
             }}
+            onClick={() => setIsFilterOpen(prev => !prev)}
           >
             Filter
           </button>
         </div>
+
+        {isFilterOpen && (
+          <div
+            style={{
+              position: 'absolute',
+              top: '70px',
+              left: '20px',
+              right: '20px',
+              zIndex: 1000,
+              background: 'white',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+              borderRadius: '8px',
+              padding: '12px'
+            }}
+          >
+            <p style={{ marginBottom: '8px', fontWeight: '600' }}>Filter by Category</p>
+
+            {options.map((category) => (
+              <label
+                key={category}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '6px 0',
+                  cursor: 'pointer'
+                }}
+              >
+                <input
+                  type='checkbox'
+                  checked={categories.includes(category)}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setCategories((prev) => [...prev, category]);
+                    } else {
+                      setCategories((prev) => prev.filter((c) => c !== category));
+                    }
+                  }}
+                />
+                {category.charAt(0).toUpperCase() + category.slice(1)}
+              </label>
+            ))}
+
+            <button
+              onClick={() => setIsFilterOpen(false)}
+              style={{
+                marginTop: '10px',
+                width: '100%',
+                padding: '10px',
+                borderRadius: '6px',
+                border: 'none',
+                background: '#1976D2',
+                color: 'white',
+                cursor: 'pointer',
+                fontWeight: '500'
+              }}
+            >
+              Done
+            </button>
+          </div>
+        )}
 
         {/* Map */}
         <Map 

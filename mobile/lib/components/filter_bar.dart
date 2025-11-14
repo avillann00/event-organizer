@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class FilterBar extends StatefulWidget{
-  final void Function(String? radius, String? category)? onApply;
+  final void Function(String? category)? onApply;
+  // add String? radius to the line above
 
   const FilterBar({Key? key, this.onApply}) : super(key: key);
 
@@ -10,7 +11,7 @@ class FilterBar extends StatefulWidget{
 }
 
 class _FilterBarState extends State<FilterBar>{
-  String? selectedRadius;
+  // String? selectedRadius;
   String? selectedCategory;
 
   @override
@@ -31,6 +32,7 @@ class _FilterBarState extends State<FilterBar>{
 
           const SizedBox(height: 20),
 
+          /*
           DropdownButtonFormField<String>(
             decoration: const InputDecoration(
               labelText: 'Radius',
@@ -46,6 +48,7 @@ class _FilterBarState extends State<FilterBar>{
                 .toList(),
             onChanged: (value) => setState(() => selectedRadius = value),
           ),
+          */
 
           const SizedBox(height: 20),
 
@@ -56,7 +59,7 @@ class _FilterBarState extends State<FilterBar>{
             ),
             dropdownColor: Colors.white,
             value: selectedCategory,
-            items: ['Food', 'Music', 'Sports', 'Tech', 'All']
+            items: ['Food', 'Music', 'Sports', 'Tech']
                 .map((category) => DropdownMenuItem(
                       value: category,
                       child: Text(category),
@@ -70,7 +73,8 @@ class _FilterBarState extends State<FilterBar>{
             width: double.infinity,
             child: ElevatedButton(
               onPressed: (){
-                widget.onApply?.call(selectedRadius, selectedCategory);
+                widget.onApply?.call(selectedCategory);
+                // add selectedRadius to the line above
                 Navigator.pop(context);
               },
               style: ElevatedButton.styleFrom(

@@ -6,62 +6,69 @@ import '../models/event.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-Future<bool> _requestPermission() async{
+Future<bool> _requestPermission() async {
   LocationPermission permission = await Geolocator.checkPermission();
-  if(permission == LocationPermission.denied){
+  if (permission == LocationPermission.denied) {
     permission = await Geolocator.requestPermission();
   }
-  return permission == LocationPermission.whileInUse || permission == LocationPermission.always;
+  return permission == LocationPermission.whileInUse ||
+      permission == LocationPermission.always;
 }
 
-Future<Position?> getCurrentPosition() async{
+Future<Position?> getCurrentPosition() async {
   final hasPermission = await _requestPermission();
-  if(!hasPermission){
-    return null;
-  }
+  if (!hasPermission) return null;
 
-  final serviceEnabled = await Geolocator.isLocationServiceEnabled();
-  if(!serviceEnabled){
-    return null;
-  }
+  if (!await Geolocator.isLocationServiceEnabled()) return null;
 
-  return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+  return await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high);
 }
 
-class MapPage extends StatefulWidget{
+class MapPage extends StatefulWidget {
   final Function(List<Event>) onEventsUpdated;
   final List<Event> events;
 
-  const MapPage({required this.events, required this.onEventsUpdated, super.key});
+  const MapPage(
+      {required this.events, required this.onEventsUpdated, super.key});
 
   @override
   State<MapPage> createState() => _MapPageState();
 }
 
-class _MapPageState extends State<MapPage>{
+class _MapPageState extends State<MapPage> {
   Position? _position;
   bool _isMapReady = false;
   GoogleMapController? _mapController;
 
+  final SearchController searchController = SearchController();
+
   final Set<Marker> _markers = {};
   final List<Event> _events = [];
 
+  /// Current filters
+  String _currentCategory = ''; // No category by default
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     _fetchLocation();
+
+    // Listen to search typing
+    searchController.addListener(() {
+      fetchEvents(_currentCategory);
+    });
   }
 
-  void _fetchLocation() async{
+  void _fetchLocation() async {
     final pos = await getCurrentPosition();
-    if (mounted){
+    if (mounted) {
       setState(() => _position = pos);
-      fetchEvents(10.0, 'All');
+      fetchEvents(''); // No selected category = fetch all
     }
   }
 
-  void _onMapCreated(GoogleMapController controller){
+  void _onMapCreated(GoogleMapController controller) {
     _mapController = controller;
 
     Future.delayed(const Duration(milliseconds: 500), () {
@@ -71,54 +78,87 @@ class _MapPageState extends State<MapPage>{
     });
   }
 
-  void _loadMarkers(){
-    for(var event in _events){
+  void _loadMarkers() {
+    for (var event in _events) {
       _markers.add(
         Marker(
           markerId: MarkerId(event.id),
-          position: LatLng(event.location['latitude'] ?? 0.0, event.location['longitude'] ?? 0.0),
+          position: LatLng(
+            event.location['latitude'] ?? 0.0,
+            event.location['longitude'] ?? 0.0,
+          ),
           infoWindow: InfoWindow(
             title: event.title,
             snippet: event.description,
-            onTap: (){
+            onTap: () {
               Navigator.pushNamed(context, '/eventDetails', arguments: event);
-            }
+            },
           ),
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange)
-        )
+          icon:
+              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
+        ),
       );
     }
   }
 
-  Future<void> fetchEvents(double radius, String category) async{
-    final response = await http.get(Uri.parse('https://cop4331project.dev/api/events/'));
+  Future<void> fetchEvents(String? category) async {
+    String query = searchController.text.trim();
 
-    if(response.statusCode == 200){
+    // Category might be null → treat as empty
+    category = category ?? '';
+    _currentCategory = category;
+
+    Uri url;
+
+    /// Build the correct URL logic
+    if (query.isEmpty && category.isEmpty) {
+      // No filters → ALL EVENTS
+      url = Uri.parse('https://cop4331project.dev/api/events/');
+    } else if (query.isNotEmpty && category.isEmpty) {
+      // Search only
+      url = Uri.parse(
+        'https://cop4331project.dev/api/events/?title=${Uri.encodeComponent(query)}',
+      );
+    } else if (query.isEmpty && category.isNotEmpty) {
+      // Category only
+      url = Uri.parse(
+        'https://cop4331project.dev/api/events/?keywords=${Uri.encodeComponent(category)}',
+      );
+    } else {
+      // Both search + category
+      url = Uri.parse(
+        'https://cop4331project.dev/api/events/?title=${Uri.encodeComponent(query)}&keywords=${Uri.encodeComponent(category)}',
+      );
+    }
+
+    http.Response response = await http.get(url);
+
+    if (response.statusCode == 200) {
       final body = jsonDecode(response.body);
       final List data = body['data'];
-      setState((){
-        _events.clear();
-        _events.addAll(data.map((e) => Event.fromJson(e)).toList());
+
+      setState(() {
+        _events
+          ..clear()
+          ..addAll(data.map((e) => Event.fromJson(e)).toList());
 
         _markers.clear();
         _loadMarkers();
       });
 
       widget.onEventsUpdated(_events);
-    }
-    else{
-      setState((){
+    } else {
+      setState(() {
         _events.clear();
         _markers.clear();
       });
       widget.onEventsUpdated(_events);
-
-      print('failed to get events: ${response.statusCode}');
+      print("Failed to fetch events: ${response.statusCode}");
     }
   }
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Scaffold(
       body: _position == null
           ? const Center(child: CircularProgressIndicator())
@@ -134,6 +174,8 @@ class _MapPageState extends State<MapPage>{
                   myLocationButtonEnabled: true,
                   markers: _markers,
                 ),
+
+                /// Search + Filter UI
                 Positioned(
                   top: 60,
                   left: 16,
@@ -142,50 +184,42 @@ class _MapPageState extends State<MapPage>{
                     children: [
                       Expanded(
                         child: SearchBar(
-                          controller: SearchController(),
+                          controller: searchController,
                           leading: const Icon(Icons.search),
                           hintText: 'Search',
                           backgroundColor: MaterialStateProperty.all(
                             Colors.white.withOpacity(0.9),
                           ),
-                          shadowColor: MaterialStateProperty.all(Colors.black),
-                          elevation: MaterialStateProperty.all(4.0),
-                          shape: MaterialStateProperty.all(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20.0),
-                            ),
-                          ),
-                          padding: MaterialStateProperty.all(
-                            const EdgeInsets.symmetric(horizontal: 16.0),
-                          ),
+                          elevation: MaterialStateProperty.all(4),
                         ),
                       ),
                       const SizedBox(width: 10),
                       Material(
-                        color: Colors.white.withValues(alpha: 0.9),
+                        color: Colors.white.withOpacity(0.9),
                         shape: const CircleBorder(),
                         elevation: 4,
                         child: IconButton(
-                          icon: const Icon(Icons.filter_list, color: Colors.black87),
-                          onPressed: (){
+                          icon: const Icon(Icons.filter_list),
+                          onPressed: () {
                             showModalBottomSheet(
                               context: context,
-                              backgroundColor: Colors.white,
                               shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.vertical(top: Radius.circular(20))
+                                borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(20)),
                               ),
                               builder: (context) => FilterBar(
-                                onApply: (radius, category){
-                                  fetchEvents(double.parse(radius ?? '0'), category ?? '');
-                                }
-                              )
+                                onApply: (category) {
+                                  fetchEvents(category);
+                                },
+                              ),
                             );
-                          }
+                          },
                         ),
                       ),
                     ],
                   ),
                 ),
+
                 if (!_isMapReady)
                   Container(
                     color: Colors.white,
@@ -197,10 +231,7 @@ class _MapPageState extends State<MapPage>{
                           SizedBox(height: 20),
                           CircularProgressIndicator(),
                           SizedBox(height: 16),
-                          Text(
-                            'Loading map...',
-                            style: TextStyle(fontSize: 16),
-                          ),
+                          Text('Loading map...', style: TextStyle(fontSize: 16)),
                         ],
                       ),
                     ),
