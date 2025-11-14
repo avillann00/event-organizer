@@ -10,7 +10,6 @@ import EventDetails from './pages/EventDetails'
 import Homepage from './pages/Homepage'
 import ProfilePage from './pages/ProfilePage'
 import AboutPage from './pages/AboutPage'
-import { EventProvider } from './context/EventContext'
 
 export default function App() {
   return(
