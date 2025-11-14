@@ -1,10 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // for date formatting
 import '../models/event.dart';
+import '../components/rsvpModal.dart';
 
-class EventDetailsPage extends StatelessWidget {
+class EventDetailsPage extends StatefulWidget {
   final Event event;
   const EventDetailsPage({required this.event});
+
+  @override
+  State<EventDetailsPage> createState() => _EventDetailsPageState();
+}
+
+class _EventDetailsPageState extends State<EventDetailsPage> {
+  late Event currentEvent;
+
+  @override
+  void initState() {
+    super.initState();
+    currentEvent = widget.event;
+  }
 
   String _formatDateRange(DateTime start, DateTime end) {
     final formatter = DateFormat('EEE, MMM d • h:mm a');
@@ -14,12 +28,12 @@ class EventDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final dateRange = _formatDateRange(event.startTime, event.endTime);
+    final dateRange = _formatDateRange(currentEvent.startTime, currentEvent.endTime);
 
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: Text(event.title),
+        title: Text(currentEvent.title),
         backgroundColor: Colors.blueAccent,
         elevation: 2,
       ),
@@ -27,9 +41,9 @@ class EventDetailsPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (event.media.isNotEmpty)
+            if (currentEvent.media.isNotEmpty)
               Image.network(
-                event.media.first,
+                currentEvent.media.first,
                 height: 220,
                 width: double.infinity,
                 fit: BoxFit.cover,
@@ -52,14 +66,12 @@ class EventDetailsPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    event.title,
+                    currentEvent.title,
                     style: theme.textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-
                   const SizedBox(height: 8),
-
                   Row(
                     children: [
                       const Icon(Icons.access_time, size: 20, color: Colors.grey),
@@ -80,7 +92,7 @@ class EventDetailsPage extends StatelessWidget {
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          event.address ?? 'No address provided',
+                          currentEvent.address ?? 'No address provided',
                           style: const TextStyle(fontSize: 15),
                         ),
                       ),
@@ -95,10 +107,10 @@ class EventDetailsPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    event.description ?? 'No description available.',
+                    currentEvent.description ?? 'No description available.',
                     style: const TextStyle(fontSize: 15, height: 1.4),
                   ),
-
+                  
                   const SizedBox(height: 20),
 
                   Card(
@@ -108,24 +120,22 @@ class EventDetailsPage extends StatelessWidget {
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
                         children: [
-                           _detailRow(Icons.people, "Capacity",
-                              event.capacity != null ? "${event.capacity} people" : "Not specified"),
+                          _detailRow(Icons.people, "Capacity",
+                              currentEvent.capacity != null ? "${currentEvent.capacity} people" : "Not specified"),
                           const Divider(),
                           _detailRow(Icons.confirmation_number, "Tickets",
-                              event.ticketPrice == null || event.ticketPrice == 0
+                              currentEvent.ticketPrice == null || currentEvent.ticketPrice == 0
                                   ? "Free"
-                                  : "\$${event.ticketPrice!.toStringAsFixed(2)}"),
-                          _detailRow(Icons.person, "Organizer", event.organizerId),
+                                  : "\$${currentEvent.ticketPrice!.toStringAsFixed(2)}"),
+                          _detailRow(Icons.person, "Organizer", currentEvent.organizerId),
                           const Divider(),
-                          _detailRow(Icons.check_circle, "RSVPs", "${event.rsvpCount} attending"),
+                          _detailRow(Icons.check_circle, "RSVPs", "${currentEvent.rsvpCount} attending"),
                         ],
                       ),
                     ),
                   ),
-
                   const SizedBox(height: 20),
-
-                  if (event.keywords.isNotEmpty) ...[
+                  if (currentEvent.keywords.isNotEmpty) ...[
                     Text(
                       "Tags",
                       style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
@@ -133,7 +143,7 @@ class EventDetailsPage extends StatelessWidget {
                     const SizedBox(height: 8),
                     Wrap(
                       spacing: 8,
-                      children: event.keywords
+                      children: currentEvent.keywords
                           .map((tag) => Chip(
                                 label: Text(tag),
                                 backgroundColor: Colors.blue.shade50,
@@ -142,6 +152,41 @@ class EventDetailsPage extends StatelessWidget {
                           .toList(),
                     ),
                   ],
+                  const SizedBox(height: 24),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => RSVPModal(
+                            event: currentEvent,
+                            onConfirm: (updatedEvent) {
+                              setState(() {
+                                currentEvent = updatedEvent;
+                              });
+                            },
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blueAccent,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const Text(
+                        'RSVP TO THIS EVENT!',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
                 ],
               ),
             ),

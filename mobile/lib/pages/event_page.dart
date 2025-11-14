@@ -4,8 +4,9 @@ import 'package:intl/intl.dart';
 
 class EventPage extends StatefulWidget {
   final List<Event> events;
+  final Function? onNavigateBack;
 
-  const EventPage({required this.events, super.key});
+  const EventPage({required this.events, this.onNavigateBack, super.key});
 
   @override
   State<EventPage> createState() => _EventPageState();
@@ -31,7 +32,9 @@ class _EventPageState extends State<EventPage> {
               
               return GestureDetector(
                   onTap: (){
-                    Navigator.pushNamed(context, '/eventDetails', arguments: event);
+                    Navigator.pushNamed(context, '/eventDetails', arguments: event).then((_) {
+                      widget.onNavigateBack?.call();
+                    });
                   },
                   child: Container(
                     margin: EdgeInsets.all(20),
@@ -110,6 +113,42 @@ class _EventPageState extends State<EventPage> {
                                   ),
                                 ],
                               ),
+                              SizedBox(height: 12),
+
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.people, size: 14, color: Colors.grey.shade600),
+                                        SizedBox(width: 4),
+                                        Text(
+                                          '${event.rsvpCount} attending',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.grey.shade600,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  if (event.capacity != null)
+                                    Row(
+                                      children: [
+                                        Icon(Icons.event_seat, size: 14, color: Colors.grey.shade600),
+                                        SizedBox(width: 4),
+                                        Text(
+                                          '${event.capacity} spots left',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.grey.shade600,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                ],
+                              ),
+
                               SizedBox(height: 16),
 
                               Row(
