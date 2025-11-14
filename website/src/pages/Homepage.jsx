@@ -25,10 +25,10 @@ export default function App() {
 
   const [selected, setSelected] = useState()
 
-  const filteredEvents = search.trim() 
-    ? events.filter((event) => 
-        event.title.toLowerCase().includes(search.toLowerCase()) ||
-        event.keywords?.some((k) => k.toLowerCase().includes(search.toLowerCase()))
+  const filteredEvents = search?.trim() 
+    ? events?.filter((event) => 
+        event?.title.toLowerCase().includes(search?.toLowerCase()) ||
+        event?.keywords?.some((k) => k.toLowerCase().includes(search?.toLowerCase()))
       )
     : events;
 
@@ -50,10 +50,11 @@ export default function App() {
   useEffect(() => { 
     const getEvents = async () => {
       try{
-        const response = await axios.get(`https://cop4331project.dev/api/events/?radius=${radius}&category=${category}`)
+        const response = await axios.get(`https://cop4331project.dev/api/events/`)
 
+        console.log('response: ', response)
         if(response.status === 200){
-          setEvents(response.data)
+          setEvents(response.data.data)
         }
       }
       catch(error){   
@@ -61,7 +62,7 @@ export default function App() {
       }
     }
     
-    if(localStorage.getItem('loggedIn') !== 'true'){
+    if(localStorage.getItem('loggedIn') === 'true'){
       getEvents()
     }
   }, [])
