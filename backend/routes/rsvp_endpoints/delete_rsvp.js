@@ -1,4 +1,4 @@
-//backend/routes/create_rsvp.js
+//backend/routes/delete_rsvp.js
 const express = require('express');
 const router = express.Router();
 //require jsonwebtoken for token verification
@@ -55,3 +55,4 @@ router.delete('/', async (req, res) => {
   }
 });
 module.exports = router;
+
