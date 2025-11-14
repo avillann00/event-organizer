@@ -68,6 +68,14 @@ router.post('/', async (req, res) => {
     });
     
     await newRsvp.save();
+
+    // $inc is a MongoDb update operator, it directly increments the count in MongoDb by 1
+    await Event.findByIdAndUpdate(eventId, { 
+      $inc: { 
+        rsvpCount: 1,
+        capacity: -1 
+      }
+    })
     
     // Send success response
     res.status(201).json({

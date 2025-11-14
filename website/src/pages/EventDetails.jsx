@@ -31,7 +31,8 @@ export default function EventDetails() {
     return `${st.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })} to ${en.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`
   }
 
-  const handleRSVPConfirm = () => {
+  const handleRSVPConfirm = (updatedEvent) => {
+    setEvent(updatedEvent)
     console.log('RSVP confirmed!', event._id)
     setShowRSVPModal(false)
   }
@@ -97,11 +98,11 @@ export default function EventDetails() {
             RSVP TO THIS EVENT!
           </button>
         </div>
-                {showRSVPModal && (
-        <RSVPModal
-          event={event}
-          onClose={() => setShowRSVPModal(false)}
-          onConfirm={handleRSVPConfirm}
+          {showRSVPModal && (
+            <RSVPModal
+              event={event}
+              onClose={() => setShowRSVPModal(false)}
+              onConfirm={handleRSVPConfirm}
         />
       )}
       </div>
