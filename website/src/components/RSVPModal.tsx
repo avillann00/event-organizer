@@ -15,7 +15,7 @@ interface RSVPModalProps {
     capacity: number;
   };
   onClose: () => void;
-  onConfirm: () => void;
+  onConfirm: (updatedEvent: any) => void;
 }
 
 export default function RSVPModal({ event, onClose, onConfirm }: RSVPModalProps) {
@@ -45,8 +45,9 @@ export default function RSVPModal({ event, onClose, onConfirm }: RSVPModalProps)
       const data = await response.json()
 
       if (data.success){
+        const updatedEvent = {...event, rsvpCount: event.rsvpCount + 1 }
         alert('RSVP successful!')
-        onConfirm()
+        onConfirm(updatedEvent)
         onClose()
       } else {
         alert(data.message || 'RSVP failed')
