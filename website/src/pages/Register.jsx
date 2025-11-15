@@ -62,7 +62,6 @@ export default function Register() {
       // Check if status is 200 or 201 (success)
       if (response.status === 200 || response.status === 201) {
         console.log('User Registration Success:', response.data);
-        alert('Registration successful! Redirecting to login...');
         navigate('/login');
       }
     } catch (error) {
@@ -111,7 +110,6 @@ export default function Register() {
       // Check if status is 200 or 201 (success)
       if (response.status === 200 || response.status === 201) {
         console.log('Organization Registration Success:', response.data);
-        alert('Registration successful! Redirecting to login...');
         navigate('/login');
       }
     } catch (error) {

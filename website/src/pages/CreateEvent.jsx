@@ -31,6 +31,8 @@ export default function CreateEvent(){
     { value: 'tech', label: 'Tech' }
   ]
 
+  const [message, setMessage] = useState('')
+
   const uploadImage = async () => {
     if(!media){
       return
@@ -52,7 +54,7 @@ export default function CreateEvent(){
     }
     catch(error){
       console.error('error uploading image: ', error)
-      alert('Error uploading image')
+      setMessage('Error uploading image')
     }
   }
 
@@ -62,7 +64,7 @@ export default function CreateEvent(){
     const res = await axios.get(`https://nominatim.openstreetmap.org/search?q=${encoded}&format=json`)
 
     if(!res.data.length){
-      alert('Location not found')
+      setMessage('Location not found')
       throw new Error('location not found')
     }
 
@@ -79,7 +81,7 @@ export default function CreateEvent(){
     e.preventDefault()
 
     if (!title || !description || !address || !capacity || !ticketPrice || !startTime || !endTime) {
-      alert('All fields are required')
+      setMessage('All fields are required')
       return
     }
 
@@ -109,11 +111,11 @@ export default function CreateEvent(){
       const response = await axios.post('https://cop4331project.dev/api/events', eventData)
 
       if(response.status === 200 || response.status === 201){
-        alert('Event created successfully!')
+        setMessage('Event created successfully!')
         navigate('/homepage')
       }
       else{
-        alert('Error creating event')
+        setMessage('Error creating event')
         console.error('error creating event')
       }
     }
@@ -231,6 +233,7 @@ export default function CreateEvent(){
           </label>
           
           <button type='submit' className='submit-btn'>Create Event</button>
+          {message && <p>{message}</p>}
         </form>
       </div>
       <BottomNav />
