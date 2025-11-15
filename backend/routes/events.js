@@ -146,6 +146,86 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+router.put('/:id', async (req, res) => {
+  try {
+    const { token, title, description, startTime, endTime, address, latitude, longitude, capacity, ticketPrice, keywords, media } = req.body;
+    
+    if (!token) {
+      return res.status(400).json({
+        success: false,
+        message: 'Token is required'
+      });
+    }
+    
+    // Verify token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    
+    // Validate event ID
+    const eventId = req.params.id;
+    if (!mongoose.Types.ObjectId.isValid(eventId)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid event ID'
+      });
+    }
+    
+    // Find the event
+    const event = await Event.findById(eventId);
+    if (!event) {
+      return res.status(404).json({
+        success: false,
+        message: 'Event not found'
+      });
+    }
+    
+    // Check if user owns the event (organizers can only edit their own)
+    if (decoded.role === 'organizer' && event.organizerId.toString() !== decoded.userId) {
+      return res.status(403).json({
+        success: false,
+        message: 'Access denied. You can only edit your own events'
+      });
+    }
+    
+    // Build location object if latitude and longitude are provided
+    const location = (latitude !== undefined && longitude !== undefined) 
+      ? { latitude: parseFloat(latitude), longitude: parseFloat(longitude) }
+      : event.location;
+    
+    // Update the event
+    const updatedEvent = await Event.findByIdAndUpdate(
+      eventId,
+      {
+        title: title || event.title,
+        description: description || event.description,
+        startTime: startTime || event.startTime,
+        endTime: endTime || event.endTime,
+        location,
+        address: address || event.address,
+        capacity: capacity || event.capacity,
+        ticketPrice: ticketPrice !== undefined ? ticketPrice : event.ticketPrice,
+        keywords: keywords || event.keywords,
+        media: media || event.media
+      },
+      { new: true } // Return the updated document
+    );
+    
+    res.status(200).json({
+      success: true,
+      message: 'Event updated successfully',
+      data: {
+        event: updatedEvent
+      }
+    });
+  } catch (error) {
+    console.error('Error updating event:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while updating event',
+      error: error.message
+    });
+  }
+});
+
 router.get('/', async (req, res) => {
   try{
     const params = req.query
