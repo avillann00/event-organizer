@@ -10,6 +10,7 @@ import EventDetails from './pages/EventDetails'
 import Homepage from './pages/Homepage'
 import ProfilePage from './pages/ProfilePage'
 import AboutPage from './pages/AboutPage'
+import ResetPassword from './pages/ResetPassword'
 
 export default function App() {
   return(
@@ -25,6 +26,7 @@ export default function App() {
           <Route path='/homepage' element={<Homepage />} />
           <Route path='/profile' element={<ProfilePage />} />
           <Route path='/about' element={<AboutPage />} />
+          <Route path='/password-reset' element={<ResetPassword />} />
         </Routes>
       </BrowserRouter>
     </EventProvider>
