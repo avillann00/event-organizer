@@ -64,18 +64,11 @@ class _UserRegistrationFormState extends State<UserRegistrationForm>{
     if(response.statusCode == 200 || response.statusCode == 201){
       debugPrint('user registered: ${response.body}');
 
-      final responseData = jsonDecode(response.body);
-      final userData = responseData['data']['user'];
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Verification email sent"))
+      );
 
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setBool('isLoggedIn', true);
-      await prefs.setString('userId', userData['id']);
-      await prefs.setString('userName', userData['name']);
-      await prefs.setString('userEmail', userData['email']);
-      await prefs.setString('userRole', userData['role']);
-      await prefs.setString('token', responseData['data']['token']);
-
-      Navigator.pushNamed(context, '/userHomePage');
+      Navigator.pushNamed(context, '/login');
     }
     else{
       ScaffoldMessenger.of(context).showSnackBar(
