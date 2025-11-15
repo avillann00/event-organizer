@@ -18,6 +18,7 @@ class _PasswordResetState extends State<PasswordReset>{
   final TextEditingController passwordConfirmController = TextEditingController();
 
   bool verified = false;
+  String inputEmail = '';
 
   Future<void> SendResetEmail(BuildContext context) async{
     if(emailController.text.trim() == ''){
@@ -38,6 +39,7 @@ class _PasswordResetState extends State<PasswordReset>{
 
     if(response.statusCode == 200){
       setState((){
+        inputEmail = emailController.text.trim();
         verified = true;
       });
     }
@@ -68,9 +70,9 @@ class _PasswordResetState extends State<PasswordReset>{
       Uri.parse('https://cop4331project.dev/api/users/reset-password'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
-        'email': emailController.text.trim(),
+        'email': inputEmail,
         'newPassword': passwordController.text.trim(),
-        'ConfirmPassword': passwordConfirmController.text.trim()
+        'confirmPassword': passwordConfirmController.text.trim()
       })
     );
 
