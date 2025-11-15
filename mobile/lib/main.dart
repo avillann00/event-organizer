@@ -6,6 +6,7 @@ import 'pages/login_page.dart';
 import 'pages/event_details.dart';
 import 'models/event.dart';
 import 'pages/create_event_page.dart';
+import 'pages/password_reset.dart';
 
 void main() {
   runApp(const MyApp());
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => LoginPage(),
         '/register': (context) => RegisterPage(),
         '/createEvent': (context) => CreateEventPage(),
+        '/resetPassword': (context) => PasswordReset(),
       },
       onGenerateRoute: (settings){
         if(settings.name == '/eventDetails'){

@@ -18,7 +18,7 @@ class _LoginPageState extends State<LoginPage> {
   final passwordController = TextEditingController();
 
   Future<void> loginUser(BuildContext context) async{
-    if(emailController.text == '' || passwordController.text == ''){
+    if(emailController.text.trim() == '' || passwordController.text.trim() == ''){
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Please fill in all fields"))
       );
@@ -30,8 +30,8 @@ class _LoginPageState extends State<LoginPage> {
       Uri.parse('https://cop4331project.dev/api/users/login'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
-        'email': emailController.text,
-        'password': passwordController.text
+        'email': emailController.text.trim(),
+        'password': passwordController.text.trim()
       })
     );
     
@@ -131,6 +131,33 @@ class _LoginPageState extends State<LoginPage> {
                     },
                     child: Text(
                       'Register instead',
+                      style: TextStyle(
+                        color: Colors.blue,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Forgot your password?',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                    ),
+                  ),
+
+                  const SizedBox(width: 4),
+
+                  GestureDetector(
+                    onTap: (){
+                      Navigator.pushNamed(context, '/resetPassword');
+                    },
+                    child: Text(
+                      'Reset Password',
                       style: TextStyle(
                         color: Colors.blue,
                         fontSize: 16,

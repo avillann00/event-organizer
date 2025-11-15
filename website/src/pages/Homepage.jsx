@@ -44,7 +44,7 @@ export default function App() {
 
   useEffect(() => {
     if(!navigator.geolocation){
-      alert('Could not get location with your current browser')
+      return
     }
 
     navigator.geolocation.getCurrentPosition(
