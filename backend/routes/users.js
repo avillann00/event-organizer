@@ -6,7 +6,6 @@ const User = require('../models/ModelUser');
 const router = express.Router();
 const nodemailer = require("nodemailer");
 
-// Generate JWT Token
 const generateToken = (userId) => {
   return jwt.sign({ userId }, process.env.JWT_SECRET, {
     expiresIn: '30d',
@@ -728,7 +727,8 @@ router.post('/login', async (req, res) => {
           email: user.email,
           role: user.role,
           isEmailVerified: user.isEmailVerified
-        }
+        },
+        token: authToken
       }
     });
 

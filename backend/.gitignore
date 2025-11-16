@@ -1,0 +1,58 @@
+#node gitignore
+# --- Environment variables ---
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# --- Node dependencies ---
+node_modules/
+
+# --- Build outputs  ---
+dist/
+build/
+.cache/
+.temp/
+tmp/
+coverage/
+
+# --- Logs ---
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# --- Process management files ---
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# --- Runtime data ---
+lib-cov/
+*.lcov
+.nyc_output/
+
+# --- Editor & system files ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# --- Uploads (if using multer or local file uploads) ---
+uploads/
+uploads_temp/
+# (If your uploads are stored persistently, remove the line above)
+
+# --- MongoDB local data (if you ever run a local instance) ---
+data/
+dump/
+
+# --- OS files ---
+*.tmp
+*.bak

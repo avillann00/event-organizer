@@ -1,0 +1,57 @@
+# --- Environment variables ---
+.env
+.env.local
+.env.*.local
+
+# --- Node dependencies ---
+node_modules/
+
+# --- Build outputs ---
+dist/
+build/
+.vite/
+.vite-temp/
+.cache/
+coverage/
+
+# --- Logs ---
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# --- Editor and system files ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- Test / Lint caches ---
+.eslintcache
+jest-cache/
+jest-html-reporters-*
+*.tsbuildinfo
+
+# --- Package manager metadata ---
+package-lock.json.backup
+.pnpm-debug.log*
+.yarn-integrity
+.npmrc
+
+# --- Local runtime files ---
+*.pid
+*.seed
+*.pid.lock
+
+# ---ignore preview builds or temp assets ---
+tmp/
+temp/
+*.tmp
+
+# --- Vite specific ---
+vite.config.ts.timestamp-*
+vite.config.js.timestamp-*
