@@ -20,8 +20,11 @@ const eventSchema = new mongoose.Schema({
     type: Date,
     required: true
   },
-  location: {
-    type: Object
+  latitude: {
+    type: Number
+  },
+  longitude: {
+    type: Number
   },
   address: {
     type: String
