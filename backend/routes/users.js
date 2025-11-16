@@ -183,15 +183,69 @@ const sendEmailChangeVerification = async (newEmail, emailChangeToken) => {
   }
 };
 
+// Add this after your existing email sending functions
+const sendEmailRecoveryEmail = async (backupEmail, resetToken) => {
+  try {
+    const transporter = createTransporter();
+    const recoveryLink = `${process.env.FRONTEND_URL || 'http://localhost:5000'}/api/users/verify-email-reset-token?token=${resetToken}`;
+    
+    const mailOptions = {
+      from: process.env.EMAIL_FROM || '"Event App" <noreply@yourapp.com>',
+      to: backupEmail,
+      subject: 'Recover Your Account Email',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #333;">Recover Your Account Email</h2>
+          <p>You requested to recover your account email. Click the button below to reset your email address:</p>
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${recoveryLink}" 
+               style="background-color: #ffc107; color: black; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">
+              Reset Email Address
+            </a>
+          </div>
+          <p>Or copy and paste this link in your browser:</p>
+          <p style="word-break: break-all; color: #007bff;">${recoveryLink}</p>
+          <p>This link will expire in 1 hour.</p>
+          <hr style="margin: 30px 0;">
+          <p style="color: #666; font-size: 12px;">If you didn't request an email recovery, please ignore this email.</p>
+        </div>
+      `,
+      text: `Recover your account email by clicking this link: ${recoveryLink}\n\nThis link will expire in 1 hour.`
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log('✅ Email recovery email sent:', info.messageId);
+    
+    console.log('════════════════════════════════════════');
+    console.log('📧 EMAIL RECOVERY EMAIL SENT');
+    console.log('════════════════════════════════════════');
+    console.log('📧 Backup Email:', backupEmail);
+    console.log('🔗 Recovery Link:', recoveryLink);
+    console.log('════════════════════════════════════════\n');
+    
+    return true;
+  } catch (error) {
+    console.error('❌ Failed to send email recovery email:', error);
+    throw new Error('Failed to send email recovery email');
+  }
+};
+
 // USER REGISTRATION 
 router.post('/register/user', async (req, res) => {
   try {
-    const { name, email, password, confirmPassword } = req.body;
+    const { name, email, password, confirmPassword, backupEmail } = req.body;
 
-    if (!name || !email || !password || !confirmPassword) {
+    if (!name || !email || !password || !confirmPassword || !backupEmail) {
       return res.status(400).json({
         success: false,
         message: 'All fields are required'
+      });
+    }
+
+    if (email === backupEmail) {
+      return res.status(400).json({
+        success: false,
+        message: 'Backup email must be different from main email'
       });
     }
 
@@ -209,12 +263,24 @@ router.post('/register/user', async (req, res) => {
       });
     }
 
-    const existingUser = await User.findOne({ email });
+    // Check if emails already exist
+    const existingUser = await User.findOne({ 
+      $or: [{ email }, { backupEmail }] 
+    });
+
     if (existingUser) {
-      return res.status(400).json({
-        success: false,
-        message: 'Email already registered'
-      });
+      if (existingUser.email === email) {
+        return res.status(400).json({
+          success: false,
+          message: 'Email already registered'
+        });
+      }
+      if (existingUser.backupEmail === backupEmail) {
+        return res.status(400).json({
+          success: false,
+          message: 'Backup email is already in use'
+        });
+      }
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
@@ -226,6 +292,7 @@ router.post('/register/user', async (req, res) => {
     const user = await User.create({
       name,
       email,
+      backupEmail,
       password: hashedPassword,
       role: 'user',
       isEmailVerified: false,
@@ -273,9 +340,9 @@ router.post('/register/user', async (req, res) => {
 // ORGANIZER REGISTRATION 
 router.post('/register/organizer', async (req, res) => {
   try {
-    const { organizationName, email, password, confirmPassword } = req.body;
+    const { organizationName, email, password, confirmPassword, backupEmail } = req.body;
 
-    if (!organizationName || !email || !password || !confirmPassword) {
+    if (!organizationName || !email || !password || !confirmPassword || !backupEmail) {
       return res.status(400).json({
         success: false,
         message: 'All fields are required'
@@ -296,13 +363,33 @@ router.post('/register/organizer', async (req, res) => {
       });
     }
 
-    const existingOrganizer = await User.findOne({ email });
-    if (existingOrganizer) {
+     if (email === backupEmail) {
+      return res.status(400).json({
+        success: false,
+        message: 'Backup email must be different from main email'
+      });
+    }
+
+
+  // Check if emails already exist
+  const existingUser = await User.findOne({ 
+    $or: [{ email }, { backupEmail }] 
+  });
+
+  if (existingUser) {
+    if (existingUser.email === email) {
       return res.status(400).json({
         success: false,
         message: 'Email already registered'
       });
     }
+    if (existingUser.backupEmail === backupEmail) {
+      return res.status(400).json({
+        success: false,
+        message: 'Backup email is already in use'
+      });
+    }
+  }
 
     const hashedPassword = await bcrypt.hash(password, 12);
 
@@ -313,6 +400,7 @@ router.post('/register/organizer', async (req, res) => {
     const organizer = await User.create({
       name: organizationName,
       email,
+      backupEmail,
       password: hashedPassword,
       role: 'organizer',
       organization: organizationName,
@@ -799,6 +887,178 @@ router.get('/verify-email-change', async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Email change verification failed',
+      error: error.message
+    });
+  }
+});
+
+// FORGOT EMAIL - Same as forgot-password but with backup email + password
+router.post('/forgot-email', async (req, res) => {
+  try {
+    const { backupEmail, password } = req.body;
+
+    if (!backupEmail || !password) {
+      return res.status(400).json({
+        success: false,
+        message: 'Backup email and password are required'
+      });
+    }
+
+    // Find user by backup email
+    const user = await User.findOne({ backupEmail });
+    if (!user) {
+      // Don't reveal whether backup email exists (same as forgot-password)
+      return res.status(200).json({
+        success: true,
+        message: 'If an account with that backup email exists, an email recovery link has been sent.'
+      });
+    }
+
+    // Verify password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid credentials'
+      });
+    }
+
+    // Generate email reset token (same as password reset)
+    const emailResetToken = generateRandomToken();
+    const emailResetExpires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+    user.emailResetToken = emailResetToken;
+    user.emailResetExpires = emailResetExpires;
+    await user.save();
+
+    // Send email recovery link (same flow as password reset)
+    await sendEmailRecoveryEmail(backupEmail, emailResetToken);
+
+    res.status(200).json({
+      success: true,
+      message: 'Email recovery link sent! Check your backup email for the link.'
+    });
+
+  } catch (error) {
+    console.error('Forgot email error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Email recovery request failed',
+      error: error.message
+    });
+  }
+});
+
+// VERIFY EMAIL RESET TOKEN - Same as verify-reset-token
+router.get('/verify-email-reset-token', async (req, res) => {
+  try {
+    const { token } = req.query;
+
+    if (!token) {
+      return res.status(400).json({
+        success: false,
+        message: 'Reset token is required'
+      });
+    }
+
+    const user = await User.findOne({
+      emailResetToken: token,
+      emailResetExpires: { $gt: Date.now() }
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid or expired reset token'
+      });
+    }
+
+    // Mark the reset link as verified (same as password reset)
+    user.emailResetVerified = true;
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Email reset token is valid',
+      data: {
+        backupEmail: user.backupEmail,
+        currentEmail: user.email
+      }
+    });
+
+  } catch (error) {
+    console.error('Verify email reset token error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Token verification failed',
+      error: error.message
+    });
+  }
+});
+
+// RESET EMAIL - Same as reset-password but for email
+router.post('/reset-email', async (req, res) => {
+  try {
+    const { backupEmail, newEmail } = req.body;
+
+    if (!backupEmail || !newEmail) {
+      return res.status(400).json({
+        success: false,
+        message: 'Backup email and new email are required'
+      });
+    }
+
+    // Find user with verified reset link (same as password reset)
+    const user = await User.findOne({
+      backupEmail: backupEmail,
+      emailResetVerified: true,
+      emailResetExpires: { $gt: Date.now() }
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: 'Reset link not verified or expired. Please request a new recovery link.'
+      });
+    }
+
+    // Check if new email is already taken
+    const existingUser = await User.findOne({ email: newEmail });
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: 'New email is already registered'
+      });
+    }
+
+    // Update email and clear reset fields (same flow as password reset)
+    const oldEmail = user.email;
+    user.email = newEmail;
+    user.isEmailVerified = true; // Auto-verify the new email (like password reset auto-completes)
+    user.emailResetToken = undefined;
+    user.emailResetExpires = undefined;
+    user.emailResetVerified = undefined;
+    await user.save();
+
+    console.log('✅ EMAIL RESET SUCCESSFUL');
+    console.log('👤 User backup email:', user.backupEmail);
+    console.log('📧 Old email:', oldEmail);
+    console.log('📧 New email:', user.email);
+
+    res.status(200).json({
+      success: true,
+      message: 'Email reset successfully! You can now login with your new email.',
+      data: {
+        oldEmail: oldEmail,
+        newEmail: newEmail
+      }
+    });
+
+  } catch (error) {
+    console.error('Reset email error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Email reset failed',
       error: error.message
     });
   }
