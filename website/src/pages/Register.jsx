@@ -9,12 +9,14 @@ export default function Register() {
   const [userFormData, setUserFormData] = useState({
     name: '',
     email: '',
+    recoveryEmail: '',
     password: '',
     confirmPassword: ''
   });
   const [orgFormData, setOrgFormData] = useState({
     organizationName: '',
     email: '',
+    recoveryEmail: '',
     password: '',
     confirmPassword: ''
   });
@@ -35,7 +37,7 @@ export default function Register() {
     
     // Client-side validation
     if (!userFormData.name || !userFormData.email || !userFormData.password || !userFormData.confirmPassword) {
-      setErrors({ ...errors, user: 'All fields are required' });
+      setErrors({ ...errors, user: '* All fields are required' });
       return;
     }
 
@@ -55,6 +57,7 @@ export default function Register() {
       const response = await axios.post('https://cop4331project.dev/api/users/register/user', {
         name: userFormData.name,
         email: userFormData.email,
+        recoveryEmail: userFormData.recoveryEmail,
         password: userFormData.password,
         confirmPassword: userFormData.confirmPassword
       });
@@ -83,7 +86,7 @@ export default function Register() {
     
     // Client-side validation
     if (!orgFormData.organizationName || !orgFormData.email || !orgFormData.password || !orgFormData.confirmPassword) {
-      setErrors({ ...errors, org: 'All fields are required' });
+      setErrors({ ...errors, org: '* All fields are required' });
       return;
     }
 
@@ -103,6 +106,7 @@ export default function Register() {
       const response = await axios.post('https://cop4331project.dev/api/users/register/organizer', {
         organizationName: orgFormData.organizationName,
         email: orgFormData.email,
+        recoveryEmail: orgFormData.recoveryEmail,
         password: orgFormData.password,
         confirmPassword: orgFormData.confirmPassword
       });
@@ -142,28 +146,35 @@ export default function Register() {
             <input
               name="organizationName"
               type="text"
-              placeholder="Organization Name"
+              placeholder="Organization Name *"
               value={orgFormData.organizationName}
               onChange={handleOrgInputChange}
             />
             <input
               name="email"
               type="email"
-              placeholder="Email"
+              placeholder="Email *"
               value={orgFormData.email}
               onChange={handleOrgInputChange}
             />
             <input
+              name="recoveryEmail"
+              type="email"
+              placeholder="Recovery Email (for account recovery)"
+              value={userFormData.recoveryEmail}
+              onChange={handleUserInputChange}
+            />
+            <input
               name="password"
               type="password"
-              placeholder="Password"
+              placeholder="Password *"
               value={orgFormData.password}
               onChange={handleOrgInputChange}
             />
             <input
               name="confirmPassword"
               type="password"
-              placeholder="Confirm Password"
+              placeholder="Confirm Password *"
               value={orgFormData.confirmPassword}
               onChange={handleOrgInputChange}
             />
@@ -184,28 +195,35 @@ export default function Register() {
             <input
               name="name"
               type="text"
-              placeholder="Full Name"
+              placeholder="Full Name *"
               value={userFormData.name}
               onChange={handleUserInputChange}
             />
             <input
               name="email"
               type="email"
-              placeholder="Email"
+              placeholder="Email *"
               value={userFormData.email}
+              onChange={handleUserInputChange}
+            />
+            <input
+              name="recoveryEmail"
+              type="email"
+              placeholder="Recovery Email (for account recovery)"
+              value={userFormData.recoveryEmail}
               onChange={handleUserInputChange}
             />
             <input
               name="password"
               type="password"
-              placeholder="Password"
+              placeholder="Password *"
               value={userFormData.password}
               onChange={handleUserInputChange}
             />
             <input
               name="confirmPassword"
               type="password"
-              placeholder="Confirm Password"
+              placeholder="Confirm Password *"
               value={userFormData.confirmPassword}
               onChange={handleUserInputChange}
             />
