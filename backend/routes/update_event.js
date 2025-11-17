@@ -4,18 +4,18 @@ const router = express.Router();
 //require jsonwebtoken for token verification
 const jwt = require('jsonwebtoken');
 //So we can query events
-const User = require('../models/ModelEvent');
+const Event = require('../models/ModelEvent');
 //To use values from .env
 require('dotenv').config();
 
 router.put('/', async (req, res) => {
     try {
-        const { token, eventId, title, description, date } = req.body;
+        const { token, eventId, title, description, startTime, endTime, address, latitude, longitude, capacity, ticketPrice, keywords, media } = req.body;
         //Validate input
-        if (!token || !eventId || !title || !description || !date) {
+        if (!token || !eventId) {
             return res.status(400).json({
                 success: false,
-                message: 'Token, event ID, title, description, and date are required to update events'
+                message: 'Token and event ID are required to update events'
             });
         }
         //Verify token
@@ -28,10 +28,22 @@ router.put('/', async (req, res) => {
                 message: 'Event not found'
             });
         }
-        //Update event details
-        event.title = title;
-        event.description = description;
-        event.date = date;
+        //Update event details - only update fields that are provided
+        if (title !== undefined) event.title = title;
+        if (description !== undefined) event.description = description;
+        if (startTime !== undefined) event.startTime = startTime;
+        if (endTime !== undefined) event.endTime = endTime;
+        if (address !== undefined) event.address = address;
+        if (capacity !== undefined) event.capacity = capacity;
+        if (ticketPrice !== undefined) event.ticketPrice = ticketPrice;
+        if (keywords !== undefined) event.keywords = keywords;
+        if (media !== undefined) event.media = media;
+        
+        // Update location if latitude and longitude are provided
+        if (latitude !== undefined && longitude !== undefined) {
+            event.location = { latitude: parseFloat(latitude), longitude: parseFloat(longitude) };
+        }
+        
         await event.save();
         //Send success response
         res.status(200).json({

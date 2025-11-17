@@ -82,6 +82,7 @@ Future<void> _logout(BuildContext context) async {
            const SizedBox(height: 40),
            const Divider(thickness: 1, indent: 20, endIndent: 20),
 
+            /*
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: const [
@@ -93,6 +94,7 @@ Future<void> _logout(BuildContext context) async {
                 ),
               ],
             ),
+            */
 
             const SizedBox(height: 250),
 

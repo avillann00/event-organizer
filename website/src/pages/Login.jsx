@@ -8,7 +8,7 @@ export default function Login(){
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [errors, setErrors] = useState("")
-  
+
   const handleLogin = async () => {
     try{
       const response = await axios.post('https://cop4331project.dev/api/users/login', {
@@ -24,14 +24,14 @@ export default function Login(){
         localStorage.setItem('userRole', data.user.role)
         localStorage.setItem('token', data.token)
         localStorage.setItem('loggedIn', 'true')
-
-        alert('Logged in!')
+        
+        setErrors('Login success')
         navigate('/homepage')
       }
     }
     catch(error){
       console.error('error logging in: ', error)
-      alert('Error logging in')
+      setErrors('Error logging in')
     }
   }
   
@@ -67,6 +67,7 @@ export default function Login(){
             </button>
             {errors && <p className="error-text">{errors}</p>}
           </form>
+          <span className='forgot-pass-span' onClick={() => navigate('/password-reset')}>Forgot your password?</span>
         </div>
       </div>
     </div>

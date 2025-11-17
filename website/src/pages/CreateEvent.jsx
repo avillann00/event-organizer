@@ -6,6 +6,7 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import Select from 'react-select'
 import BottomNav from '../components/BottomNav'
+import NotLoggedInPage from '../components/NotLoggedInPage'
 
 export default function CreateEvent(){
   const navigate = useNavigate()
@@ -30,6 +31,8 @@ export default function CreateEvent(){
     { value: 'tech', label: 'Tech' }
   ]
 
+  const [message, setMessage] = useState('')
+
   const uploadImage = async () => {
     if(!media){
       return
@@ -51,7 +54,7 @@ export default function CreateEvent(){
     }
     catch(error){
       console.error('error uploading image: ', error)
-      alert('Error uploading image')
+      setMessage('Error uploading image')
     }
   }
 
@@ -61,7 +64,7 @@ export default function CreateEvent(){
     const res = await axios.get(`https://nominatim.openstreetmap.org/search?q=${encoded}&format=json`)
 
     if(!res.data.length){
-      alert('Location not found')
+      setMessage('Location not found')
       throw new Error('location not found')
     }
 
@@ -78,7 +81,7 @@ export default function CreateEvent(){
     e.preventDefault()
 
     if (!title || !description || !address || !capacity || !ticketPrice || !startTime || !endTime) {
-      alert('All fields are required')
+      setMessage('All fields are required')
       return
     }
 
@@ -91,6 +94,7 @@ export default function CreateEvent(){
       }
 
       const eventData = {
+        token: localStorage.getItem('token'),
         title,
         description,
         address,
@@ -101,23 +105,27 @@ export default function CreateEvent(){
         latitude: coords.lat,
         longitude: coords.lng,
         keywords: keyWords.map(k => k.value),
-        mediaUrl: imageUrl
+        media: imageUrl ? [imageUrl] : []
       }
 
       const response = await axios.post('https://cop4331project.dev/api/events', eventData)
 
       if(response.status === 200 || response.status === 201){
-        alert('Event created successfully!')
-        navigate('/dashboard')
+        setMessage('Event created successfully!')
+        navigate('/homepage')
       }
       else{
-        alert('Error creating event')
+        setMessage('Error creating event')
         console.error('error creating event')
       }
     }
     catch(error){
       console.error('error details:', error)
     }
+  }
+
+  if(localStorage.getItem('loggedIn') !== 'true'){
+    return <NotLoggedInPage />
   }
 
   return(
@@ -225,6 +233,7 @@ export default function CreateEvent(){
           </label>
           
           <button type='submit' className='submit-btn'>Create Event</button>
+          {message && <p>{message}</p>}
         </form>
       </div>
       <BottomNav />

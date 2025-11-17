@@ -2,6 +2,7 @@
     min-height: 100vh;
     background-color: #fff;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", "SF Pro Display", system-ui, sans-serif;
+    padding-bottom: 80px;
 }
 
 .container {
@@ -192,4 +193,35 @@
     color: #666;
     margin-top: 100px;
     grid-column: 1 / -1;
+}
+
+.searchContainer {
+  padding: 0 20px 30px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.searchWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 12px 20px;
+  font-size: 16px;
+  border: 2px solid #ddd;
+  border-radius: 25px;
+  outline: none;
+  transition: border-color 0.3s;
+  font-family: inherit;
+}
+
+.searchInput:focus {
+  border-color: gold;
+}
+
+.searchInput::placeholder {
+  color: #999;
 }

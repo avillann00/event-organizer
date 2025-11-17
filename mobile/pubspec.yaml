@@ -43,6 +43,8 @@ dependencies:
   geocoding: ^2.1.0
   intl: ^0.19.0
   shared_preferences: ^2.2.2
+  hexcolor: ^3.0.1
+  flutter_native_splash: ^2.4.7
 
 dev_dependencies:
   flutter_test:
@@ -101,3 +103,18 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+flutter_native_splash:
+  android: true
+  ios: true
+  web: true
+
+  color: "#d4e4ed"
+  image: assets/event_organizer_logo.png
+  android_gravity: center
+  ios_content_mode: scaleAspectFit
+
+  android_12:
+    image: assets/event_organizer_logo.png
+    color: "#ffffff"
+    icon_background_color: "#ffffff"
