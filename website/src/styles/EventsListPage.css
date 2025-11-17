@@ -91,7 +91,7 @@
 .dateMonth {
     font-size: 12px;
     font-weight: bold;
-    color: #999;
+    color: darkslategrey;
     letter-spacing: 1px;
     margin-top: 4px;
 }
@@ -111,7 +111,7 @@
 
 .locationText {
     font-size: 11px;
-    color: #999;
+    color: darkslategrey;
     text-transform: uppercase;
     letter-spacing: 1px;
     font-weight: bold;
