@@ -6,6 +6,8 @@ import '../components/nav_button.dart';
 import '../models/event.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import './create_event_page.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class UserHomePage extends StatefulWidget {
   const UserHomePage({super.key});
@@ -44,6 +46,23 @@ class _UserHomePageState extends State<UserHomePage> {
     });
   }
 
+  Future<void> fetchEvents() async {
+  try {
+    final response = await http.get(
+      Uri.parse('https://cop4331project.dev/api/events/'),
+    );
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      final List eventData = data['data'];
+      setState(() {
+        _events = eventData.map((e) => Event.fromJson(e)).toList();
+      });
+    }
+  } catch (error) {
+    print('Error fetching events: $error');
+  }
+}
+
   // switch statement instead of final List <Widget> 
   Widget _getPage() {
     switch (_selectedIndex) {
@@ -55,7 +74,7 @@ class _UserHomePageState extends State<UserHomePage> {
       case 1:
         return const ProfilePage();
       case 2:
-        return role == 'user' ? EventPage(events: _events) : CreateEventPage();
+        return role == 'user' ? EventPage(events: _events, onNavigateBack: fetchEvents) : CreateEventPage();
       default:
         return MapPage(
           events: _events,

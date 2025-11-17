@@ -1,4 +1,5 @@
 import React from "react";
+import { useRef, useEffect } from 'react';
 import Lottie from "lottie-react";
 import "../styles/LandingPage.css";
 import { useNavigate } from "react-router-dom";
@@ -6,6 +7,14 @@ import calendarAnimation from "../assets/online-appointment.json";
 
 const Home = () => {
   const navigate = useNavigate();
+
+  const lottieRef = useRef();
+
+  useEffect(() => {
+    if (lottieRef.current) {
+      lottieRef.current.setSpeed(0.60);
+    }
+  }, []);
 
   return (
     <div className="home-container">
@@ -32,7 +41,11 @@ const Home = () => {
           </div>
           
           <div className="home-animation">
-            <Lottie animationData={calendarAnimation} loop={true} />
+            <Lottie 
+              lottieRef={lottieRef}
+              animationData={calendarAnimation} 
+              loop={true} 
+              />
           </div>
         </div>
       </div>
