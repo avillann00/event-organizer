@@ -238,31 +238,7 @@ export default function App() {
           </InfoWindow>
         )}
 
-        {/* Return to location button - bottom right */}
-        <button
-          onClick={() => {
-            console.log("Return to user location");
-            // Will implement map centering later
-          }}
-          style={{
-            position: "absolute",
-            bottom: "100px",
-            right: "20px",
-            width: "48px",
-            height: "48px",
-            border: "none",
-            borderRadius: "50%",
-            background: "white",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 1000
-          }}
-        >
-          <MapPin size={24} color="#1976D2" />
-        </button>
+        
 
         {/* Bottom navigation bar */}
         <BottomNav />
