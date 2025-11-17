@@ -11,6 +11,8 @@ import Homepage from './pages/Homepage'
 import ProfilePage from './pages/ProfilePage'
 import AboutPage from './pages/AboutPage'
 import ResetPassword from './pages/ResetPassword'
+import OrgEvents from './pages/OrgEvents'
+import UserRsvps from './pages/UserRsvps'
 import RecoverEmail from './pages/RecoverEmail'
 import ResetEmail from './pages/ResetEmail'
 
@@ -29,6 +31,8 @@ export default function App() {
           <Route path='/profile' element={<ProfilePage />} />
           <Route path='/about' element={<AboutPage />} />
           <Route path='/password-reset' element={<ResetPassword />} />
+          <Route path='/organizer-events' element={<OrgEvents />} />
+          <Route path='/user-rsvps' element={<UserRsvps />} />
           <Route path='/recover-email' element={<RecoverEmail />} />
           <Route path='/reset-email' element={<ResetEmail />} />
         </Routes>

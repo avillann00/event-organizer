@@ -9,6 +9,7 @@ export default function ProfilePage(){
 
   const name = localStorage.getItem('userName')
   const email = localStorage.getItem('userEmail')
+  const role = localStorage.getItem('userRole')
 
   if(localStorage.getItem('loggedIn') !== 'true'){
     return <NotLoggedInPage />
@@ -26,16 +27,24 @@ export default function ProfilePage(){
         <span>{name}</span>
         <span>{email}</span>
       </div>
-      
-      {/*
-      <button
-        className='profile-events-btn'
-        onClick={() => navigate('/profile')}
-      >
-        <Calendar size={50} color='#1976D2' />
-        <span>Your Events</span>
-      </button>
-      */}
+ 
+      {role === 'user' ? (
+        <button
+          className='profile-events-btn'
+          onClick={() => navigate('/user-rsvps')}
+        >
+          <Calendar size={50} color='#1976D2' />
+          <span>Your RSVP's</span>
+        </button> 
+      ) : (
+        <button
+          className='profile-events-btn'
+          onClick={() => navigate('/organzier-events')}
+        >
+          <Calendar size={50} color='#1976D2' />
+          <span>Your Events</span>
+        </button> 
+      )}
 
       <button
         className='logout-button'

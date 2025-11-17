@@ -7,6 +7,8 @@ import 'pages/event_details.dart';
 import 'models/event.dart';
 import 'pages/create_event_page.dart';
 import 'pages/password_reset.dart';
+import 'pages/user_rsvps.dart';
+import 'pages/organizer_events.dart';
 
 void main() {
   runApp(const MyApp());
@@ -28,6 +30,8 @@ class MyApp extends StatelessWidget {
         '/register': (context) => RegisterPage(),
         '/createEvent': (context) => CreateEventPage(),
         '/resetPassword': (context) => PasswordReset(),
+        '/userRsvps': (context) => UserRsvps(),
+        '/orgEvents': (context) => OrganizerEvents(),
       },
       onGenerateRoute: (settings){
         if(settings.name == '/eventDetails'){
