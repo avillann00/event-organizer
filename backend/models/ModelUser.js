@@ -53,11 +53,26 @@ const userSchema = new mongoose.Schema({
   },
   emailChangeTokenExpires: {
     type: Date
-  },
-  backupEmail: {
+  }, 
+backupEmail: {
     type: String,
-    default: null
+    required: true,
+    lowercase: true,
+    trim: true
   },
+  emailResetToken: {
+    type: String
+  },
+  emailResetExpires: {
+    type: Date
+  },
+  emailResetVerified: {
+    type: Boolean,
+    default: false
+  },
+  pendingNewEmail: {
+    type: String
+  }
 }, {
   timestamps: true
 });
