@@ -27,12 +27,11 @@ export default function ResetPassword(){
         email: email
       })
 
-      setMessage('Email sent! Follow the instructions then come back')
-
       if(response.status === 200){
         setVerified(true)
         setMessage('')
       }
+      setMessage('Email sent! Follow the instructions then come back')
     }
     catch(error){
       console.error('error reseting password: ', error)
@@ -72,40 +71,68 @@ export default function ResetPassword(){
 
   }
 
-  return(
-    <div className='reset-page'>
-      <button className='back-button' onClick={() => navigate(-1)}>Back</button>
-      {verified ? (
-        <form>
-          <h1>Email Sent! After verification come back and update password</h1>
-          <input
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder='Password'
-            type='password'
-          />
-          <input
-            value={passwordConfirm}
-            onChange={(e) => setPasswordConfirm(e.target.value)}
-            placeholder='Confirm Password'
-            type='password'
-          />
-          <button type='submit' onClick={resetPassword}>Reset</button>
-          {message && <p>{message}</p>}
-        </form>
-      ) : (
-        <form>
-          <h1>Reset Password</h1>
-          <input
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder='Email'
-            type='email'
-          />
-          <button type='submit' onClick={handleSubmit}>Send email</button>
-          {message && <p>{message}</p>}
-        </form>
-      )}
+  return (
+    <div className="reset-page">
+      <div className="reset-page-background"></div>
+
+      <button className="back-button" onClick={() => navigate(-1)}>
+        Back
+      </button>
+
+      <div className="container">
+        {verified ? (
+          <form>
+            <h1>Update Your Password</h1>
+
+            <p className="info-text">
+              Your reset link has been verified.  
+              Enter your <strong>new password</strong> below to finish the reset.
+            </p>
+
+            <input
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="New password"
+              type="password"
+            />
+
+            <input
+              value={passwordConfirm}
+              onChange={(e) => setPasswordConfirm(e.target.value)}
+              placeholder="Confirm new password"
+              type="password"
+            />
+
+            <button type="submit" onClick={resetPassword}>
+              Reset Password
+            </button>
+
+            {message && <p>{message}</p>}
+          </form>
+        ) : (
+          <form>
+            <h1>Reset Password</h1>
+
+            <p className="info-text">
+              Enter your <strong>account email</strong> below.  
+              We’ll send you a secure link to reset your password.
+            </p>
+
+            <input
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email"
+              type="email"
+            />
+
+            <button type="submit" onClick={handleSubmit}>
+              Send Reset Email
+            </button>
+
+            {message && <p>{message}</p>}
+          </form>
+        )}
+      </div>
     </div>
   )
 }
