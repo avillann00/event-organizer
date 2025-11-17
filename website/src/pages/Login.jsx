@@ -68,6 +68,11 @@ export default function Login(){
             {errors && <p className="error-text">{errors}</p>}
           </form>
           <span className='forgot-pass-span' onClick={() => navigate('/password-reset')}>Forgot your password?</span>
+          <span
+            className='forgot-pass-span'
+            onClick={() => navigate('/recover-email')}
+          >Forgot your email?
+          </span>
         </div>
       </div>
     </div>
