@@ -39,7 +39,7 @@ export default function ProfilePage(){
       ) : (
         <button
           className='profile-events-btn'
-          onClick={() => navigate('/organzier-events')}
+          onClick={() => navigate('/organizer-events')}
         >
           <Calendar size={50} color='#1976D2' />
           <span>Your Events</span>

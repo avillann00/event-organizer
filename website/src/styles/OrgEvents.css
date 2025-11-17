@@ -1,0 +1,56 @@
+.org-events-page {
+  padding: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.org-events-page h1 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #1976D2;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.org-events-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.org-events-list .event-card {
+  width: 100%;
+}
+
+.no-events-message {
+  text-align: center;
+  margin-top: 40px;
+  font-size: 1.3rem;
+  color: #333;
+}
+
+@media (max-width: 600px) {
+  .org-events-page {
+    padding: 15px;
+  }
+
+  .org-events-page h1 {
+    font-size: 1.6rem;
+  }
+}
+
+.backButton {
+  background-color: transparent;
+  border: 2px solid #1a1a1a;
+  border-radius: 20px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.backButton:hover {
+  background-color: #1a1a1a;
+  color: gold;
+}
