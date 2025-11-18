@@ -68,14 +68,20 @@ describe('POST /api/users/register/user', () => {
     //email not in use
     User.findOne.mockResolvedValue(null);
     //new user created
-    User.create.mockResolvedValue(makeUser({ isEmailVerified: false }));
+    User.create.mockResolvedValue(
+      makeUser({
+        isEmailVerified: false,
+        backupEmail:'backup@test.com',
+      })
+    );
 
     const res = await request(app)
       .post('/api/users/register/user')
       .send({
-        name: 'Test User',
-        email: 'test@test.com',
-        password: 'password123',
+        name:'Test User',
+        email:'test@test.com',
+        backupEmail: 'backup@test.com',
+        password:'password123',
         confirmPassword: 'password123',
       });
 
@@ -95,9 +101,10 @@ describe('POST /api/users/register/user', () => {
   test('400 when required fields missing', async () => {
     const bad = [
       {},
-      {email:'test@test.com'},
-      {name:'Test', password: 'pass', confirmPassword:'pass' },
-      {name:'Test', email:'test@test.com', password:'pass' }, //no confirmPassword
+      {email: 'test@test.com' },
+      {name:'Test', password: 'pass', confirmPassword: 'pass' },
+      {name:'Test', email:'test@test.com', password:'pass' }, //no confirmPassword or backupEmail
+      {name:'Test', email:'test@test.com', password:'pass', confirmPassword: 'pass' }, //no backupEmail
     ];
 
     for (const body of bad) {
@@ -108,14 +115,30 @@ describe('POST /api/users/register/user', () => {
     }
   });
 
+  test('400 when backup email matches main email', async () => {
+    const res = await request(app)
+      .post('/api/users/register/user')
+      .send({
+        name:'Test',
+        email:'test@test.com',
+        backupEmail:'test@test.com',
+        password:'password123',
+        confirmPassword: 'password123',
+      });
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body.message).toMatch(/Backup email must be different from main email/i);
+  });
+
   test('400 when passwords do not match', async () => {
     const res = await request(app)
       .post('/api/users/register/user')
       .send({
-        name: 'Test',
-        email:'test@test.com',
-        password: 'password1',
-        confirmPassword: 'password2',
+        name:'Test',
+        email: 'test@test.com',
+        backupEmail: 'backup@test.com',
+        password:'password1',
+        confirmPassword:'password2',
       });
 
     expect(res.statusCode).toBe(400);
@@ -123,13 +146,16 @@ describe('POST /api/users/register/user', () => {
   });
 
   test('400 when email already exists', async () => {
-    User.findOne.mockResolvedValue(makeUser());
+    User.findOne.mockResolvedValue(
+      makeUser({ email: 'test@test.com', backupEmail: 'backup@test.com' })
+    );
 
     const res = await request(app)
       .post('/api/users/register/user')
       .send({
         name: 'Test',
         email: 'test@test.com',
+        backupEmail: 'backup@test.com',
         password: 'password123',
         confirmPassword: 'password123',
       });
@@ -260,6 +286,7 @@ describe('POST /api/users/register/organizer', () => {
       makeUser({
         name: 'Org Name',
         email: 'org@test.com',
+        backupEmail: 'orgbackup@test.com',
         role: 'organizer',
         organization: 'Org Name',
         isEmailVerified: false,
@@ -271,6 +298,7 @@ describe('POST /api/users/register/organizer', () => {
       .send({
         organizationName: 'Org Name',
         email: 'org@test.com',
+        backupEmail: 'orgbackup@test.com',
         password: 'password123',
         confirmPassword: 'password123',
       });
@@ -291,9 +319,10 @@ describe('POST /api/users/register/organizer', () => {
   test('400 when required fields missing', async () => {
     const bad = [
       {},
-      {email:'org@test.com'},
-      {organizationName:'Org', password: 'pass', confirmPassword:'pass' },
-      {organizationName:'Org', email:'org@test.com', password:'pass' },
+      {email: 'org@test.com' },
+      {organizationName:'Org', password:'pass', confirmPassword:'pass' },
+      {organizationName:'Org', email:'org@test.com', password:'pass' }, //no confirmPassword or backupEmail
+      {organizationName:'Org', email: 'org@test.com', password:'pass', confirmPassword: 'pass' }, //no backupEmail
     ];
 
     for (const body of bad) {
@@ -304,12 +333,28 @@ describe('POST /api/users/register/organizer', () => {
     }
   });
 
+  test('400 when backup email matches main email', async () => {
+    const res = await request(app)
+      .post('/api/users/register/organizer')
+      .send({
+        organizationName:'Org Name',
+        email:'org@test.com',
+        backupEmail: 'org@test.com',
+        password: 'password123',
+        confirmPassword: 'password123',
+      });
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body.message).toMatch(/Backup email must be different from main email/i);
+  });
+
   test('400 when passwords do not match', async () => {
     const res = await request(app)
       .post('/api/users/register/organizer')
       .send({
         organizationName: 'Org Name',
         email:'org@test.com',
+        backupEmail:'orgbackup@test.com',
         password: 'password1',
         confirmPassword: 'password2',
       });
@@ -322,8 +367,9 @@ describe('POST /api/users/register/organizer', () => {
     const res = await request(app)
       .post('/api/users/register/organizer')
       .send({
-        organizationName: 'Org Name',
+        organizationName:'Org Name',
         email:'org@test.com',
+        backupEmail: 'orgbackup@test.com',
         password: '123',
         confirmPassword: '123',
       });
@@ -334,22 +380,28 @@ describe('POST /api/users/register/organizer', () => {
 
   test('400 when email already exists', async () => {
     User.findOne.mockResolvedValue(
-      makeUser({ email: 'org@test.com', role: 'organizer' })
-    );
+      makeUser({
+        email:'org@test.com', 
+        backupEmail:'orgbackup@test.com', 
+        role:'organizer', 
+      })
+    );   
 
     const res = await request(app)
       .post('/api/users/register/organizer')
       .send({
         organizationName: 'Org Name',
         email: 'org@test.com',
-        password: 'password123',
-        confirmPassword: 'password123',
-      });
+        backupEmail:'orgbackup@test.com',
+        password:'password123',
+        confirmPassword:'password123',
+      });                                                
 
     expect(res.statusCode).toBe(400);
     expect(res.body.message).toMatch(/Email already registered/i);
   });
 });
+
 
 //VERIFY EMAIL api
 describe('GET /api/users/verify-email', () => {
