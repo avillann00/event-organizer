@@ -17,9 +17,13 @@ nav {
   .navbar-links-container a {
     margin-right: 3rem;
     text-decoration: none;
-    color: black;
-    font-size: 1.1rem;
+    color: #444444;
+    font-size: 1.3rem;
     font-weight: 600;
+  }
+
+  .navbar-links-container a:hover {
+    color: #53A9A3; 
   }
   
   .nav-logo-container img {
@@ -27,5 +31,3 @@ nav {
     width: auto;
     object-fit: contain;
   }
-  
-  

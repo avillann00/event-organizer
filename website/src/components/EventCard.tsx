@@ -1,4 +1,5 @@
 import '../styles/EventsListPage.css'
+import { useNavigate } from 'react-router-dom';
 
 interface Event {
   _id: string;
@@ -18,6 +19,8 @@ interface EventCardProp {
 }
 
 export default function EventCard({ event }: EventCardProp){
+  const navigate = useNavigate();
+
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleTimeString('en-US', { 

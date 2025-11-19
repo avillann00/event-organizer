@@ -23,7 +23,7 @@ interface Event {
 }
 
 export default function EventsListPage() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const { events, setEvents } = useEvents()
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
