@@ -17,34 +17,37 @@ export default function ProfilePage(){
 
   return(
     <div className='profile-page'>
-      <h1>Profile Page</h1>
+      <div className="profile-card">
+      <h1>Profile</h1>
 
-      <div className='profile-icon'>
-        <User size={100} color='#1976D2' />
-      </div>
+      
+        <div className='profile-icon'>
+          <User size={100} color='#21452bff' />
+        </div>
 
-      <div className='profile-info'>
-        <span>{name}</span>
-        <span>{email}</span>
-      </div>
- 
-      {role === 'user' ? (
-        <button
-          className='profile-events-btn'
-          onClick={() => navigate('/user-rsvps')}
-        >
-          <Calendar size={50} color='#1976D2' />
-          <span>Your RSVP's</span>
-        </button> 
-      ) : (
-        <button
-          className='profile-events-btn'
-          onClick={() => navigate('/organizer-events')}
-        >
-          <Calendar size={50} color='#1976D2' />
-          <span>Your Events</span>
-        </button> 
-      )}
+        <div className='profile-info'>
+          <span className='profile-name'>{name}</span>
+          <span className='profile-email'>{email}</span>
+        </div>
+  
+        {role === 'user' ? (
+          <button
+            className='profile-events-btn'
+            onClick={() => navigate('/user-rsvps')}
+          >
+            <Calendar size={50} color='#21452bff' />
+            <span>Your RSVP's</span>
+          </button> 
+        ) : (
+          <button
+            className='profile-events-btn'D
+            onClick={() => navigate('/organizer-events')}
+          >
+            <Calendar size={50} color='#21452bff' />
+            <span>Your Events</span>
+          </button> 
+        )}
+      
 
       <button
         className='logout-button'
@@ -55,7 +58,7 @@ export default function ProfilePage(){
       >
         Logout
       </button>
-
+      </div>
       <BottomNav />
     </div>
   )
