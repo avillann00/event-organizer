@@ -5,14 +5,13 @@ import BottomNav from '../components/BottomNav';
 
 export default function AboutPage() {
   const teamMembers = [
-    { name: 'Daniel Hernandez', role: 'MongoDB' },
-    { name: 'Gabriel Gimeno-Alberti', role: 'Frontend with React' },
-    { name: 'Anju Thomas', role: 'Mobile App + PM' },
+    { name: 'Daniel Hernandez', role: 'MongoDB, Frontend with React, Linux' },
+    { name: 'Anju Thomas', role: 'Project Management + Mobile App, Frontend with React' },
+    { name: 'Austin Villanueva', role: 'Project Management + Mobile App, Frontend with React'},
+    { name: 'Gabriel Gimeno-Alberti', role: 'Frontend With React' },
     { name: 'Harshika Jindal', role: 'API' },
-    { name: 'Austin Villanueva', role: 'Project Management + Mobile App' },
-    { name: 'Isaac Rucker', role: 'Frontend with React' },
     { name: 'Jai Khindri', role: 'API' },
-    { name: 'Dylan Dansby', role: 'Backend' }
+    { name: 'Dylan Dansby', role: 'API' }
   ];
 
   return (

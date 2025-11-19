@@ -198,6 +198,11 @@
   transform: translateX(0);
 }
 
+.auth-page .overlay-panel p {
+  margin-top: 20px;
+  margin-bottom: 5px
+}
+
 .auth-page .container.right-panel-active .overlay-left {
   transform: translateX(0);
 }
