@@ -82,13 +82,21 @@ class _UserRsvpsState extends State<UserRsvps>{
 
 class RsvpCard extends StatelessWidget{
   final Rsvp rsvp;
-  const RsvpCard({super.key, required this.rsvp});
+  final VoidCallback? onNavigateBack;
+
+  const RsvpCard({
+    super.key,
+    required this.rsvp,
+    this.onNavigateBack,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        print('Tapped RSVP: ${rsvp.id}');
+      onTap: (){
+        Navigator.pushNamed(context, '/rsvpDetails', arguments: rsvp).then((_) {
+          onNavigateBack?.call();
+        });
       },
 
       child: Container(
