@@ -9,6 +9,8 @@ import 'pages/create_event_page.dart';
 import 'pages/password_reset.dart';
 import 'pages/user_rsvps.dart';
 import 'pages/organizer_events.dart';
+import 'pages/rsvp_details.dart';
+import 'models/rsvp.dart';
 
 void main() {
   runApp(const MyApp());
@@ -38,6 +40,12 @@ class MyApp extends StatelessWidget {
           final event = settings.arguments as Event;
           return MaterialPageRoute(
             builder: (context) => EventDetailsPage(event: event)
+          );
+        }
+        if(settings.name == '/rsvpDetails'){
+          final rsvp = settings.arguments as Rsvp;
+          return MaterialPageRoute(
+            builder: (context) => RsvpDetails(rsvp: rsvp)
           );
         }
         return null;

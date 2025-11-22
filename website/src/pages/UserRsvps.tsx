@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import NotLoggedInPage from '../components/NotLoggedInPage'
 import { useNavigate } from 'react-router-dom'
-import EventCard from '../components/EventCard'
+import RsvpCard from '../components/RsvpCard'
 import '../styles/UserRsvps.css'
 
 interface Event {
@@ -23,6 +23,7 @@ interface Rsvp{
   _id: string
   status: string
   eventId: Event
+  userId: string
 }
 
 export default function UserRsvps(){
@@ -52,8 +53,8 @@ export default function UserRsvps(){
     }
   }, [])
 
-  const mappedEvents = rsvps?.map((rsvp) => (
-    <EventCard key={rsvp._id} event={rsvp.eventId} />
+  const mappedRsvps = rsvps?.map((rsvp) => (
+    <RsvpCard key={rsvp._id} rsvp={rsvp} />
   ))
 
   if(localStorage.getItem('loggedIn') !== 'true'){
@@ -72,7 +73,7 @@ export default function UserRsvps(){
 
         <div className='eventsGrid'>
           {rsvps.length > 0 
-            ? mappedEvents 
+            ? mappedRsvps 
             : <h2 className='emptyState'>You have not RSVP’d to any event yet</h2>}
         </div>
       </div>
