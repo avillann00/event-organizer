@@ -13,6 +13,8 @@ export default function EventDetails() {
   const navigate = useNavigate()
   const [showRSVPModal, setShowRSVPModal] = useState(false)
 
+  const role = localStorage.getItem('userRole')
+
   useEffect(() => {
     if (!event) navigate('/')
   }, [event, navigate])
@@ -48,63 +50,65 @@ export default function EventDetails() {
         <h1 className="event-title">{event.title}</h1>
       </header>
 
-        <div className="hero-section">
-          {event.media?.[0] || event.mediaUrl ? (
-            <img src={event.media?.[0] || event.mediaUrl} alt="Event" className="event-hero" />
-          ) : (
-            <span className="placeholder-icon">📅</span>
-          )}
+      <div className="hero-section">
+        {event.media?.[0] || event.mediaUrl ? (
+          <img src={event.media?.[0] || event.mediaUrl} alt="Event" className="event-hero" />
+        ) : (
+          <span className="placeholder-icon">📅</span>
+        )}
+      </div>
+
+      <div className="event-card">
+        <h1>{event.title}</h1>
+        <div className="event-meta">
+          <p><CiClock1 /> {formatDateRange(event.startTime)} • {formatDateTime(event.startTime, event.endTime)}</p>
+          <p><SlLocationPin /> {event.address || 'No address provided'}</p>
         </div>
 
-        <div className="event-card">
-          <h1>{event.title}</h1>
-          <div className="event-meta">
-            <p><CiClock1 /> {formatDateRange(event.startTime)} • {formatDateTime(event.startTime, event.endTime)}</p>
-            <p><SlLocationPin /> {event.address || 'No address provided'}</p>
-          </div>
+        <section className="details-section">
+          <h2>Event Details</h2>
+          <p>{event.description || 'No description available.'}</p>
+        </section>
 
-          <section className="details-section">
-            <h2>Event Details</h2>
-            <p>{event.description || 'No description available.'}</p>
+        <div className="stats-inline">
+          <div>
+            <strong>Capacity</strong>
+            <span>{event.capacity || '—'}</span>
+          </div>
+          <div>
+            <strong>Tickets</strong>
+            <span>{event.ticketPrice ? `$${event.ticketPrice}` : 'Free'}</span>
+          </div>
+          <div>
+            <strong>RSVPs</strong>
+            <span>{event.rsvpCount || 0}</span>
+          </div>
+        </div>
+
+        {event.keywords?.length > 0 && (
+          <section className="tags-section">
+            <h2>Tags</h2>
+            <div className="tag-container">
+              {event.keywords.map((tag, i) => (
+                <span key={i} className="tag">{tag}</span>
+              ))}
+            </div>
           </section>
-
-          <div className="stats-inline">
-            <div>
-              <strong>Capacity</strong>
-              <span>{event.capacity || '—'}</span>
-            </div>
-            <div>
-              <strong>Tickets</strong>
-              <span>{event.ticketPrice ? `$${event.ticketPrice}` : 'Free'}</span>
-            </div>
-            <div>
-              <strong>RSVPs</strong>
-              <span>{event.rsvpCount || 0}</span>
-            </div>
-          </div>
-
-          {event.keywords?.length > 0 && (
-            <section className="tags-section">
-              <h2>Tags</h2>
-              <div className="tag-container">
-                {event.keywords.map((tag, i) => (
-                  <span key={i} className="tag">{tag}</span>
-                ))}
-              </div>
-            </section>
-          )}
-
+        )}
+        
+        {role === 'user' && (
           <button className="submit-btn" onClick={() => setShowRSVPModal(true)}>
             RSVP TO THIS EVENT!
           </button>
-        </div>
-          {showRSVPModal && (
-            <RSVPModal
-              event={event}
-              onClose={() => setShowRSVPModal(false)}
-              onConfirm={handleRSVPConfirm}
+        )}
+      </div>
+      {showRSVPModal && (
+        <RSVPModal
+          event={event}
+          onClose={() => setShowRSVPModal(false)}
+          onConfirm={handleRSVPConfirm}
         />
       )}
-      </div>
+    </div>
   )
 }
