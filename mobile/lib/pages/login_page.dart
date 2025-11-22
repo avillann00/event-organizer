@@ -70,20 +70,20 @@ class _LoginPageState extends State<LoginPage> {
         title: Text('Login')
       ),
       body: Padding(
-        padding: EdgeInsets.all(20),
-        child: Center(
+        padding: const EdgeInsets.all(20),
+        child: SingleChildScrollView(
           child: Column(
-            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(height: 40),
+              const SizedBox(height: 40),
 
-              Icon(
+              const Icon(
                 Icons.account_circle,
                 size: 100,
                 color: Colors.blue,
               ),
 
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
 
               AuthTextFields(
                 controller: emailController,
@@ -92,7 +92,7 @@ class _LoginPageState extends State<LoginPage> {
                 icon: Icons.email,
               ),
 
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
 
               AuthTextFields(
                 controller: passwordController,
@@ -101,74 +101,59 @@ class _LoginPageState extends State<LoginPage> {
                 icon: Icons.lock,
               ),
 
-              SizedBox(
-                height: 60
-              ),
+              const SizedBox(height: 60),
 
               AuthButton(
                 onTap: () => loginUser(context),
-                label: 'Login'
+                label: 'Login',
               ),
 
-              SizedBox(height: 35),
+              const SizedBox(height: 35),
 
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
+                  const Text(
                     'Need an account?',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                    ),
+                    style: TextStyle(color: Colors.black, fontSize: 16),
                   ),
-
                   const SizedBox(width: 4),
-
                   GestureDetector(
-                    onTap: (){
+                    onTap: () {
                       Navigator.pushNamed(context, '/register');
                     },
-                    child: Text(
+                    child: const Text(
                       'Register instead',
-                      style: TextStyle(
-                        color: Colors.blue,
-                        fontSize: 16,
-                      ),
+                      style: TextStyle(color: Colors.blue, fontSize: 16),
                     ),
                   ),
                 ],
               ),
+
+              const SizedBox(height: 10),
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
+                  const Text(
                     'Forgot your password?',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                    ),
+                    style: TextStyle(color: Colors.black, fontSize: 16),
                   ),
-
                   const SizedBox(width: 4),
-
                   GestureDetector(
-                    onTap: (){
+                    onTap: () {
                       Navigator.pushNamed(context, '/resetPassword');
                     },
-                    child: Text(
+                    child: const Text(
                       'Reset Password',
-                      style: TextStyle(
-                        color: Colors.blue,
-                        fontSize: 16,
-                      ),
+                      style: TextStyle(color: Colors.blue, fontSize: 16),
                     ),
                   ),
                 ],
-              )
+              ),
             ],
-          )
-        )
+          ),
+        ),
       ),
     );
   }

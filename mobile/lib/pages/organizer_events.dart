@@ -134,6 +134,15 @@ class EventCard extends StatelessWidget {
                 ),
               ],
             ),
+            
+            const SizedBox(height: 12),
+
+            IconButton(
+              icon: const Icon(Icons.camera_alt),
+              onPressed: (){
+                Navigator.pushNamed(context, '/checkin', arguments: event.id);
+              },
+            ),
           ],
         ),
       ),
