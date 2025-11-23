@@ -2,6 +2,8 @@
 
 This is the Event Organizer project for POOS aka COP4331
 
+You can view the website at [https://cop4331project.dev/](https://cop4331project.dev/) 
+
 ### About
 
 This Event Organizer app aims to enable users to find events of their interests in their area
