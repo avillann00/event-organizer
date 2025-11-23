@@ -9,14 +9,14 @@ export default function Register() {
   const [userFormData, setUserFormData] = useState({
     name: '',
     email: '',
-    recoveryEmail: '',
+    backupEmail: '',
     password: '',
     confirmPassword: ''
   });
   const [orgFormData, setOrgFormData] = useState({
     organizationName: '',
     email: '',
-    recoveryEmail: '',
+    backupEmail: '',
     password: '',
     confirmPassword: ''
   });
@@ -36,7 +36,7 @@ export default function Register() {
     setErrors({ ...errors, user: '' });
     
     // Client-side validation
-    if (!userFormData.name || !userFormData.email || !userFormData.password || !userFormData.confirmPassword) {
+    if (!userFormData.name || !userFormData.email || !userFormData.password || !userFormData.confirmPassword || !userFormData.backupEmail) {
       setErrors({ ...errors, user: '* All fields are required' });
       return;
     }
@@ -57,7 +57,7 @@ export default function Register() {
       const response = await axios.post('https://cop4331project.dev/api/users/register/user', {
         name: userFormData.name,
         email: userFormData.email,
-        recoveryEmail: userFormData.recoveryEmail,
+        backupEmail: userFormData.backupEmail,
         password: userFormData.password,
         confirmPassword: userFormData.confirmPassword
       });
@@ -85,7 +85,7 @@ export default function Register() {
     setErrors({ ...errors, org: '' });
     
     // Client-side validation
-    if (!orgFormData.organizationName || !orgFormData.email || !orgFormData.password || !orgFormData.confirmPassword) {
+    if (!orgFormData.organizationName || !orgFormData.email || !orgFormData.password || !orgFormData.confirmPassword ||!orgFormData.backupEmail) {
       setErrors({ ...errors, org: '* All fields are required' });
       return;
     }
@@ -106,7 +106,7 @@ export default function Register() {
       const response = await axios.post('https://cop4331project.dev/api/users/register/organizer', {
         organizationName: orgFormData.organizationName,
         email: orgFormData.email,
-        recoveryEmail: orgFormData.recoveryEmail,
+        backupEmail: orgFormData.backupEmail,
         password: orgFormData.password,
         confirmPassword: orgFormData.confirmPassword
       });
@@ -158,10 +158,10 @@ export default function Register() {
               onChange={handleOrgInputChange}
             />
             <input
-              name="recoveryEmail"
+              name="backupEmail"
               type="email"
               placeholder="Recovery Email (for account recovery)"
-              value={orgFormData.recoveryEmail}
+              value={orgFormData.backupEmail}
               onChange={handleOrgInputChange}
             />
             <input
@@ -207,10 +207,10 @@ export default function Register() {
               onChange={handleUserInputChange}
             />
             <input
-              name="recoveryEmail"
+              name="backupEmail"
               type="email"
               placeholder="Recovery Email (for account recovery)"
-              value={userFormData.recoveryEmail}
+              value={userFormData.backupEmail}
               onChange={handleUserInputChange}
             />
             <input
