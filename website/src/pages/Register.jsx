@@ -162,7 +162,7 @@ export default function Register() {
               type="email"
               placeholder="Recovery Email (for account recovery)"
               value={orgFormData.recoveryEmail}
-              onChange={handleUserInputChange}
+              onChange={handleOrgInputChange}
             />
             <input
               name="password"
