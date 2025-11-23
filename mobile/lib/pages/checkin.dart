@@ -22,26 +22,64 @@ class _CheckinState extends State<Checkin>{
     currentEventId = widget.eventId;
   }
 
-  Future<void> verify() async{
-    if (isProcessing) return; 
+  Future<void> verify(String rsvpId) async{
+    if(isProcessing){
+      return;
+    }
+
     setState(() => isProcessing = true);
 
     try{
-      http.Response response = await http.get(Uri.parse('https://cop4331project.dev/'));
+      final response = await http.post(
+        Uri.parse('https://cop4331project.dev/api/rsvp/checkin'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'rsvpId': rsvpId,
+          'eventId': currentEventId,
+        }),
+      );
 
-      if (!mounted) return;
+      if(!mounted){
+        return;
+      }
+
+      String message = 'Error verifying QR code';
+
+      if(response.statusCode == 200){
+        message = 'QR code valid. User checked in';
+      } 
+      else{
+        final decoded = jsonDecode(response.body);
+
+        if(decoded['message'] != null){
+          message = decoded['message'];
+
+          if(message.contains('already')){
+            message = 'User already checked in';
+          }
+        }
+      }
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(
-          response.statusCode == 200
-            ? 'QR code valid. User checked in'
-            : 'Error verifying QR code'
-        ))
+        SnackBar(
+          content: Text(message),
+          backgroundColor: response.statusCode == 200
+              ? Colors.green
+              : Colors.red,
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    }
+    catch(e){
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Network error')),
       );
     }
     finally{
       await Future.delayed(const Duration(seconds: 2));
-      if (mounted) setState(() => isProcessing = false);
+      if(mounted){
+        setState(() => isProcessing = false);
+      }
     }
   }
 
@@ -62,7 +100,7 @@ class _CheckinState extends State<Checkin>{
               onDetect: (capture){
                 final barcode = capture.barcodes.first;
                 print('QR: ${barcode.rawValue}');
-                verify(); 
+                verify(barcode.rawValue); 
               },
             ),
           ),
