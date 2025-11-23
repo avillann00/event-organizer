@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // for date formatting
 import '../models/event.dart';
 import '../components/rsvpModal.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EventDetailsPage extends StatefulWidget {
   final Event event;
@@ -13,11 +14,20 @@ class EventDetailsPage extends StatefulWidget {
 
 class _EventDetailsPageState extends State<EventDetailsPage> {
   late Event currentEvent;
+  String? userRole;
 
   @override
   void initState() {
     super.initState();
     currentEvent = widget.event;
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async{
+    final prefs = await SharedPreferences.getInstance();
+    setState((){
+      userRole = prefs.getString('userRole') ?? '';
+    });
   }
 
   String _formatDateRange(DateTime start, DateTime end) {
@@ -153,7 +163,8 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                     ),
                   ],
                   const SizedBox(height: 24),
-                  SizedBox(
+
+                  if(userRole == 'user') SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {

@@ -2,7 +2,7 @@ import '../styles/OrgEvents.css'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import NotLoggedInPage from '../components/NotLoggedInPage'
-import EventCard from '../components/EventCard'
+import OrgEventCard from '../components/OrgEventCard'
 import { useNavigate } from 'react-router-dom'
 
 interface Event{
@@ -46,7 +46,7 @@ export default function OrgEvents(){
   }, [])
 
   const mappedEvents = events?.map((event: Event) => (
-    <EventCard key={event._id} event={event} />   
+    <OrgEventCard key={event._id} event={event} />   
   ))
 
   if(localStorage.getItem('loggedIn') !== 'true'){

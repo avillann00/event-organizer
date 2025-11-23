@@ -11,6 +11,7 @@ import 'pages/user_rsvps.dart';
 import 'pages/organizer_events.dart';
 import 'pages/rsvp_details.dart';
 import 'models/rsvp.dart';
+import 'pages/checkin.dart';
 
 void main() {
   runApp(const MyApp());
@@ -46,6 +47,12 @@ class MyApp extends StatelessWidget {
           final rsvp = settings.arguments as Rsvp;
           return MaterialPageRoute(
             builder: (context) => RsvpDetails(rsvp: rsvp)
+          );
+        }
+        if(settings.name == '/checkin'){
+          final eventId = settings.arguments as String;
+          return MaterialPageRoute(
+            builder: (context) => Checkin(eventId: eventId)
           );
         }
         return null;

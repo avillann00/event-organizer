@@ -71,6 +71,7 @@ export default function RsvpCard({ rsvp }: RsvpCardProp){
             )}
             <h2 className='rsvpTitle'>{rsvp.eventId.title}</h2>
             <p className='description'>{rsvp.eventId.description}</p>
+            <p className='description'>Status: {rsvp.status}</p>
           </div>
         </div>
       </div>

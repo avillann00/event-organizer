@@ -116,6 +116,39 @@ router.get('/', async (req, res) => {
   }
 })
 
+router.post('/checkin', async (req, res) => {
+  try{
+    const { eventId, rsvpId } = req.body
+
+    if(!eventId || !rsvpId){
+      return res.status(400).json({ message: 'eventId and rsvpId are required' })
+    }
+
+    const rsvp = await Rsvp.findOne({ _id: rsvpId, eventId })
+
+    if(!rsvp){
+      return res.status(404).json({ message: 'rsvp does not exist with given id' })
+    }
+
+    if(rsvp.status === 'verified'){
+      return res.status(400).json({ message: 'user already checked in' })
+    }
+
+    rsvp.status = 'verified'
+    await rsvp.save()
+
+    res.status(200).json({
+      success: true,
+      message: 'user checked in',
+      data: rsvp
+    })
+  }
+  catch(error){
+    console.error('error checking in user: ', error)
+    res.status(500).json({ message: 'error checking in user' })
+  }
+})
+
 module.exports = router;
 
 
