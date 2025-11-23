@@ -1,37 +1,15 @@
 # Website Version
 
-Best Practice
-Repo/Branch Management
-Do not push directly to main
+This is the website version of the Event Organizer app 
 
-Create a feature branch for each task
-git checkout -b feature/<branch-name>
-Commit Messages
-Use a clear format similar to this one
+### Hosting 
 
-[<type>] Scope: short description
+In order to test locally:
+- Install Node.js, npm, as well as all dependencies on your machine 
+- From the project root go to the website dir, `cd website` 
+- Install dependencies with npm, `npm install` 
+- Run the app, `npm run dev` 
+- View at 'localhost:5173' in your browser 
 
-ex:
-
-[feature] API: Added New Endpoint
-[fix] Users: Fixed Email Verification
-Pull Requests
-Open a pull request to main for every change
-
-Include a clear title and description
-Request a review or ask in Discord
-Code Quality
-Test code extensively
-
-Write clear, readable code with meaningful variable names
-
-Include comments when necessary
-
-Use a .env for any sensitive credentials
-
-## Deployment
-
-cd /root/website
-npm run build
-sudo cp -r dist/* /var/www/cop4331project.dev/
-sudo chown -R www-data:www-data /var/www/cop4331project.dev
+Note:
+- If you want to expose the url to your network, `npm run dev -- --host` 

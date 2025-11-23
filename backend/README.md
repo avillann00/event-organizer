@@ -1,29 +1,22 @@
-Best Practice
-Repo/Branch Management
-Do not push directly to main
+# Backend
 
-Create a feature branch for each task
-git checkout -b feature/<branch-name>
-Commit Messages
-Use a clear format similar to this one
+This API was built using Express.js and covers all endpoints for the Event Organizer app 
 
-[<type>] Scope: short description
+### Hosting
 
-ex:
+In order to host locally:
+- Install Node.js, npm, as well as all dependencies on your machine 
+- From the project root go to the backend dir, `cd backend` 
+- Install dependencies with npm, `npm install` 
+- Ensure that you have a .env file with the necessary attributes
+- Run the server, `npm start` 
+- View at 'localhost:5000' in your browser 
 
-[feature] API: Added New Endpoint
-[fix] Users: Fixed Email Verification
-Pull Requests
-Open a pull request to main for every change
+### Testing 
 
-Include a clear title and description
-Request a review or ask in Discord
-Code Quality
-Test code extensively
-
-Write clear, readable code with meaningful variable names
-
-Include comments when necessary
-
-Use a .env for any sensitive credentials
-
+In order to test locally:
+- Install Node.js, npm, as well as all dependencies on your machine 
+- From the project root go to the backend dir, `cd backend` 
+- Install dependencies with npm, `npm install` 
+- Ensure that you have a .env file with the necessary attributes
+- Run the tests, `npm test` 
