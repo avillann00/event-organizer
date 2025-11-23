@@ -161,7 +161,7 @@ export default function Register() {
               name="recoveryEmail"
               type="email"
               placeholder="Recovery Email (for account recovery)"
-              value={userFormData.recoveryEmail}
+              value={orgFormData.recoveryEmail}
               onChange={handleUserInputChange}
             />
             <input
