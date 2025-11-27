@@ -54,3 +54,61 @@
   background-color: #1a1a1a;
   color: gold;
 }
+
+.edit-button {
+  background-color: gold;
+  color: black;
+  border: 2px solid black;
+  border-radius: 25px;
+  padding: 8px 20px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: bold;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-left: 10px;
+  margin-top: 15px;
+  width: auto;
+  display: inline-block;
+}
+
+.edit-button:hover {
+  background-color: darkgoldenrod;
+}
+
+.delete-button {
+  background-color: #dc3545;
+  color: black;
+  border: 2px solid black;
+  border-radius: 25px;
+  padding: 8px 20px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: bold;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-left: 10px;
+  margin-top: 15px;
+  width: auto;
+  display: inline-block;
+}
+
+.delete-button:hover {
+  background-color: #9b000f;
+}
+
+.event-buttons-container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.camera-button,
+.edit-button,
+.delete-button {
+  flex: 0 0 auto;
+}

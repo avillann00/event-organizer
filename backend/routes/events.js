@@ -146,6 +146,80 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+// UPDATE/PUT event endpoint
+router.put('/:id', async (req, res) => {
+  try {
+    const { token, title, description, startTime, endTime, address, latitude, longitude, capacity, ticketPrice, keywords, media } = req.body;
+    
+    if (!token) {
+      return res.status(400).json({
+        success: false,
+        message: 'Token is required'
+      });
+    }
+    
+    // Verify token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const eventId = req.params.id;
+    
+    // Validate event ID
+    if (!mongoose.Types.ObjectId.isValid(eventId)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid event ID'
+      });
+    }
+    
+    // Find the event
+    const event = await Event.findById(eventId);
+    if (!event) {
+      return res.status(404).json({
+        success: false,
+        message: 'Event not found'
+      });
+    }
+    
+    // Check ownership (organizers can only edit their own events)
+    if (decoded.role === 'organizer' && event.organizerId.toString() !== decoded.userId) {
+      return res.status(403).json({
+        success: false,
+        message: 'Access denied. You can only edit your own events'
+      });
+    }
+    
+    // Update fields - only update fields that are provided
+    if (title !== undefined) event.title = title;
+    if (description !== undefined) event.description = description;
+    if (startTime !== undefined) event.startTime = startTime;
+    if (endTime !== undefined) event.endTime = endTime;
+    if (address !== undefined) event.address = address;
+    if (capacity !== undefined) event.capacity = capacity;
+    if (ticketPrice !== undefined) event.ticketPrice = ticketPrice;
+    if (keywords !== undefined) event.keywords = keywords;
+    if (media !== undefined) event.media = media;
+    
+    // Update location if latitude and longitude are provided
+    if (latitude !== undefined && longitude !== undefined) {
+      event.location = { latitude: parseFloat(latitude), longitude: parseFloat(longitude) };
+    }
+    
+    await event.save();
+    
+    res.status(200).json({
+      success: true,
+      message: 'Event updated successfully',
+      data: { event }
+    });
+  } catch (error) {
+    console.error('Error updating event:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while updating event',
+      error: error.message
+    });
+  }
+});
+
 router.get('/', async (req, res) => {
   try{
     const params = req.query

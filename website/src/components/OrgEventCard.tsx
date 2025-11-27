@@ -1,6 +1,7 @@
 import '../styles/OrgEventCard.css'
 import { useNavigate } from 'react-router-dom';
 import { Camera } from 'lucide-react'
+import axios from 'axios'
 
 interface Event {
   _id: string;
@@ -18,6 +19,25 @@ interface Event {
 interface EventCardProp {
   event: Event
 }
+
+const handleDelete = async (eventId: string) => {
+  if (window.confirm('Are you sure you want to delete this event?')) {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.delete(`https://cop4331project.dev/api/events/${eventId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (response.status === 200) {
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error('Error deleting event:', error);
+    }
+  }
+};
 
 export default function OrgEventCard({ event }: EventCardProp){
   const navigate = useNavigate();
@@ -85,7 +105,12 @@ export default function OrgEventCard({ event }: EventCardProp){
                 <div className="price">${event.ticketPrice}</div>
               )}
             </div>
-            <button className='camera-button' onClick={() => navigate(`/checkin/${event._id}`)}><Camera /></button>
+            <div className='event-buttons-container'>
+              <button className='camera-button' onClick={() => navigate(`/checkin/${event._id}`)}><Camera /></button>
+              <button className='edit-button' onClick={() => navigate(`/edit-event/${event._id}`)}>Edit</button>
+              <button className='delete-button' onClick={() => handleDelete(event._id)}>Delete</button>
+            </div>
+            
           </div>
         </div>
       </div>
