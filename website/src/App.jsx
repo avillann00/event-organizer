@@ -17,6 +17,7 @@ import RecoverEmail from './pages/RecoverEmail'
 import ResetEmail from './pages/ResetEmail'
 import RsvpDetails from './pages/RsvpDetails'
 import Checkin from './pages/Checkin'
+import EditEvent from './pages/EditEvent'
 
 export default function App() {
   return(
@@ -39,6 +40,7 @@ export default function App() {
           <Route path='/reset-email' element={<ResetEmail />} />
           <Route path='/rsvps/:id' element={<RsvpDetails />} />
           <Route path='/checkin/:id' element={<Checkin />} />
+          <Route path="/edit-event/:id" element={<EditEvent />} />
         </Routes>
       </BrowserRouter>
     </EventProvider>
