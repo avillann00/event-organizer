@@ -19,12 +19,18 @@ const Home = () => {
   return (
     <div className="home-container">
       <div className="home-banner-container">
+        {/*
         <img
           src="/BannerBackground13.svg"
           alt="background splash art"
           className="home-banner-background"
         />
-
+        */}
+      <img 
+        src="WaveRight.svg" 
+        className="bg-wave" 
+        alt="background image for event organizer" 
+      />
         {/* Wrap text + animation together */}
         <div className="home-content">
           <div className="home-text-section">
@@ -33,6 +39,11 @@ const Home = () => {
               <br />
               <span>Event Organizer</span>
             </h1>
+            <img 
+              src="Squiggle2.svg" 
+              className="squiggle-inline" 
+              alt="background styling image for event organizer" 
+            />
             <p>Find and manage events with ease.</p>
             <div className="button-group">
               <button onClick={() => navigate("/login")}>Login</button>
