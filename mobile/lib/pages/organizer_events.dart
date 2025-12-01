@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../models/event.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OrganizerEvents extends StatefulWidget{
   const OrganizerEvents({super.key});
@@ -13,6 +14,7 @@ class OrganizerEvents extends StatefulWidget{
 
 class _OrganizerEventsState extends State<OrganizerEvents>{
   String? userId;
+  String? token;
   List<Event> events = [];
 
   @override
@@ -26,6 +28,7 @@ class _OrganizerEventsState extends State<OrganizerEvents>{
 
     setState((){
       userId = prefs.getString('userId');
+      token = prefs.getString('token');
     });
 
     getEvents();
@@ -71,7 +74,7 @@ class _OrganizerEventsState extends State<OrganizerEvents>{
             : ListView.builder(
                 itemCount: events.length,
                 itemBuilder: (context, index) {
-                  return EventCard(event: events[index]);
+                  return EventCard(event: events[index], onDelete: getEvents, token: token ?? '');
                 },
               ),
       ),
@@ -81,8 +84,33 @@ class _OrganizerEventsState extends State<OrganizerEvents>{
 
 class EventCard extends StatelessWidget {
   final Event event;
+  final VoidCallback onDelete;
+  final String token;
 
-  const EventCard({super.key, required this.event});
+  const EventCard({super.key, required this.event, required this.onDelete, required this.token});
+
+  Future<void> deleteEvent(BuildContext context, String eventId) async{
+    print('TOKEN: $token');
+    final response = await http.delete(
+      Uri.parse('https://cop4331project.dev/api/events/${Uri.encodeComponent(eventId)}'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Success deleting event')),
+      );
+      onDelete();
+    } else {
+      print("DELETE ERROR: ${response.body}");
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Error deleting event')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context){
@@ -137,12 +165,64 @@ class EventCard extends StatelessWidget {
             
             const SizedBox(height: 12),
 
-            IconButton(
-              icon: const Icon(Icons.camera_alt),
-              onPressed: (){
-                Navigator.pushNamed(context, '/checkin', arguments: event.id);
-              },
-            ),
+            Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.camera_alt),
+                  onPressed: (){
+                    Navigator.pushNamed(context, '/checkin', arguments: event.id);
+                  },
+                ),
+
+                const SizedBox(width: 5),
+
+                ElevatedButton(
+                  child: Text('Edit'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.yellow,
+                    foregroundColor: Colors.black
+                  ),
+                  onPressed: (){
+
+                  }
+                ),
+
+                const SizedBox(width: 5),
+
+                ElevatedButton(
+                  child: Text('Delete'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.black
+                  ),
+                  onPressed: () async {
+                    final confirmed = await showDialog<bool>(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: Text('Delete Event'),
+                          content: Text('Are you sure you want to delete?'),
+                          actions: [
+                            TextButton(
+                              child: Text('Cancel'),
+                              onPressed: () => Navigator.pop(context, false),
+                            ),
+                            TextButton(
+                              child: Text('Yes'),
+                              onPressed: () => Navigator.pop(context, true),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+
+                    if(confirmed == true){
+                      deleteEvent(context, event.id);
+                    }
+                  },
+                ),
+              ]
+            )
           ],
         ),
       ),
