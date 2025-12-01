@@ -18,6 +18,7 @@ class _UserRegistrationFormState extends State<UserRegistrationForm>{
 
   final nameController = TextEditingController();
   final emailController = TextEditingController();
+  final backupEmailController = TextEditingController();
   final passwordController = TextEditingController();
   final passwordAgainController = TextEditingController();
 
@@ -32,7 +33,7 @@ class _UserRegistrationFormState extends State<UserRegistrationForm>{
   }
 
   Future<void> signUpUser(BuildContext context) async{
-    if(nameController.text == '' || emailController.text == '' || passwordController.text == '' || passwordAgainController.text == ''){
+    if(backupEmailController.text == '' || nameController.text == '' || emailController.text == '' || passwordController.text == '' || passwordAgainController.text == ''){
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Please fill in all fields"))
       );
@@ -48,12 +49,20 @@ class _UserRegistrationFormState extends State<UserRegistrationForm>{
       return;
     }
 
+    if(emailController.text == backupEmailController.text){
+       ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Email has to be different from backup email'))
+      );
+      return;
+    }
+
     final response = await http.post(
       Uri.parse('https://cop4331project.dev/api/users/register/user'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'name': nameController.text,
         'email': emailController.text,
+        'backupEmail': backupEmailController.text,
         'password': passwordController.text,
         'confirmPassword': passwordAgainController.text
       })
@@ -98,6 +107,15 @@ class _UserRegistrationFormState extends State<UserRegistrationForm>{
             AuthTextFields(
               controller: emailController,
               hintText: 'Email',
+              obscureText: false,
+              icon: Icons.email,
+            ),
+
+            SizedBox(height: 10),
+
+            AuthTextFields(
+              controller: backupEmailController,
+              hintText: 'Backup Email',
               obscureText: false,
               icon: Icons.email,
             ),
