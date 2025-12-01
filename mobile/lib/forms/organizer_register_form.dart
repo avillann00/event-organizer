@@ -17,11 +17,12 @@ class OrganizerRegistrationForm extends StatefulWidget{
 class _OrganizerRegistrationFormState extends State<OrganizerRegistrationForm>{
   final organizationNameController = TextEditingController();
   final organizationEmailController = TextEditingController();
+  final backupEmailController = TextEditingController();
   final passwordController = TextEditingController();
   final passwordConfirmController = TextEditingController();
 
   Future<void> signUpUser(BuildContext context) async{
-    if(organizationNameController.text == '' || organizationEmailController.text == '' || passwordController.text == '' || passwordConfirmController.text == ''){
+    if(backupEmailController.text == '' || organizationNameController.text == '' || organizationEmailController.text == '' || passwordController.text == '' || passwordConfirmController.text == ''){
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Please fill in all fields"))
       );
@@ -37,12 +38,20 @@ class _OrganizerRegistrationFormState extends State<OrganizerRegistrationForm>{
       return;
     }
 
+    if(organizationEmailController.text == backupEmailController.text){
+       ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Email has to be different from backup email'))
+      );
+      return;
+    }
+
     final response = await http.post(
       Uri.parse('https://cop4331project.dev/api/users/register/organizer'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'organizationName': organizationNameController.text,
         'email': organizationEmailController.text,
+        'backupEmail': backupEmailController.text,
         'password': passwordController.text,
         'confirmPassword': passwordConfirmController.text
       })
@@ -91,6 +100,16 @@ class _OrganizerRegistrationFormState extends State<OrganizerRegistrationForm>{
               obscureText: false,
               icon: Icons.email,
             ),
+
+            SizedBox(height: 10),
+
+            AuthTextFields(
+              controller: backupEmailController,
+              hintText: 'Backup Email',
+              obscureText: false,
+              icon: Icons.email,
+            ),
+
 
             SizedBox(height: 10),
 
