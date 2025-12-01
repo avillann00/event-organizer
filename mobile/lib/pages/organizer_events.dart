@@ -90,7 +90,6 @@ class EventCard extends StatelessWidget {
   const EventCard({super.key, required this.event, required this.onDelete, required this.token});
 
   Future<void> deleteEvent(BuildContext context, String eventId) async{
-    print('TOKEN: $token');
     final response = await http.delete(
       Uri.parse('https://cop4331project.dev/api/events/${Uri.encodeComponent(eventId)}'),
       headers: {
@@ -99,13 +98,14 @@ class EventCard extends StatelessWidget {
       },
     );
 
-    if (response.statusCode == 200) {
+    if(response.statusCode == 200){
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Success deleting event')),
       );
       onDelete();
-    } else {
-      print("DELETE ERROR: ${response.body}");
+    }
+    else{
+      print('DELETE ERROR: ${response.body}');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Error deleting event')),
       );
@@ -183,7 +183,7 @@ class EventCard extends StatelessWidget {
                     foregroundColor: Colors.black
                   ),
                   onPressed: (){
-
+                    Navigator.pushNamed(context, '/editEvent', arguments: event);
                   }
                 ),
 
@@ -198,7 +198,7 @@ class EventCard extends StatelessWidget {
                   onPressed: () async {
                     final confirmed = await showDialog<bool>(
                       context: context,
-                      builder: (context) {
+                      builder: (context){
                         return AlertDialog(
                           title: Text('Delete Event'),
                           content: Text('Are you sure you want to delete?'),

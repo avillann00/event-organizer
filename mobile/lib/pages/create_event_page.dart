@@ -263,6 +263,10 @@ class _CreateEventPageState extends State<CreateEventPage>{
                 children: [
                   ElevatedButton.icon(
                     onPressed: () => pickTime(true),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.black
+                    ),
                     icon: const Icon(Icons.access_time),
                     label: Text(startTime == null
                         ? 'Pick Start Time'
@@ -270,6 +274,10 @@ class _CreateEventPageState extends State<CreateEventPage>{
                   ),
                   ElevatedButton.icon(
                     onPressed: () => pickTime(false),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.black
+                    ),
                     icon: const Icon(Icons.access_time),
                     label: Text(endTime == null
                         ? 'Pick End Time'
@@ -282,6 +290,10 @@ class _CreateEventPageState extends State<CreateEventPage>{
 
               ElevatedButton.icon(
                   onPressed: pickImage,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.black
+                  ),
                   icon: const Icon(Icons.image),
                   label: const Text('Upload Image'),
                 ),
@@ -307,6 +319,7 @@ class _CreateEventPageState extends State<CreateEventPage>{
                     return FilterChip(
                       label: Text(tag),
                       selected: isSelected,
+                      backgroundColor: Colors.white,
                       onSelected: (selected){
                         setState((){
                           if(selected){
@@ -326,7 +339,11 @@ class _CreateEventPageState extends State<CreateEventPage>{
 
               ElevatedButton(
                 child: isLoading ? const CircularProgressIndicator(color: Colors.white) : const Text('Create Event'),
-                onPressed: isLoading ? null : () async{ createEvent(context); }
+                onPressed: isLoading ? null : () async{ createEvent(context); },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.black
+                ),
               )
             ]
           )
