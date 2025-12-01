@@ -46,7 +46,7 @@ export default function RSVPModal({ event, onClose, onConfirm }: RSVPModalProps)
 
       if (data.success){
         const updatedEvent = {...event, rsvpCount: event.rsvpCount + 1, capacity: event.capacity - 1 }
-        alert('RSVP successful!')
+        {/*alert('RSVP successful!') */}
         onConfirm(updatedEvent)
         onClose()
       } else {
@@ -54,6 +54,7 @@ export default function RSVPModal({ event, onClose, onConfirm }: RSVPModalProps)
       }
     } catch (error) {
       console.error('RSVP error:', error)
+      {/*alert('RSVP successful!') */}
       alert('Error creating RSVP')
     } finally {
       setLoading(false)
