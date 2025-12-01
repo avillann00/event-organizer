@@ -14,6 +14,7 @@ import 'models/rsvp.dart';
 import 'pages/checkin.dart';
 import 'pages/recover_email_page.dart';
 import 'pages/reset_email_page.dart';
+import 'pages/edit_event_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -39,6 +40,7 @@ class MyApp extends StatelessWidget {
         '/resetEmail': (context) => ResetEmailPage(),
         '/userRsvps': (context) => UserRsvps(),
         '/orgEvents': (context) => OrganizerEvents(),
+        '/editEvent': (context) => EditEventPage(),
       },
       onGenerateRoute: (settings){
         if(settings.name == '/eventDetails'){
