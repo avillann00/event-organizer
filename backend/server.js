@@ -1,8 +1,24 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const env = require('dotenv');
-env.config();
+const fs = require('fs');
+const path = require('path');
+
+// Read and parse .env file
+const envPath = path.join(__dirname, '.env');
+if (fs.existsSync(envPath)) {
+  const envFile = fs.readFileSync(envPath, 'utf8');
+  envFile.split('\n').forEach(line => {
+    const trimmedLine = line.trim();
+    if (trimmedLine && !trimmedLine.startsWith('#')) {
+      const [key, ...valueParts] = trimmedLine.split('=');
+      if (key && valueParts.length > 0) {
+        const value = valueParts.join('=').trim().replace(/^["']|["']$/g, '');
+        process.env[key.trim()] = value;
+      }
+    }
+  });
+}
 
 const MongoClient = require('mongodb').MongoClient;
 const url = "mongodb://127.0.0.1:27017/EventOrganizer";
@@ -54,3 +70,4 @@ mongoose.connect(url, {
   app.listen(5000, () => console.log('server started on port 5000'))
 })
 .catch(error => console.error('connection error: ', error))
+  
