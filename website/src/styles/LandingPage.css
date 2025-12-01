@@ -25,7 +25,7 @@ body {
   margin-top: 80px;
 }
 
-.home-banner-background {
+.bg-wave {
   position: absolute;
   top: 80px;
   left: 0;
@@ -39,8 +39,8 @@ body {
   position: relative;
   z-index: 1;
   text-align: left;
-  margin-left: 8rem; /* text left */
-  margin-top: 6rem; /* vertical spacing */
+  margin-left: 8rem;
+  margin-top: 2rem;
   max-width: 600px;
 }
 
@@ -49,13 +49,12 @@ body {
     font-weight: bold;
     font-size: 3.5rem;
     color: #2E2E2E;
-    margin-bottom: 2.5rem;
+    margin-bottom: 1rem;
 }
 
 .home-text-section p {
   font-size: 1.5rem;
   color: #6a6a6a;
-  margin-top: 5rem;
 }
 
 .button-group {
@@ -124,4 +123,19 @@ body {
         width: 250px;
         height: 250px;
     }
+}
+
+.squiggle-inline {
+  display: block;
+  width: min(600px, 45vw);
+  margin-top: -4.5rem;
+  pointer-events: none;
+  margin-left: -3.4rem;
+}
+
+@media (max-width: 768px) {
+  .squiggle-inline {
+    width: 65vw;
+    margin-top: -0.2rem;
+  }
 }
