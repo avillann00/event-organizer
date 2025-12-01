@@ -151,6 +151,28 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ],
               ),
+
+              const SizedBox(height: 10),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    'Forgot your email?',
+                    style: TextStyle(color: Colors.black, fontSize: 16),
+                  ),
+                  const SizedBox(width: 4),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, '/recoverEmail');
+                    },
+                    child: const Text(
+                      'Recover Email',
+                      style: TextStyle(color: Colors.blue, fontSize: 16),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),

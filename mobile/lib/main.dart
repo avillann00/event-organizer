@@ -12,6 +12,8 @@ import 'pages/organizer_events.dart';
 import 'pages/rsvp_details.dart';
 import 'models/rsvp.dart';
 import 'pages/checkin.dart';
+import 'pages/recover_email_page.dart';
+import 'pages/reset_email_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -33,6 +35,8 @@ class MyApp extends StatelessWidget {
         '/register': (context) => RegisterPage(),
         '/createEvent': (context) => CreateEventPage(),
         '/resetPassword': (context) => PasswordReset(),
+        '/recoverEmail': (context) => RecoverEmailPage(),
+        '/resetEmail': (context) => ResetEmailPage(),
         '/userRsvps': (context) => UserRsvps(),
         '/orgEvents': (context) => OrganizerEvents(),
       },

@@ -100,7 +100,9 @@ class _CheckinState extends State<Checkin>{
               onDetect: (capture){
                 final barcode = capture.barcodes.first;
                 print('QR: ${barcode.rawValue}');
-                verify(barcode.rawValue); 
+                if (barcode.rawValue != null) {
+                  verify(barcode.rawValue!);
+                }
               },
             ),
           ),
